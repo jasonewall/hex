@@ -49,8 +49,8 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
                 return value.toString();
             else
                 return String.format("'%s'", value.toString());
-        } else if(n instanceof Operator) {
-            Operator op = (Operator)n;
+        } else if(n instanceof Comparator) {
+            Comparator op = (Comparator)n;
             switch(op.getType()) {
                 case Equals: return " = ";
                 default: throw new InvalidAstException("Unhandled operator found while generating SQL");
