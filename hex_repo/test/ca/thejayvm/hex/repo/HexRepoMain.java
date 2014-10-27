@@ -14,11 +14,13 @@ public class HexRepoMain {
         Query<Person> q = repo.where(field(Person::getFirstName, is("Jason")));
 
         String sql = repo.toSql(q);
-        if(!"WHERE first_name = 'Jason'".equals(sql)) System.exit(1);
+        String expected = "SELECT * FROM people WHERE first_name = 'Jason'";
+        if(!expected.equals(sql)) System.exit(1);
 
         q.where(field(Person::getLastName, is("Wall")));
         sql = repo.toSql(q);
-        if(!"WHERE (first_name = 'Jason') AND (last_name = 'Wall')".equals(sql)) System.exit(2);
+        expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
+        if(!expected.equals(sql)) System.exit(2);
 
         q = repo.where(
                 field(Person::getLastName, is("Wall"))
@@ -26,7 +28,7 @@ public class HexRepoMain {
         );
 
         sql = repo.toSql(q);
-        String expected = "WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
+        expected = "SELECT * FROM people WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
         if(!expected.equals(sql)) System.exit(3);
     }
 }
