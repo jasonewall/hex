@@ -31,29 +31,57 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
             Node[] ast = ((Node)predicate).toTree();
             builder.append("WHERE ");
             for(Node n : ast) {
-                builder.append(toSql(n));
+                append(n, builder);
             }
         }
+        else
+            throw new InvalidAstException("Root predicate not a valid AST node");
 
         return builder.toString();
     }
 
-    private String toSql(Node n) throws InvalidAstException {
+    private StringBuilder append(Node n, StringBuilder sql) throws InvalidAstException {
+        Node[] subTree = n.toTree();
+        if(subTree != null) {
+            sql.append("(");
+            for(Node subNode : subTree) {
+                append(subNode, sql);
+            }
+            sql.append(")");
+            return sql;
+        }
         if(n instanceof PropertyRef) {
             @SuppressWarnings("unchecked") PropertyRef<T,Object> ref = (PropertyRef)n;
             Object key = ref.getProperty().apply(this.keyRecord);
-            return keyFields.get(key);
+            sql.append(keyFields.get(key));
+            return sql;
         } else if(n instanceof Literal) {
             Object value = ((Literal)n).getValue();
-            if(value instanceof Number)
-                return value.toString();
-            else
-                return String.format("'%s'", value.toString());
+            if(value instanceof Number) {
+                sql.append(value);
+                return sql;
+            } else {
+                sql.append("'").append(value.toString()).append("'");
+                return sql;
+            }
         } else if(n instanceof Comparator) {
             Comparator op = (Comparator)n;
             switch(op.getType()) {
-                case Equals: return " = ";
+                case Equals:
+                    sql.append(" = ");
+                    return sql;
                 default: throw new InvalidAstException("Unhandled operator found while generating SQL");
+            }
+        } else if(n instanceof BooleanOperator) {
+            BooleanOperator op = (BooleanOperator)n;
+            switch(op.getType()) {
+                case And:
+                    sql.append(" AND ");
+                    return sql;
+                case Or:
+                    sql.append(" OR ");
+                    return sql;
+                default: throw new InvalidAstException("Unhandled boolean operator found while generating SQL");
             }
         }
 

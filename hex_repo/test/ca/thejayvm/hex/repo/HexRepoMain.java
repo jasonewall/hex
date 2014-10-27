@@ -12,7 +12,21 @@ public class HexRepoMain {
     public static void main(String[] args) throws InvalidAstException {
         PersonRepository repo = new PersonRepository();
         Query<Person> q = repo.where(field(Person::getFirstName, is("Jason")));
+
         String sql = repo.toSql(q);
-        System.out.println(sql);
+        if(!"WHERE first_name = 'Jason'".equals(sql)) System.exit(1);
+
+        q.where(field(Person::getLastName, is("Wall")));
+        sql = repo.toSql(q);
+        if(!"WHERE (first_name = 'Jason') AND (last_name = 'Wall')".equals(sql)) System.exit(2);
+
+        q = repo.where(
+                field(Person::getLastName, is("Wall"))
+                    .and(field(Person::getFirstName, is("Jason")).or(field(Person::getFirstName, is("Natalie"))))
+        );
+
+        sql = repo.toSql(q);
+        String expected = "WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
+        if(!expected.equals(sql)) System.exit(3);
     }
 }
