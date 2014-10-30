@@ -3,6 +3,8 @@ package ca.thejayvm.hex.repo;
 import ca.thejayvm.jill.Query;
 import ca.thejayvm.jill.ast.InvalidAstException;
 
+import java.util.List;
+
 import static ca.thejayvm.jill.QueryLanguage.*;
 
 /**
@@ -30,5 +32,17 @@ public class HexRepoMain {
         sql = repo.toSql(q);
         expected = "SELECT * FROM people WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
         if(!expected.equals(sql)) System.exit(3);
+
+        List<Person> people = q.toList();
+        if(people == PersonRepository.LIST_ERROR) {
+            repo.getExceptions().forEach(Exception::printStackTrace);
+            System.exit(4);
+        }
+
+        if(people.size() != 2) System.exit(5);
+
+        people.forEach((p) -> {
+            System.out.println(String.format("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()));
+        });
     }
 }
