@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 /**
  * Created by jason on 14-10-25.
  */
-public abstract class RepositoryBase<T> implements Queryable<T> {
+public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T> {
     public static List LIST_ERROR = new ArrayList<>();
 
     @SuppressWarnings("unchecked")
@@ -24,10 +24,6 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
     private List<Exception> exceptions = new ArrayList<>();
 
     protected Metadata<T> metadata;
-
-    public Query<T> where(Predicate<T> predicate) {
-        return new Query<T>(this).where(predicate);
-    }
 
     @Override
     public List<T> toList(Query<T> query) {
