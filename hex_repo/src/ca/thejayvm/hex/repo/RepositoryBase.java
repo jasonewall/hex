@@ -3,6 +3,7 @@ package ca.thejayvm.hex.repo;
 import ca.thejayvm.jill.Query;
 import ca.thejayvm.jill.Queryable;
 import ca.thejayvm.jill.ast.*;
+import ca.thejayvm.jill.ast.predicates.NullPredicate;
 import ca.thejayvm.jill.sql.SqlQuery;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,8 +16,10 @@ import java.util.function.Predicate;
 /**
  * Created by jason on 14-10-25.
  */
-public abstract class RepositoryBase<T> implements Queryable<T> {
+public abstract class RepositoryBase<T> implements Queryable<T>, Cloneable {
     public static List LIST_ERROR = new ArrayList<>();
+
+    private Predicate<T> predicate = new NullPredicate<>();
 
     @SuppressWarnings("unchecked")
     private List<T> list_error = (List<T>)LIST_ERROR;
@@ -25,15 +28,23 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
 
     protected abstract Metadata<T> get_metadata();
 
-    public Query<T> where(Predicate<T> predicate) {
-        return new Query<T>(this).where(predicate);
+    public RepositoryBase<T> where(Predicate<T> predicate) {
+        try {
+            @SuppressWarnings("unchecked")
+            RepositoryBase<T> q = (RepositoryBase<T>) clone();
+            q.predicate = this.predicate.and(predicate);
+            return q;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return this;
     }
 
     @Override
-    public List<T> toList(Query<T> query) {
+    public List<T> toList() {
         String sql;
         try {
-            sql = toSql(query);
+            sql = toSql();
         } catch (InvalidAstException e) {
             this.exceptions.add(e);
             return list_error;
@@ -72,10 +83,9 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
         return exceptions;
     }
 
-    public String toSql(Query<T> query) throws InvalidAstException {
+    public String toSql() throws InvalidAstException {
         SqlQuery result = new SqlQuery(get_metadata());
         result.from(new Node[] { new Variable(getTableName()) });
-        Predicate<T> predicate = query.getPredicate();
         if(predicate != null && predicate instanceof Node) {
             result.where(((Node) predicate).toTree());
         }
