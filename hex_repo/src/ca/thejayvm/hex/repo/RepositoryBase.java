@@ -1,6 +1,5 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.Query;
 import ca.thejayvm.jill.Queryable;
 import ca.thejayvm.jill.ast.*;
 import ca.thejayvm.jill.ast.predicates.NullPredicate;
