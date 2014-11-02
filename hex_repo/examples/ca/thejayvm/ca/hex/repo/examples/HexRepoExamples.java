@@ -13,6 +13,6 @@ public class HexRepoExamples {
     public static void main(String[] args) {
         Repository<Person> people = new PersonRepository();
 
-        from(people).where(field(Person::getLastName, is("Newton")));
+//        from(people).where(field(Person::getLastName, is("Newton")));
     }
 }
