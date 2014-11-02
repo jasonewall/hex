@@ -5,6 +5,7 @@ import ca.thejayvm.jill.Queryable;
 import ca.thejayvm.jill.ast.InvalidAstException;
 import ca.thejayvm.jill.ast.Node;
 import ca.thejayvm.jill.ast.Variable;
+import ca.thejayvm.jill.collections.CollectionQuery;
 import ca.thejayvm.jill.sql.SqlQuery;
 
 import java.lang.reflect.InvocationTargetException;
@@ -70,7 +71,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
     }
 
     @Override
-    public RepositoryQuery<T> where(Predicate<T> predicate) {
+    public Queryable<T> where(Predicate<T> predicate) {
         RepositoryQuery<T> q = duplicate();
         q.query = query.where(predicate);
         if(q.query.getPredicate() != null && q.query.getPredicate() instanceof Node) {
@@ -81,7 +82,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
                 // ignored
             }
         }
-        return null;
+        return new CollectionQuery<T>(this).where(predicate);
     }
 
     public Iterator<T> iterator() {

@@ -1,13 +1,11 @@
 package ca.thejayvm.hex.repo;
 
 import ca.thejayvm.jill.Queryable;
-import ca.thejayvm.jill.ast.*;
-import ca.thejayvm.jill.ast.predicates.NullPredicate;
-import ca.thejayvm.jill.sql.SqlQuery;
+import ca.thejayvm.jill.ast.InvalidAstException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -20,7 +18,7 @@ public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, 
 
     public abstract Metadata<T> get_metadata();
 
-    public RepositoryQuery<T> where(Predicate<T> predicate) {
+    public Queryable<T> where(Predicate<T> predicate) {
         return query().where(predicate);
     }
 

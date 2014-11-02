@@ -1,5 +1,6 @@
 package ca.thejayvm.hex.repo;
 
+import ca.thejayvm.jill.Queryable;
 import ca.thejayvm.jill.ast.InvalidAstException;
 
 import java.util.List;
@@ -17,18 +18,18 @@ public class HexRepoMain {
         expected = "SELECT * FROM people";
         if(!expected.equals(sql)) System.exit(-1);
 
-        RepositoryQuery<Person> q = repo.where(field(Person::getFirstName, is("Jason")));
+        RepositoryQuery<Person> q = (RepositoryQuery<Person>) repo.where(field(Person::getFirstName, is("Jason")));
 
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE first_name = 'Jason'";
         if(!expected.equals(sql)) System.exit(1);
 
-        q = q.where(field(Person::getLastName, is("Wall")));
+        q = (RepositoryQuery<Person>) q.where(field(Person::getLastName, is("Wall")));
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
         if(!expected.equals(sql)) System.exit(2);
 
-        q = repo.where(
+        q = (RepositoryQuery<Person>) repo.where(
                 field(Person::getLastName, is("Wall"))
                     .and(field(Person::getFirstName, is("Jason")).or(field(Person::getFirstName, is("Natalie"))))
         );
@@ -49,8 +50,10 @@ public class HexRepoMain {
             System.out.println(String.format("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()));
         });
 
-        q = q.where(field(Person::getFirstName, is("Bryce")));
+        q = (RepositoryQuery<Person>) q.where(field(Person::getFirstName, is("Bryce")));
 
         if(q.toList().size() > 0) System.exit(6);
+
+        q.where((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
     }
 }
