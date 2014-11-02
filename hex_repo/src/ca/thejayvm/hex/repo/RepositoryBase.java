@@ -23,7 +23,12 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
 
     private List<Exception> exceptions = new ArrayList<>();
 
-    protected Metadata<T> metadata;
+    public static <T> Metadata<T> generate_metadata(Class<T> clazz) {
+        return Metadata.fromClass(clazz);
+
+    }
+
+    protected abstract Metadata<T> get_metadata();
 
     public Query<T> where(Predicate<T> predicate) {
         return new Query<T>(this).where(predicate);
@@ -43,9 +48,9 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
                 List<T> results = new ArrayList<>();
 
                 while(rs.next()) {
-                    T record = metadata.newInstance();
+                    T record = get_metadata().newInstance();
                     for(int i = 1; i <= col_count; i++) {
-                        Method setter = metadata.getSetter(rs_meta.getColumnLabel(i));
+                        Method setter = get_metadata().getSetter(rs_meta.getColumnLabel(i));
                         setter.invoke(record, findGetter(rs_meta, i).apply(rs));
                     }
                     results.add(record);
@@ -65,7 +70,7 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
     }
 
     public String toSql(Query<T> query) throws InvalidAstException {
-        SqlQuery result = new SqlQuery(metadata);
+        SqlQuery result = new SqlQuery(get_metadata());
         result.from(new Node[] { new Variable(getTableName()) });
         Predicate<T> predicate = query.getPredicate();
         if(predicate != null && predicate instanceof Node) {
