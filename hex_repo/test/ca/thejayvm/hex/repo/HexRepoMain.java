@@ -48,5 +48,9 @@ public class HexRepoMain {
         people.forEach((p) -> {
             System.out.println(String.format("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()));
         });
+
+        q = q.where(field(Person::getFirstName, is("Bryce")));
+
+        if(q.toList().size() > 0) System.exit(6);
     }
 }
