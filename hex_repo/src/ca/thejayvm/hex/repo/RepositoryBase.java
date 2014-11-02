@@ -16,59 +16,19 @@ import java.util.function.Predicate;
  * Created by jason on 14-10-25.
  */
 public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, Cloneable {
-    public static List LIST_ERROR = new ArrayList<>();
 
-    private Predicate<T> predicate = new NullPredicate<>();
+    public abstract Metadata<T> get_metadata();
 
-    @SuppressWarnings("unchecked")
-    private List<T> list_error = (List<T>)LIST_ERROR;
-
-    private List<Exception> exceptions = new ArrayList<>();
-
-    protected abstract Metadata<T> get_metadata();
-
-    public RepositoryBase<T> where(Predicate<T> predicate) {
-        try {
-            @SuppressWarnings("unchecked")
-            RepositoryBase<T> q = (RepositoryBase<T>) clone();
-            q.predicate = this.predicate.and(predicate);
-            return q;
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return this;
+    public RepositoryQuery<T> where(Predicate<T> predicate) {
+        return new RepositoryQuery<>(this).where(predicate);
     }
 
     @Override
     public List<T> toList() {
-        String sql;
-        try {
-            sql = toSql();
-        } catch (InvalidAstException e) {
-            this.exceptions.add(e);
-            return list_error;
-        }
-
-        try {
-            List<T> results = new ArrayList<>();
-            executeQuery(sql, (rs) -> {
-                try {
-                    while(rs.next()) {
-                        results.add(get_metadata().mapRecord(rs));
-                    }
-                } catch (SQLException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-                    this.exceptions.add(e);
-                }
-            });
-            if(this.exceptions.isEmpty()) return results;
-        } catch (SQLException e) {
-            this.exceptions.add(e);
-        }
-
-        return list_error;
+        return new RepositoryQuery<>(this).toList();
     }
 
-    public void executeQuery(String query, Consumer<ResultSetWrapper> consumer) throws SQLException {
+    public void execute_query(String query, Consumer<ResultSetWrapper> consumer) throws SQLException {
         try (
                 Connection conn = ConnectionManager.getConnection();
                 Statement stmt = conn.createStatement();
@@ -78,18 +38,9 @@ public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, 
         }
     }
 
-    public List<Exception> getExceptions() {
-        return exceptions;
-    }
-
     public String toSql() throws InvalidAstException {
-        SqlQuery result = new SqlQuery(get_metadata());
-        result.from(new Node[] { new Variable(getTableName()) });
-        if(predicate != null && predicate instanceof Node) {
-            result.where(((Node) predicate).toTree());
-        }
-        return result.toSql();
+        return new RepositoryQuery<>(this).toSql();
     }
 
-    protected abstract String getTableName();
+    public abstract String getTableName();
 }

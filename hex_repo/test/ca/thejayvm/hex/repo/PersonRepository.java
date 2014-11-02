@@ -5,10 +5,10 @@ package ca.thejayvm.hex.repo;
  */
 public class PersonRepository extends RepositoryBase<Person> {
     private static Metadata<Person> metadata = Metadata.fromClass(Person.class);
-    protected Metadata<Person> get_metadata() { return metadata; }
+    public Metadata<Person> get_metadata() { return metadata; }
 
     @Override
-    protected String getTableName() {
+    public String getTableName() {
         return "people";
     }
 }
