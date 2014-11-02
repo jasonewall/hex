@@ -9,6 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -48,6 +49,16 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
             exceptions.add(e);
         }
         return list_error;
+    }
+
+    public void executeQuery(String query, Consumer<ResultSetWrapper> consumer) throws SQLException {
+        try (
+                Connection conn = ConnectionManager.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(query))
+        ) {
+            consumer.accept(rs);
+        }
     }
 
     public List<Exception> getExceptions() {
