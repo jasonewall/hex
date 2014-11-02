@@ -6,7 +6,6 @@ import ca.thejayvm.jill.ast.*;
 import ca.thejayvm.jill.sql.SqlQuery;
 
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,20 +34,11 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
             try (
                     Connection conn = ConnectionManager.getConnection();
                     Statement stmt = conn.createStatement();
-                    ResultSet rs = stmt.executeQuery(toSql(query))
+                    ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(toSql(query)))
             ) {
-                ResultSetMetaData rs_meta = rs.getMetaData();
-                int col_count = rs_meta.getColumnCount();
-
                 List<T> results = new ArrayList<>();
-
                 while(rs.next()) {
-                    T record = get_metadata().newInstance();
-                    for(int i = 1; i <= col_count; i++) {
-                        Method setter = get_metadata().getSetter(rs_meta.getColumnLabel(i));
-                        setter.invoke(record, Metadata.findGetter(rs_meta, i).apply(rs));
-                    }
-                    results.add(record);
+                    results.add(get_metadata().mapRecord(rs));
                 }
 
                 return results;
