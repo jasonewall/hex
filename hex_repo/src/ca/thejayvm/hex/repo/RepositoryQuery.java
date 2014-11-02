@@ -26,6 +26,8 @@ public class RepositoryQuery<T> implements Queryable<T> {
 
     private Query<T> query = new Query<>();
 
+    private Node[] where;
+
     private List<Exception> exceptions = new ArrayList<>();
 
     public RepositoryQuery(Repository<T> repository) {
@@ -66,15 +68,21 @@ public class RepositoryQuery<T> implements Queryable<T> {
     public RepositoryQuery<T> where(Predicate<T> predicate) {
         RepositoryQuery<T> q = duplicate();
         q.query = query.where(predicate);
-        return q;
+        if(q.query.getPredicate() != null && q.query.getPredicate() instanceof Node) {
+            try {
+                q.where = ((Node) q.query.getPredicate()).toTree();
+                return q;
+            } catch (InvalidAstException e) {
+                // ignored
+            }
+        }
+        return null;
     }
 
     public String toSql() throws InvalidAstException {
         SqlQuery result = new SqlQuery(repository.get_metadata());
-        result.from(new Node[] { new Variable(repository.getTableName()) });
-        if(query.getPredicate() != null && query.getPredicate() instanceof Node) {
-            result.where(((Node) query.getPredicate()).toTree());
-        }
+        result.from(new Node[]{new Variable(repository.getTableName())});
+        result.where(where);
         return result.toSql();
     }
 
@@ -85,6 +93,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
     private RepositoryQuery<T> duplicate() {
         RepositoryQuery<T> dup = new RepositoryQuery<>(this.repository);
         dup.query = query;
+        dup.where = where;
         return dup;
     }
 }
