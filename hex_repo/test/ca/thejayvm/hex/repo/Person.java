@@ -33,4 +33,8 @@ public class Person {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

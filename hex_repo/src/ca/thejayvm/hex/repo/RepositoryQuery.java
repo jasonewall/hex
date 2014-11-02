@@ -10,6 +10,7 @@ import ca.thejayvm.jill.sql.SqlQuery;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -32,6 +33,10 @@ public class RepositoryQuery<T> implements Queryable<T> {
 
     public RepositoryQuery(Repository<T> repository) {
         this.repository = repository;
+    }
+
+    public Repository<T> getRepository() {
+        return repository;
     }
 
     @Override
@@ -77,6 +82,10 @@ public class RepositoryQuery<T> implements Queryable<T> {
             }
         }
         return null;
+    }
+
+    public Iterator<T> iterator() {
+        return new ResultSetIterator<>(this);
     }
 
     public String toSql() throws InvalidAstException {

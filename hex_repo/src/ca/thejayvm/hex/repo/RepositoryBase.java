@@ -8,6 +8,7 @@ import ca.thejayvm.jill.sql.SqlQuery;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -20,12 +21,21 @@ public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, 
     public abstract Metadata<T> get_metadata();
 
     public RepositoryQuery<T> where(Predicate<T> predicate) {
-        return new RepositoryQuery<>(this).where(predicate);
+        return query().where(predicate);
     }
 
     @Override
     public List<T> toList() {
-        return new RepositoryQuery<>(this).toList();
+        return query().toList();
+    }
+
+    private RepositoryQuery<T> query() {
+        return new RepositoryQuery<>(this);
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return query().iterator();
     }
 
     public void execute_query(String query, Consumer<ResultSetWrapper> consumer) throws SQLException {
@@ -39,7 +49,7 @@ public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, 
     }
 
     public String toSql() throws InvalidAstException {
-        return new RepositoryQuery<>(this).toSql();
+        return query().toSql();
     }
 
     public abstract String getTableName();
