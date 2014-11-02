@@ -31,23 +31,30 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
 
     @Override
     public List<T> toList(Query<T> query) {
+        String sql;
         try {
-            try (
-                    Connection conn = ConnectionManager.getConnection();
-                    Statement stmt = conn.createStatement();
-                    ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(toSql(query)))
-            ) {
-                List<T> results = new ArrayList<>();
-                while(rs.next()) {
-                    results.add(get_metadata().mapRecord(rs));
-                }
-
-                return results;
-            }
-        } catch(SQLException|InvalidAstException|IllegalAccessException|InvocationTargetException|InstantiationException
-                |NoSuchMethodException e) {
-            exceptions.add(e);
+            sql = toSql(query);
+        } catch (InvalidAstException e) {
+            this.exceptions.add(e);
+            return list_error;
         }
+
+        try {
+            List<T> results = new ArrayList<>();
+            executeQuery(sql, (rs) -> {
+                try {
+                    while(rs.next()) {
+                        results.add(get_metadata().mapRecord(rs));
+                    }
+                } catch (SQLException | InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
+                    this.exceptions.add(e);
+                }
+            });
+            if(this.exceptions.isEmpty()) return results;
+        } catch (SQLException e) {
+            this.exceptions.add(e);
+        }
+
         return list_error;
     }
 
