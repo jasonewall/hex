@@ -23,11 +23,6 @@ public abstract class RepositoryBase<T> implements Queryable<T> {
 
     private List<Exception> exceptions = new ArrayList<>();
 
-    public static <T> Metadata<T> generate_metadata(Class<T> clazz) {
-        return Metadata.fromClass(clazz);
-
-    }
-
     protected abstract Metadata<T> get_metadata();
 
     public Query<T> where(Predicate<T> predicate) {
