@@ -1,7 +1,5 @@
 package ca.thejayvm.hex.repo.utils;
 
-
-
 /**
  * Created by jason on 14-11-01.
  */
