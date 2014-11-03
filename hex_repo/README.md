@@ -22,14 +22,13 @@ from(people).where(field(Person::getLastName, is("Newton")).forEach((p) -> {
 Some things to keep in mind:
 
 1. Queries are lazy. That means that just executing:
+   ```java
+   from(people).where(field(Person::getLastName, is("Newton"))
+   ```
+   ... will not execute the query on the database. It is only when you call a resolution expression that the database will
+   be queried. For example, it was not until  we called `forEach()` in the above sample (a method on the `java.util.Iterable`    interface) that the database was queried and we started retrieving results.
 
-        from(people).where(field(Person::getLastName, is("Newton"))
-
-... will not execute the query on the database. It is only when you call a resolution expression that the database will
-be queried. For example, it was not until  we called `forEach()` in the above sample (a method on the `java.util.Iterable` interface)
-that the database was queried and we started retrieving results.
-
-2. Unless you manually call `toList()` on a repo base `Queryable`, records are loaded as needed.
+2. Unless you manually call `toList()` on a repo-based `Queryable`, records are loaded as needed.
 
 ## Configuring your database access
 
