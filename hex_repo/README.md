@@ -28,7 +28,8 @@ Some things to keep in mind:
 ... will not execute the query on the database. It is only when you call a resolution expression that the database will
 be queried. For example, it was not until  we called `forEach()` in the above sample (a method on the `java.util.Iterable` interface)
 that the database was queried and we started retrieving results.
-1. Unless you manually call `toList()` on a repo base `Queryable`, records are loaded as needed.
+
+2. Unless you manually call `toList()` on a repo base `Queryable`, records are loaded as needed.
 
 ## Configuring your database access
 
