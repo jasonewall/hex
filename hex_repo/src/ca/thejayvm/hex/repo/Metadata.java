@@ -17,6 +17,8 @@ import static ca.thejayvm.hex.repo.utils.Inflection.*;
  * Created by jason on 14-10-29.
  */
 public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
+    private static final int FAILED_PK_RETRIEVAL = -1;
+
     public static <T> Metadata<T> fromClass(Class<T> keyClass) {
         try {
             T keyRecord = keyClass.newInstance();
@@ -33,7 +35,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
                 try {
                     return (Integer)pk_getter.invoke(t);
                 } catch (IllegalAccessException | InvocationTargetException e) {
-                    return -1;
+                    return FAILED_PK_RETRIEVAL;
                 }
             };
 
