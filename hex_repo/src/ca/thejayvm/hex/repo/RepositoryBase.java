@@ -2,6 +2,8 @@ package ca.thejayvm.hex.repo;
 
 import ca.thejayvm.jill.Queryable;
 import ca.thejayvm.jill.ast.InvalidAstException;
+import ca.thejayvm.jill.ast.predicates.Condition;
+import ca.thejayvm.jill.ast.predicates.EqualityPredicate;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,6 +22,14 @@ public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, 
 
     public Queryable<T> where(Predicate<T> predicate) {
         return query().where(predicate);
+    }
+
+    private T record_not_found = null;
+
+    public T find(int id) {
+        List<T> query = query().where(new Condition<>(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id))).toList();
+        if(query.isEmpty()) return record_not_found;
+        return query.get(0);
     }
 
     @Override

@@ -55,5 +55,8 @@ public class HexRepoMain {
         if(q.toList().size() > 0) System.exit(6);
 
         q.where((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
+
+        Person j = repo.find(1);
+        if(!j.getFirstName().equals("Jason")) System.exit(8);
     }
 }

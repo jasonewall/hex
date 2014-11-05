@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static ca.thejayvm.hex.repo.utils.Inflection.*;
 
@@ -26,14 +27,32 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
                 f.set(keyRecord, metadata.setFieldMeta(f));
             }
 
+            Method pk_getter = keyClass.getMethod(toGetter(ID));
+
+            metadata.primaryKey = (t) -> {
+                try {
+                    return (Integer)pk_getter.invoke(t);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    return -1;
+                }
+            };
+
             return metadata;
-        } catch (InstantiationException|IllegalAccessException|UnhandledFieldTypeException e) {
+        } catch (InstantiationException|IllegalAccessException|UnhandledFieldTypeException|NoSuchMethodException e) {
             return new CorruptedMetadata<>(e);
         }
     }
 
+    private static final String ID = "id";
+
+    private Function<T,Integer> primaryKey;
+
     public Metadata(T keyRecord) {
         super(keyRecord);
+    }
+
+    public Function<T,Integer> getPrimaryKey() {
+        return primaryKey;
     }
 
     public Method getSetter(String fieldName) throws NoSuchMethodException {
@@ -67,6 +86,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
         this.setters.put(fieldName, setterName);
         this.fieldTypes.put(fieldName, fieldType);
     }
+
 
     public Object setFieldMeta(Field f) {
         String fieldName = f.getName();
