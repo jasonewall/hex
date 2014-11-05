@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 /**
  * Created by jason on 14-10-25.
  */
-public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T>, Cloneable {
+public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T> {
 
     public abstract Metadata<T> get_metadata();
 
