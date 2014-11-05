@@ -24,7 +24,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
     @SuppressWarnings("unchecked")
     private List<T> list_error = (List<T>)LIST_ERROR;
 
-    private final Repository<T> repository;
+    private final RepositoryBase<T> repository;
 
     private Query<T> query = new Query<>();
 
@@ -32,11 +32,11 @@ public class RepositoryQuery<T> implements Queryable<T> {
 
     private List<Exception> exceptions = new ArrayList<>();
 
-    public RepositoryQuery(Repository<T> repository) {
+    public RepositoryQuery(RepositoryBase<T> repository) {
         this.repository = repository;
     }
 
-    public Repository<T> getRepository() {
+    public RepositoryBase<T> getRepository() {
         return repository;
     }
 
