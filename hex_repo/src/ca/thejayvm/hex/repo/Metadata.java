@@ -90,7 +90,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
     }
 
 
-    public Object setFieldMeta(Field f) {
+    public Object setFieldMeta(Field f) throws UnhandledFieldTypeException {
         String fieldName = f.getName();
         String columnName = toColumn(fieldName);
         Object keyValue = generateKey(f);
@@ -113,7 +113,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
         return underscore(fieldName);
     }
 
-    private Object generateKey(Field f) {
+    private Object generateKey(Field f) throws UnhandledFieldTypeException {
         switch(f.getType().getName()) {
             case "long":
             case "java.lang.Long":
@@ -146,7 +146,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
     }
 }
 
-class UnhandledFieldTypeException extends RuntimeException {
+class UnhandledFieldTypeException extends Exception {
     public UnhandledFieldTypeException(String message) {
         super(message);
     }
