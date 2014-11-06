@@ -1,7 +1,5 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.hex.repo.utils.Inflection;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
