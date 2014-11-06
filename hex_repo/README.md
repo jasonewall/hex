@@ -64,7 +64,7 @@ instances. All of the results of querying in HexRepo implement a construct from 
 
 ### What to do?
 
-That being said, he's the normal contributing ramble:
+That being said, here's the normal contributing ramble:
 
 1. Fork it (`http://github.com/thejayvm/hex/fork`)
 2. Create your feature branch (`git checkout -b my-new-feature`)
