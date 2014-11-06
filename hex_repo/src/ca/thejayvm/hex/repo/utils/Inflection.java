@@ -1,9 +1,18 @@
 package ca.thejayvm.hex.repo.utils;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 /**
  * Created by jason on 14-11-01.
  */
 public class Inflection {
+    @SafeVarargs
+    public static String inflect(String string, Function<String,String>... inflectors) {
+        for(Function<String,String> i : inflectors) string = i.apply(string);
+        return string;
+    }
+
     public static String capitalize(String string) {
         if(string == null || string.length() == 0) return string;
         char[] chars = string.toCharArray();
@@ -26,5 +35,9 @@ public class Inflection {
             result.append(c);
         }
         return result.toString();
+    }
+
+    public static String pluralize(String string) {
+        return string.concat("s");
     }
 }

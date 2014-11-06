@@ -3,10 +3,8 @@ package ca.thejayvm.hex.repo;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -38,6 +36,8 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
                     return FAILED_PK_RETRIEVAL;
                 }
             };
+
+            metadata.tableName = inflect(keyClass.getCanonicalName(), (s) -> underscore(s), (s) -> pluralize(s));
 
             return metadata;
         } catch (InstantiationException|IllegalAccessException|UnhandledFieldTypeException|NoSuchMethodException e) {
@@ -75,6 +75,12 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
     protected Class<T> getKeyRecordClass() {
         T t = (T)super.getKeyRecord();
         return (Class<T>)t.getClass();
+    }
+
+    private String tableName;
+
+    public String getTableName() {
+        return tableName;
     }
 
     public T newInstance() throws IllegalAccessException, InstantiationException {

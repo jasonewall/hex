@@ -1,64 +1,26 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.Queryable;
-import ca.thejayvm.jill.ast.InvalidAstException;
-import ca.thejayvm.jill.ast.predicates.Condition;
-import ca.thejayvm.jill.ast.predicates.EqualityPredicate;
-
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Iterator;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
 /**
  * Created by jason on 14-10-25.
  */
-public abstract class RepositoryBase<T> implements Repository<T>, Queryable<T> {
+public class RepositoryBase<T> extends AbstractRepository<T> {
+    private final Metadata<T> metadata;
 
-    public abstract Metadata<T> get_metadata();
-
-    public Queryable<T> where(Predicate<T> predicate) {
-        return query().where(predicate);
+    public RepositoryBase(Metadata<T> metadata) {
+        this.metadata = metadata;
     }
 
-    private T record_not_found = null;
-
-    public T find(int id) {
-        List<T> query = query().where(new Condition<>(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id))).toList();
-        if(query.isEmpty()) return record_not_found;
-        return query.get(0);
+    public RepositoryBase(Class<T> sourceType) {
+        this(Metadata.fromClass(sourceType));
     }
 
     @Override
-    public List<T> toList() {
-        return query().toList();
-    }
-
-    private RepositoryQuery<T> query() {
-        return new RepositoryQuery<>(this);
+    public Metadata<T> get_metadata() {
+        return this.metadata;
     }
 
     @Override
-    public Iterator<T> iterator() {
-        return query().iterator();
+    public String getTableName() {
+        return metadata.getTableName();
     }
-
-    public void execute_query(String query, Consumer<ResultSetWrapper> consumer) throws SQLException {
-        try (
-                Connection conn = ConnectionManager.getConnection();
-                Statement stmt = conn.createStatement();
-                ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(query))
-        ) {
-            consumer.accept(rs);
-        }
-    }
-
-    public String toSql() throws InvalidAstException {
-        return query().toSql();
-    }
-
-    public abstract String getTableName();
 }
