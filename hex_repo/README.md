@@ -41,3 +41,34 @@ url: jdbc:postgresql:hex_repo_test
 username: pg
 password:
 ```
+
+## Contributing
+
+I'll welcome contributors but keep in mind the following:
+
+### No byte code manipulation
+
+It's a pretty common practice for a lot of JVM based ORMs out there. I'd like to see something that doesn't do it.
+
+### All queries map to POJOs
+
+All mapping metadata should be declared outside of the "Model" classes.
+
+    NOTE: As of now I still haven't figured out how I'm going to declare custom mapping of fields to columns.
+
+### All queries should be able to be queried by JILL
+
+This is a sister project of [thejayvm/jill](https://github.com/thejayvm/jill). The idea behind that project is a Java written
+query language for querying [java.util.Collection](http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html)
+instances. All of the results of querying in HexRepo implement a construct from JILL in some form or fashion.
+
+### What to do?
+
+That being said, he's the normal contributing ramble:
+
+1. Fork it (`http://github.com/thejayvm/hex/fork`)
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
+6. If fixing reported issues please use `hub pull-request` to make a PR with the same ID as the issue. (https://github.com/github/hub)
