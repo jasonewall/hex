@@ -1,5 +1,7 @@
 package ca.thejayvm.hex.repo;
 
+import ca.thejayvm.hex.repo.utils.Inflection;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,7 +39,7 @@ public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
                 }
             };
 
-            metadata.tableName = inflect(keyClass.getCanonicalName(), (s) -> underscore(s), (s) -> pluralize(s));
+            metadata.tableName = tableize(keyClass.getCanonicalName());
 
             return metadata;
         } catch (InstantiationException|IllegalAccessException|UnhandledFieldTypeException|NoSuchMethodException e) {

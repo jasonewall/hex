@@ -9,8 +9,7 @@ import java.util.function.Function;
 public class Inflection {
     @SafeVarargs
     public static String inflect(String string, Function<String,String>... inflectors) {
-        for(Function<String,String> i : inflectors) string = i.apply(string);
-        return string;
+        return Arrays.stream(inflectors).reduce(Function::andThen).get().apply(string);
     }
 
     public static String capitalize(String string) {
@@ -35,6 +34,10 @@ public class Inflection {
             result.append(c);
         }
         return result.toString();
+    }
+
+    public static String tableize(String string) {
+        return inflect(string, Inflection::underscore, Inflection::pluralize);
     }
 
     public static String pluralize(String string) {
