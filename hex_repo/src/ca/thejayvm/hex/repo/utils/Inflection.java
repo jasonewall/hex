@@ -9,7 +9,8 @@ import java.util.function.Function;
 public class Inflection {
     @SafeVarargs
     public static String inflect(String string, Function<String,String>... inflectors) {
-        return Arrays.stream(inflectors).reduce(Function::andThen).get().apply(string);
+        for(Function<String,String> i : inflectors) string = i.apply(string);
+        return string;
     }
 
     public static String capitalize(String string) {

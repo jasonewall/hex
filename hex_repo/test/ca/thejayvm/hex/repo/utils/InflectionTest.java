@@ -38,4 +38,19 @@ public class InflectionTest {
         assertEquals("Empty string should return empty string", "", underscore(""));
         assertEquals("White space should just work", "    ", underscore(("    ")));
     }
+
+    @Test
+    public void underscoreShouldNotUnderscoreAfterASpace() {
+        fail("Implement this test.");
+    }
+
+    @Test
+    public void tableizeShouldLookLikeTableNames() {
+        fail("Implement this test.");
+    }
+
+    @Test
+    public void inflectWorksWithMultiples() {
+        assertEquals("johnny_oranges", inflect("JohnnyOrange", Inflection::underscore, Inflection::pluralize));
+    }
 }
