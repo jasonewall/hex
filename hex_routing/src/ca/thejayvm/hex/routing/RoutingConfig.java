@@ -11,4 +11,8 @@ public class RoutingConfig {
     public RouteHandler getRouteHandler(String path) {
         return null;
     }
+
+    public void addRoute(String path, RouteHandler handler) {
+
+    }
 }

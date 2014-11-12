@@ -1,6 +1,7 @@
 package ca.thejayvm.hex.routing;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Created by jason on 14-11-11.
@@ -8,6 +9,9 @@ import org.junit.Test;
 public class RoutingConfigTest {
     @Test
     public void testAddingRoutes() {
-
+        RoutingConfig config = new RoutingConfig();
+        config.addRoute("/people", (q, r) -> q.setAttribute("Boring", "Boring") );
+        RouteHandler handler = config.getRouteHandler("/people");
+        assertNotNull("Should retrieve a static path", handler);
     }
 }
