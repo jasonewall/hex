@@ -27,9 +27,12 @@ public class RoutingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if(routingConfig.hasRoute(servletRequest)) {
-            routingConfig.getRouteHandler(servletRequest);
+        if(routingConfig.hasRoute(getPath(servletRequest))) {
+            routingConfig.getRouteHandler(getPath(servletRequest)).handleRequest(servletRequest, servletResponse);
+            return;
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     @Override
