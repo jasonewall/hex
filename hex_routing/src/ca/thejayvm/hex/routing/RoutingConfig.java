@@ -1,8 +1,5 @@
 package ca.thejayvm.hex.routing;
 
-import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
 /**
  * Created by jason on 14-11-11.
  */
