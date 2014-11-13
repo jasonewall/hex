@@ -17,4 +17,14 @@ public class RoutingConfigTest {
         GET("/people", handler::handleRequest)
                 .andThen((q, r) -> assertEquals("Boring", q.getAttribute("Boring")));
     }
+
+    @Test
+    public void dynamicRouteWithNamedParam() {
+        RoutingConfig config = new RoutingConfig();
+        config.addRoute("/posts/:id", (q, r) -> q.setAttribute("post_id", q.getAttribute("id")));
+        RouteHandler handler = config.getRouteHandler("/posts/7");
+        assertNotNull("Should retrieve paramed path", handler);
+        GET("/posts/7", handler::handleRequest)
+                .andThen((q, r) -> assertEquals(7, q.getAttribute("post_id")));
+    }
 }
