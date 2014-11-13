@@ -36,15 +36,15 @@ public class HttpMock {
         this.contextPath = contextPath;
     }
 
-    public static BiConsumer<HttpServletRequest,HttpServletResponse> GET(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+    public static Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> GET(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
         return instance().get(path, consumer);
     }
 
-    public BiConsumer<HttpServletRequest,HttpServletResponse> get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+    public Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
         return doRequest(Method.GET, path, consumer);
     }
 
-    private BiConsumer<HttpServletRequest,HttpServletResponse> doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+    private Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
         HttpServletRequest request = new MockHttpServletRequest() {
             public String getMethod() {
                 return method.toString();
@@ -68,18 +68,8 @@ public class HttpMock {
         HttpServletResponse response = new MockHttpServletResponse() {};
 
         consumer.accept(request, response);
-        return new BiConsumer<HttpServletRequest, HttpServletResponse>() {
-            @Override
-            public void accept(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
-                throw new UnsupportedOperationException("ImmediateBiConsumer hi-jacked for andThen execution.");
-            }
 
-            @Override
-            public BiConsumer<HttpServletRequest, HttpServletResponse> andThen(BiConsumer<? super HttpServletRequest, ? super HttpServletResponse> after) {
-                after.accept(request, response);
-                return this;
-            }
-        };
+        return (c) -> c.accept(request, response);
     }
 }
 
