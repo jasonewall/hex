@@ -68,7 +68,18 @@ public class HttpMock {
         HttpServletResponse response = new MockHttpServletResponse() {};
 
         consumer.accept(request, response);
-        return (q,r) -> {};
+        return new BiConsumer<HttpServletRequest, HttpServletResponse>() {
+            @Override
+            public void accept(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) {
+                throw new UnsupportedOperationException("ImmediateBiConsumer hi-jacked for andThen execution.");
+            }
+
+            @Override
+            public BiConsumer<HttpServletRequest, HttpServletResponse> andThen(BiConsumer<? super HttpServletRequest, ? super HttpServletResponse> after) {
+                after.accept(request, response);
+                return this;
+            }
+        };
     }
 }
 
