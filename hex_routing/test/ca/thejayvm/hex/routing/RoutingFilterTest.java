@@ -1,12 +1,12 @@
 package ca.thejayvm.hex.routing;
 
-import ca.thejayvm.hex.routing.test.HttpMock;
+import servlet_mock.HttpMock;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static ca.thejayvm.hex.routing.test.HttpMock.*;
+import static servlet_mock.HttpMock.*;
 
 
 /**

@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.routing.test;
+package servlet_mock;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -7,10 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -39,15 +36,15 @@ public class HttpMock {
         this.contextPath = contextPath;
     }
 
-    public static void GET(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
-        instance().get(path, consumer);
+    public static BiConsumer<HttpServletRequest,HttpServletResponse> GET(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+        return instance().get(path, consumer);
     }
 
-    public void get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
-        doRequest(Method.GET, path, consumer);
+    public BiConsumer<HttpServletRequest,HttpServletResponse> get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+        return doRequest(Method.GET, path, consumer);
     }
 
-    private void doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+    private BiConsumer<HttpServletRequest,HttpServletResponse> doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
         HttpServletRequest request = new MockHttpServletRequest() {
             public String getMethod() {
                 return method.toString();
@@ -71,18 +68,37 @@ public class HttpMock {
         HttpServletResponse response = new MockHttpServletResponse() {};
 
         consumer.accept(request, response);
+        return (q,r) -> {};
     }
 }
 
 class MockHttpServletRequest implements HttpServletRequest {
+    private Map<String,Object> attributes = new HashMap<>();
     @Override
-    public Object getAttribute(String s) {
-        return null;
+    public Object getAttribute(String attributeName) {
+        return attributes.get(attributeName);
+    }
+
+    private static class IterableEnumeration<T> implements Enumeration<T> {
+        private Iterator<T> iterator;
+
+        public IterableEnumeration(Iterable<T> iterable) {
+            iterator = iterable.iterator();
+        }
+        @Override
+        public boolean hasMoreElements() {
+            return iterator.hasNext();
+        }
+
+        @Override
+        public T nextElement() {
+            return iterator.next();
+        }
     }
 
     @Override
     public Enumeration<String> getAttributeNames() {
-        return null;
+        return new IterableEnumeration<>(attributes.keySet());
     }
 
     @Override
@@ -171,13 +187,13 @@ class MockHttpServletRequest implements HttpServletRequest {
     }
 
     @Override
-    public void setAttribute(String s, Object o) {
-
+    public void setAttribute(String attribute, Object value) {
+        attributes.put(attribute, value);
     }
 
     @Override
-    public void removeAttribute(String s) {
-
+    public void removeAttribute(String attribute) {
+        attributes.remove(attribute);
     }
 
     @Override
