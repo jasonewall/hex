@@ -15,7 +15,8 @@ public class RoutingConfigTest {
         RouteHandler handler = config.getRouteHandler("/people");
         assertNotNull("Should retrieve a static path", handler);
         GET("/people", handler::handleRequest)
-                .andThen((q, r) -> assertEquals("Boring", q.getAttribute("Boring")));
+                .andThen((q, r) -> assertEquals("Boring", q.getAttribute("Boring")))
+                ;
     }
 
     @Test
