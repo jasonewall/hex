@@ -9,9 +9,9 @@ import static servlet_mock.HttpMock.*;
  */
 public class RoutingConfigTest {
     @Test
-    public void testAddingRoutes() {
+    public void staticRoutes() {
         RoutingConfig config = new RoutingConfig();
-        config.addRoute("/people", (q, r) -> q.setAttribute("Boring", "Boring") );
+        config.addRoute("/people", (q, r) -> q.setAttribute("Boring", "Boring"));
         RouteHandler handler = config.getRouteHandler("/people");
         assertNotNull("Should retrieve a static path", handler);
         GET("/people", handler::handleRequest)
