@@ -6,7 +6,7 @@ import ca.thejayvm.jill.ast.InvalidAstException;
 import ca.thejayvm.jill.ast.Node;
 import ca.thejayvm.jill.ast.Variable;
 import ca.thejayvm.jill.collections.CollectionQuery;
-import ca.thejayvm.jill.sql.SqlQuery;
+import jill.sql.SqlQuery;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;

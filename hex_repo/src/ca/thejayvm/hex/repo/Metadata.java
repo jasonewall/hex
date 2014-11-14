@@ -14,7 +14,7 @@ import static ca.thejayvm.hex.repo.utils.Inflection.*;
 /**
  * Created by jason on 14-10-29.
  */
-public class Metadata<T> extends ca.thejayvm.jill.sql.Metadata {
+public class Metadata<T> extends jill.sql.Metadata {
     private static final int FAILED_PK_RETRIEVAL = -1;
 
     public static <T> Metadata<T> fromClass(Class<T> keyClass) {
