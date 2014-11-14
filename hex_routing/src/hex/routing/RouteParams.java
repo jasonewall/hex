@@ -16,4 +16,8 @@ public class RouteParams {
     public int getInt(String paramName) {
         return Integer.parseInt(params.get(paramName), 10);
     }
+
+    public String getString(String paramName) {
+        return params.get(paramName);
+    }
 }

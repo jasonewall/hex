@@ -49,6 +49,14 @@ public class RoutingConfigTest {
                 ;
     }
 
+    @Test
+    public void stringRouteParams() {
+        RoutingConfig config = new RoutingConfig();
+        config.addRoute("/profile/:username", (q, r) -> assertEquals("isaac.newton", getRouteParams(q).getString("username")));
+
+        GET("/profile/isaac.newton", config.getRouteHandler("/profile/isaac.newton")::handleRequest);
+    }
+
     private RouteParams getRouteParams(ServletRequest request) {
         return (RouteParams) request.getAttribute(Route.ROUTE_PARAMS);
     }
