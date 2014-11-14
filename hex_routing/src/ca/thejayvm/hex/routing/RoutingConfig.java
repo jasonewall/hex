@@ -8,8 +8,6 @@ import java.util.regex.Pattern;
  * Created by jason on 14-11-11.
  */
 public class RoutingConfig {
-    private Map<String,RouteHandler> handlers = new HashMap<>();
-
     private List<Route> routes = new ArrayList<>();
 
     public boolean hasRoute(String path) {

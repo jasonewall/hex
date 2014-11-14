@@ -1,6 +1,9 @@
 package ca.thejayvm.hex.routing;
 
 import org.junit.Test;
+
+import javax.servlet.ServletRequest;
+
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.*;
 
@@ -22,10 +25,14 @@ public class RoutingConfigTest {
     @Test
     public void dynamicRouteWithNamedParam() {
         RoutingConfig config = new RoutingConfig();
-        config.addRoute("/posts/:id", (q, r) -> q.setAttribute("post_id", q.getAttribute("id")));
+        config.addRoute("/posts/:id", (q, r) -> q.setAttribute("post_id", getRouteParams(q).getInt("id")));
         RouteHandler handler = config.getRouteHandler("/posts/7");
         assertNotNull("Should retrieve paramed path", handler);
         GET("/posts/7", handler::handleRequest)
                 .andThen((q, r) -> assertEquals(7, q.getAttribute("post_id")));
+    }
+
+    private RouteParams getRouteParams(ServletRequest request) {
+        return (RouteParams) request.getAttribute(Route.ROUTE_PARAMS);
     }
 }
