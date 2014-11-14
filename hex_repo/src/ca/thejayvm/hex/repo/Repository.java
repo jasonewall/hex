@@ -1,10 +1,7 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.Query;
-import ca.thejayvm.jill.Queryable;
+import jill.Queryable;
 
-import java.sql.SQLException;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**

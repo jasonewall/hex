@@ -1,6 +1,6 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.ast.InvalidAstException;
+import jill.ast.InvalidAstException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;

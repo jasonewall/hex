@@ -1,11 +1,10 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.Queryable;
-import ca.thejayvm.jill.ast.InvalidAstException;
+import jill.ast.InvalidAstException;
 
 import java.util.List;
 
-import static ca.thejayvm.jill.QueryLanguage.*;
+import static jill.QueryLanguage.*;
 
 /**
  * Created by jason on 14-10-25.

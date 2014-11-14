@@ -5,7 +5,7 @@ ORM using the API declared in [thejayvm/jill](http://github.com/thejayvm/jill)
 
 Use the `QueryLanguage` defined in JILL.
 
-    import static ca.thejayvm.jill.QueryLangauge.*
+    import static jill.QueryLangauge.*
 
 Instantiate your repo instance
 

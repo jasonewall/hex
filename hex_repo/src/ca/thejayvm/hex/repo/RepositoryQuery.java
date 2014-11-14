@@ -1,11 +1,11 @@
 package ca.thejayvm.hex.repo;
 
-import ca.thejayvm.jill.Query;
-import ca.thejayvm.jill.Queryable;
-import ca.thejayvm.jill.ast.InvalidAstException;
-import ca.thejayvm.jill.ast.Node;
-import ca.thejayvm.jill.ast.Variable;
-import ca.thejayvm.jill.collections.CollectionQuery;
+import jill.Query;
+import jill.Queryable;
+import jill.ast.InvalidAstException;
+import jill.ast.Node;
+import jill.ast.Variable;
+import jill.collections.CollectionQuery;
 import jill.sql.SqlQuery;
 
 import java.lang.reflect.InvocationTargetException;

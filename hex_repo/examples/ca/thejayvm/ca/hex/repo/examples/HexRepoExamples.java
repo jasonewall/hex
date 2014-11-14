@@ -4,7 +4,7 @@ import ca.thejayvm.hex.repo.Person;
 import ca.thejayvm.hex.repo.PersonRepository;
 import ca.thejayvm.hex.repo.Repository;
 
-import static ca.thejayvm.jill.QueryLanguage.*;
+import static jill.QueryLanguage.*;
 
 public class HexRepoExamples {
     public static void main(String[] args) {
