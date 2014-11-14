@@ -1,8 +1,11 @@
 package hex.routing;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import javax.servlet.ServletRequest;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.*;
@@ -11,9 +14,14 @@ import static servlet_mock.HttpMock.*;
  * Created by jason on 14-11-11.
  */
 public class RoutingConfigTest {
+    private RoutingConfig config;
+
+    @Before
+    public void setupRoutingConfig() {
+        this.config = new RoutingConfig();
+    }
     @Test
     public void staticRoutes() {
-        RoutingConfig config = new RoutingConfig();
         config.addRoute("/people", (q, r) -> q.setAttribute("Boring", "Boring"));
         RouteHandler handler = config.getRouteHandler("/people");
         assertNotNull("Should retrieve a static path", handler);
@@ -24,7 +32,6 @@ public class RoutingConfigTest {
 
     @Test
     public void dynamicRouteWithNamedParam() {
-        RoutingConfig config = new RoutingConfig();
         config.addRoute("/posts/:id", (q, r) -> q.setAttribute("post_id", getRouteParams(q).getInt("id")));
         RouteHandler handler = config.getRouteHandler("/posts/7");
         assertNotNull("Should retrieve paramed path", handler);
@@ -35,7 +42,6 @@ public class RoutingConfigTest {
 
     @Test
     public void nestedRouteWithNamedParams() {
-        RoutingConfig config = new RoutingConfig();
         config.addRoute("/posts/:post_id/comments/:id", (q, r) -> {
             RouteParams routeParams = getRouteParams(q);
             q.setAttribute("post_id", routeParams.getInt("post_id"));
@@ -51,10 +57,28 @@ public class RoutingConfigTest {
 
     @Test
     public void stringRouteParams() {
-        RoutingConfig config = new RoutingConfig();
         config.addRoute("/profile/:username", (q, r) -> assertEquals("isaac.newton", getRouteParams(q).getString("username")));
 
         GET("/profile/isaac.newton", config.getRouteHandler("/profile/isaac.newton")::handleRequest);
+    }
+
+    @Test
+    public void shouldNotAllowWeirdCharacters() {
+        RouteHandler handler = (q, r) -> { throw new RuntimeException("Dummy handler did not expect your call."); };
+
+        config.addRoute("/profile/:username", handler);
+        Arrays.asList(
+                "isaac,newton",
+                "marsha+brady"
+        ).forEach((s) -> assertFalse(s, config.hasRoute("/profile/".concat(s))));
+    }
+
+    @Test
+    public void shouldProbablyAllowSEOFriendlyCharacters() {
+        config.addRoute("/article/:article_key", (q,r) -> {});
+        Arrays.asList(
+                "man-lands-on-the-moon"
+        ).forEach((s) -> assertTrue(s, config.hasRoute("/article/".concat(s))));
     }
 
     private RouteParams getRouteParams(ServletRequest request) {

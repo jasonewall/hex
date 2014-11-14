@@ -26,7 +26,7 @@ public class RoutingConfig {
         while(m.find()) {
             route.addParam(m.group(1));
         }
-        route.setPath(Pattern.compile(m.replaceAll("/([\\\\w.]+)")));
+        route.setPath(Pattern.compile(m.replaceAll("/([\\\\w.-]+)")));
         route.setHandler(handler);
         routes.add(route);
     }
