@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.routing;
+package hex.routing;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;

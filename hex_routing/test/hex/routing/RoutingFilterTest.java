@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.routing;
+package hex.routing;
 
 import servlet_mock.HttpMock;
 import org.junit.Before;

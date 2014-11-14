@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.routing;
+package hex.routing;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

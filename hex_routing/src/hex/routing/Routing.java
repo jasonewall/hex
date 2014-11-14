@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.routing;
+package hex.routing;
 
 /**
  * Created by jason on 14-11-11.
