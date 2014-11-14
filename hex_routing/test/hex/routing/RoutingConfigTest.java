@@ -29,7 +29,24 @@ public class RoutingConfigTest {
         RouteHandler handler = config.getRouteHandler("/posts/7");
         assertNotNull("Should retrieve paramed path", handler);
         GET("/posts/7", handler::handleRequest)
-                .andThen((q, r) -> assertEquals(7, q.getAttribute("post_id")));
+                .andThen((q, r) -> assertEquals(7, q.getAttribute("post_id")))
+                ;
+    }
+
+    @Test
+    public void nestedRouteWithNamedParams() {
+        RoutingConfig config = new RoutingConfig();
+        config.addRoute("/posts/:post_id/comments/:id", (q, r) -> {
+            RouteParams routeParams = getRouteParams(q);
+            q.setAttribute("post_id", routeParams.getInt("post_id"));
+            q.setAttribute("comment_id", routeParams.getInt("id"));
+        });
+        RouteHandler handler = config.getRouteHandler("/posts/99/comments/388");
+        assertNotNull("Should retrieve handler", handler);
+        GET("/posts/99/comments/373", handler::handleRequest)
+                .andThen((q, r) -> assertEquals(99, q.getAttribute("post_id")))
+                .andThen((q, r) -> assertEquals(373, q.getAttribute("comment_id")))
+                ;
     }
 
     private RouteParams getRouteParams(ServletRequest request) {
