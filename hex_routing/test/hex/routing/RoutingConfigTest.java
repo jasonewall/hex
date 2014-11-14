@@ -68,8 +68,8 @@ public class RoutingConfigTest {
 
         config.addRoute("/profile/:username", handler);
         Arrays.asList(
-                "isaac,newton",
-                "marsha+brady"
+                "isaac,newton", // no real attachment to either of these being illegal characters
+                "marsha+brady"  // can be moved to the allowed list if desired
         ).forEach((s) -> assertFalse(s, config.hasRoute("/profile/".concat(s))));
     }
 
