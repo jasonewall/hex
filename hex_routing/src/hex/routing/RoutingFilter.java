@@ -29,7 +29,8 @@ public class RoutingFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         if(routingConfig.hasRoute(request.getMethod(), getPath(servletRequest))) {
-            routingConfig.getRouteHandler(getPath(servletRequest)).handleRequest(servletRequest, servletResponse);
+            routingConfig.getRouteHandler(request.getMethod(), getPath(servletRequest))
+                    .handleRequest(servletRequest, servletResponse);
             return;
         }
 

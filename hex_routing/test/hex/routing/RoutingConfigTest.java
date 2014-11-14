@@ -14,6 +14,7 @@ import static servlet_mock.HttpMock.*;
  * Created by jason on 14-11-11.
  */
 public class RoutingConfigTest {
+    final static RouteHandler CALLED = (q, r) -> q.setAttribute("Called", true);
     private RoutingConfig config;
 
     public static final RouteHandler UNEXPECTED = (q, r) -> {
@@ -85,7 +86,13 @@ public class RoutingConfigTest {
         ).forEach((s) -> assertTrue(s, config.hasRoute("/article/".concat(s))));
     }
 
-    private RouteParams getRouteParams(ServletRequest request) {
+    @Test
+    public void shouldDifferentiateBetweenMethods() {
+        config.addRoute(HttpMethod.POST, "/articles", UNEXPECTED);
+        assertTrue("Has POST route", config.hasRoute(HttpMethod.POST, "/articles"));
+    }
+
+    public static RouteParams getRouteParams(ServletRequest request) {
         return (RouteParams) request.getAttribute(Route.ROUTE_PARAMS);
     }
 }

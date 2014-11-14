@@ -6,4 +6,5 @@ package hex.routing;
 public enum HttpMethod {
     GET,
     POST,
+    ;
 }

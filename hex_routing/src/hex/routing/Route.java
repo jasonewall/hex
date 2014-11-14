@@ -26,6 +26,11 @@ public class Route {
         params.put(++paramIndex, paramName);
     }
 
+    public Route(HttpMethod method, RouteHandler handler) {
+        this.method = method;
+        this.handler = handler;
+    }
+
     public void setPath(Pattern pathPattern) {
         this.pathPattern = pathPattern;
     }
@@ -37,10 +42,6 @@ public class Route {
             q.setAttribute(ROUTE_PARAMS, new RouteParams(getParamValues(contextUri)));
             handler.handleRequest(q, r);
         };
-    }
-
-    public void setHandler(RouteHandler handler) {
-        this.handler = handler;
     }
 
     public boolean matches(HttpMethod method, String path) {

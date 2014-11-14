@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
+import static hex.routing.HttpMethod.POST;
+import static hex.routing.RoutingConfigTest.getRouteParams;
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;
 import static servlet_mock.HttpMock.POST;
@@ -22,6 +24,7 @@ import static servlet_mock.HttpMock.POST;
  */
 public class RoutingFilterTest {
     private RoutingFilter filter;
+
     private RoutingConfig routingConfig = new RoutingConfig();
 
     @BeforeClass
@@ -54,16 +57,25 @@ public class RoutingFilterTest {
         routingConfig.addRoute("/articles", RoutingConfigTest.UNEXPECTED);
 
         POST("/articles", doFilter((q, r) -> q.setAttribute("Called", true)))
-                .andThen((q,r) -> assertTrue("Delegated to filter chain", (boolean)q.getAttribute("Called")))
+                .andThen((q, r) -> assertTrue("Delegated to filter chain", (boolean) q.getAttribute("Called")))
                 ;
     }
 
     @Test
     public void filterShouldDelegateToHandler() {
-        routingConfig.addRoute("/books", (q, r) -> q.setAttribute("Called", true));
+        routingConfig.addRoute("/books", RoutingConfigTest.CALLED);
 
         GET("/books", doFilter((q,r) -> fail("Expected filter to handle request.")))
                 .andThen((q,r) -> assertTrue("Filter handled request", (boolean)q.getAttribute("Called")))
+                ;
+    }
+
+    @Test
+    public void filterShouldDelegatePOSTToHandler() {
+        routingConfig.addRoute(POST, "/posts/:id/comments", (q,r) -> q.setAttribute("post_id", getRouteParams(q).getInt("id")));
+
+        POST("/posts/17/comments", doFilter((q,r) -> fail("Expected filter to handle POST request")))
+                .andThen((q,r) -> assertEquals(17, q.getAttribute("post_id")))
                 ;
     }
 
