@@ -42,11 +42,6 @@ public class RoutingFilter implements Filter {
 
     protected String getPath(ServletRequest servletRequest) {
         HttpServletRequest request = ((HttpServletRequest)servletRequest);
-        Pattern p = Pattern.compile(request.getContextPath().concat("(.*)"));
-        Matcher matcher = p.matcher(request.getRequestURI());
-        if(!matcher.matches())
-            throw new IllegalArgumentException("We're not sure how this happened, but the requested URI isn't in your application.");
-
-        return matcher.group(1);
+        return request.getRequestURI().replaceFirst(request.getContextPath(), "");
     }
 }
