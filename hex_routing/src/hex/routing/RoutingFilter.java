@@ -27,7 +27,8 @@ public class RoutingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        if(routingConfig.hasRoute(getPath(servletRequest))) {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if(routingConfig.hasRoute(request.getMethod(), getPath(servletRequest))) {
             routingConfig.getRouteHandler(getPath(servletRequest)).handleRequest(servletRequest, servletResponse);
             return;
         }
@@ -38,6 +39,10 @@ public class RoutingFilter implements Filter {
     @Override
     public void destroy() {
 
+    }
+
+    public void setRoutingConfig(RoutingConfig config) {
+        routingConfig = config;
     }
 
     protected String getPath(ServletRequest servletRequest) {

@@ -20,6 +20,8 @@ public class Route {
 
     private Map<Integer,String> params = new HashMap<>();
 
+    private HttpMethod method = HttpMethod.GET;
+
     public void addParam(String paramName) {
         params.put(++paramIndex, paramName);
     }
@@ -41,8 +43,8 @@ public class Route {
         this.handler = handler;
     }
 
-    public boolean matches(String path) {
-        return pathPattern.matcher(path).matches();
+    public boolean matches(HttpMethod method, String path) {
+        return method == this.method && pathPattern.matcher(path).matches();
     }
 
     private Map<String,String> getParamValues(String path) {

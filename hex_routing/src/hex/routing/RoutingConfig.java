@@ -11,11 +11,19 @@ public class RoutingConfig {
     private List<Route> routes = new ArrayList<>();
 
     public boolean hasRoute(String path) {
-        return findRouteFor(path).isPresent();
+        return hasRoute(HttpMethod.GET, path);
+    }
+
+    public boolean hasRoute(String method, String path) {
+        return hasRoute(HttpMethod.valueOf(method.toUpperCase()), path);
+    }
+
+    public boolean hasRoute(HttpMethod method, String path) {
+        return findRouteFor(method, path).isPresent();
     }
 
     public RouteHandler getRouteHandler(String path) {
-        return findRouteFor(path).map(Route::getHandler).get();
+        return findRouteFor(HttpMethod.GET, path).map(Route::getHandler).get();
     }
 
     private Pattern path_params = Pattern.compile("/:(\\w+)");
@@ -31,7 +39,7 @@ public class RoutingConfig {
         routes.add(route);
     }
 
-    private Optional<Route> findRouteFor(String path) {
-        return routes.stream().filter((r) -> r.matches(path)).findFirst();
+    private Optional<Route> findRouteFor(HttpMethod method, String path) {
+        return routes.stream().filter((r) -> r.matches(method, path)).findFirst();
     }
 }

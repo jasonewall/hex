@@ -18,6 +18,7 @@ public class HttpMock {
 
     public enum Method {
         GET,
+        POST,
     }
 
     public static HttpMock instance() {
@@ -40,8 +41,16 @@ public class HttpMock {
         return instance().get(path, consumer);
     }
 
+    public static Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> POST(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+        return instance().post(path, consumer);
+    }
+
     public Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
         return doRequest(Method.GET, path, consumer);
+    }
+
+    private Chain<BiConsumer<HttpServletRequest, HttpServletResponse>> post(String path, BiConsumer<HttpServletRequest, HttpServletResponse> consumer) {
+        return doRequest(Method.POST, path, consumer);
     }
 
     private Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {

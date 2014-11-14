@@ -16,6 +16,12 @@ import static servlet_mock.HttpMock.*;
 public class RoutingConfigTest {
     private RoutingConfig config;
 
+    public static final RouteHandler UNEXPECTED = (q, r) -> {
+        throw new RuntimeException("Dummy handler did not expect your call.");
+    };
+
+    public static final RouteHandler NULL_HANDLER = (q, r) -> {};
+
     @Before
     public void setupRoutingConfig() {
         this.config = new RoutingConfig();
@@ -64,9 +70,7 @@ public class RoutingConfigTest {
 
     @Test
     public void shouldNotAllowWeirdCharacters() {
-        RouteHandler handler = (q, r) -> { throw new RuntimeException("Dummy handler did not expect your call."); };
-
-        config.addRoute("/profile/:username", handler);
+        config.addRoute("/profile/:username", UNEXPECTED);
         Arrays.asList(
                 "isaac,newton", // no real attachment to either of these being illegal characters
                 "marsha+brady"  // can be moved to the allowed list if desired
@@ -75,7 +79,7 @@ public class RoutingConfigTest {
 
     @Test
     public void shouldProbablyAllowSEOFriendlyCharacters() {
-        config.addRoute("/article/:article_key", (q,r) -> {});
+        config.addRoute("/article/:article_key", NULL_HANDLER);
         Arrays.asList(
                 "man-lands-on-the-moon"
         ).forEach((s) -> assertTrue(s, config.hasRoute("/article/".concat(s))));
