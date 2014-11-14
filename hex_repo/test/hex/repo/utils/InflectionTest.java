@@ -1,9 +1,9 @@
-package ca.thejayvm.hex.repo.utils;
+package hex.repo.utils;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static ca.thejayvm.hex.repo.utils.Inflection.*;
+import static hex.repo.utils.Inflection.*;
 
 /**
  * Created by jason on 14-11-01.

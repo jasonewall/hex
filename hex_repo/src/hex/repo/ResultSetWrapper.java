@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.repo;
+package hex.repo;
 
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;

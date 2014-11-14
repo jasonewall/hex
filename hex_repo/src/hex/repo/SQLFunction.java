@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.repo;
+package hex.repo;
 
 /**
  * Created by jason on 14-10-29.

@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.repo;
+package hex.repo;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-import static ca.thejayvm.hex.repo.utils.Inflection.*;
+import static hex.repo.utils.Inflection.*;
 
 /**
  * Created by jason on 14-10-29.

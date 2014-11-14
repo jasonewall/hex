@@ -1,8 +1,8 @@
-package ca.thejayvm.ca.hex.repo.examples;
+package hex.repo.examples;
 
-import ca.thejayvm.hex.repo.Person;
-import ca.thejayvm.hex.repo.PersonRepository;
-import ca.thejayvm.hex.repo.Repository;
+import hex.repo.Person;
+import hex.repo.PersonRepository;
+import hex.repo.Repository;
 
 import static jill.QueryLanguage.*;
 

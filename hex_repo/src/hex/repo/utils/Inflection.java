@@ -1,4 +1,4 @@
-package ca.thejayvm.hex.repo.utils;
+package hex.repo.utils;
 
 import java.util.Arrays;
 import java.util.function.Function;
