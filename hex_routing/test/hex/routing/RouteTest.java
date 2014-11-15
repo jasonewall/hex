@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import static servlet_mock.HttpMock.*;
 
-
 /**
  * Created by jason on 14-11-14.
  */
