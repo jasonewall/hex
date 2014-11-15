@@ -45,9 +45,7 @@ public class HexRepoMain {
 
         if(people.size() != 2) System.exit(5);
 
-        people.forEach((p) -> {
-            System.out.println(String.format("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()));
-        });
+        people.forEach((p) -> System.out.printf("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()).println());
 
         q = (RepositoryQuery<Person>) q.where(field(Person::getFirstName, is("Bryce")));
 
