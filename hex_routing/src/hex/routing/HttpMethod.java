@@ -9,5 +9,5 @@ public enum HttpMethod {
     GET,
     POST,
     ;
-    public static Predicate<HttpMethod> ANY = m -> true;
+    public static final Predicate<HttpMethod> ANY = m -> true;
 }
