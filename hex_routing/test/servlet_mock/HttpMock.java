@@ -522,9 +522,10 @@ class MockHttpServletResponse implements HttpServletResponse {
 
     }
 
+    private int status = 200;
     @Override
-    public void setStatus(int i) {
-
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     @Override @Deprecated
@@ -534,7 +535,7 @@ class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public int getStatus() {
-        return 0;
+        return status;
     }
 
     @Override
