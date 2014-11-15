@@ -37,17 +37,17 @@ public class ControllerAction implements RouteHandler {
             if(getAction().isPresent()) {
                 action.get().invoke(controller);
             } else {
-                respondWith404(servletResponse);
+                renderActionNotFound(servletResponse);
             }
         } catch (InvocationTargetException e) {
             e.getCause().printStackTrace();
         } catch (IllegalAccessException e) {
-            respondWith404(servletResponse);
+            renderActionNotFound(servletResponse);
         }
 
     }
 
-    private void respondWith404(ServletResponse servletResponse) {
+    private void renderActionNotFound(ServletResponse servletResponse) {
         ((HttpServletResponse) servletResponse).setStatus(404);
     }
 
