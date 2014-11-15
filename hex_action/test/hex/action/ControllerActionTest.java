@@ -28,6 +28,9 @@ public class ControllerActionTest {
             viewContext.put("CALLED", true);
         }
 
+        public void errorInAction() {
+            throw new RuntimeException("What happens when our action goes bad?");
+        }
         private void tryPrivateAction() {
             throw new UnsupportedOperationException("Just kidding, can't get here!");
         }
@@ -51,6 +54,13 @@ public class ControllerActionTest {
         assertNotFound();
     }
 
+    @Test
+    public void shouldPropegateActionExceptionsWithAServletException() {
+        initAction("errorInAction");
+        GET("/theRequestPath", this::handleRequest);
+        assert500();
+    }
+
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
@@ -67,6 +77,10 @@ public class ControllerActionTest {
 
     private void assertNotFound() {
         assertEquals(404, ((HttpServletResponse) servletResponse).getStatus());
+    }
+
+    private void assert500() {
+        assertNotNull(servletException);
     }
 
     private ViewContext getViewContext() {

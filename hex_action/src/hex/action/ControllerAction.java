@@ -40,7 +40,7 @@ public class ControllerAction implements RouteHandler {
                 renderActionNotFound(servletResponse);
             }
         } catch (InvocationTargetException e) {
-            e.getCause().printStackTrace();
+            throw new ServletException(e.getCause());
         } catch (IllegalAccessException e) {
             renderActionNotFound(servletResponse);
         }
