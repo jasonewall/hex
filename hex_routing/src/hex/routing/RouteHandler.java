@@ -1,5 +1,6 @@
 package hex.routing;
 
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
@@ -8,5 +9,5 @@ import javax.servlet.ServletResponse;
  */
 @FunctionalInterface
 public interface RouteHandler {
-    public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse);
+    public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException;
 }

@@ -37,23 +37,23 @@ public class HttpMock {
         this.contextPath = contextPath;
     }
 
-    public static Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> GET(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
-        return instance().get(path, consumer);
+    public static Chain<HttpServletRequestHandler> GET(String path, HttpServletRequestHandler handler) {
+        return instance().get(path, handler);
     }
 
-    public static Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> POST(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
-        return instance().post(path, consumer);
+    public static Chain<HttpServletRequestHandler> POST(String path, HttpServletRequestHandler handler) {
+        return instance().post(path, handler);
     }
 
-    public Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> get(String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
-        return doRequest(Method.GET, path, consumer);
+    public Chain<HttpServletRequestHandler> get(String path, HttpServletRequestHandler handler) {
+        return doRequest(Method.GET, path, handler);
     }
 
-    private Chain<BiConsumer<HttpServletRequest, HttpServletResponse>> post(String path, BiConsumer<HttpServletRequest, HttpServletResponse> consumer) {
-        return doRequest(Method.POST, path, consumer);
+    private Chain<HttpServletRequestHandler> post(String path, HttpServletRequestHandler handler) {
+        return doRequest(Method.POST, path, handler);
     }
 
-    private Chain<BiConsumer<HttpServletRequest,HttpServletResponse>> doRequest(Method method, String path, BiConsumer<HttpServletRequest,HttpServletResponse> consumer) {
+    private Chain<HttpServletRequestHandler> doRequest(Method method, String path, HttpServletRequestHandler handler) {
         HttpServletRequest request = new MockHttpServletRequest() {
             public String getMethod() {
                 return method.toString();
@@ -76,7 +76,7 @@ public class HttpMock {
 
         HttpServletResponse response = new MockHttpServletResponse() {};
 
-        consumer.accept(request, response);
+        handler.accept(request, response);
 
         return (c) -> c.accept(request, response);
     }

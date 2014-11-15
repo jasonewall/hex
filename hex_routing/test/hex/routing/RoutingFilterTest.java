@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import servlet_mock.HttpMock;
+import servlet_mock.HttpServletRequestHandler;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -79,7 +80,7 @@ public class RoutingFilterTest {
                 ;
     }
 
-    private BiConsumer<HttpServletRequest,HttpServletResponse> doFilter(FilterChain filterChain) {
+    private HttpServletRequestHandler doFilter(FilterChain filterChain) {
         return (q, r) -> {
             try {
                 filter.doFilter(q, r, filterChain);
