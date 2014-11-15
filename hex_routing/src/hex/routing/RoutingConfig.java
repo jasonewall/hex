@@ -38,20 +38,12 @@ public class RoutingConfig {
         return findRouteFor(method, path).map(Route::getHandler).get();
     }
 
-    private Pattern path_params = Pattern.compile("/:(\\w+)");
-
     public void addRoute(String path, RouteHandler handler) {
         addRoute(GET, path, handler);
     }
 
     public void addRoute(HttpMethod method, String path, RouteHandler handler) {
-        Route route = new Route(method, handler);
-        Matcher m = path_params.matcher(path);
-        while(m.find()) {
-            route.addParam(m.group(1));
-        }
-        route.setPath(Pattern.compile(m.replaceAll("/([\\\\w.-]+)")));
-        routes.add(route);
+        routes.add(new Route(method, path, handler));
     }
 
     private Optional<Route> findRouteFor(HttpMethod method, String path) {

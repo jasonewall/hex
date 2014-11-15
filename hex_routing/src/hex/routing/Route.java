@@ -42,6 +42,16 @@ public class Route {
         this.handler = handler;
     }
 
+    public Route(HttpMethod method, String path, RouteHandler handler) {
+        this(method, handler);
+        setPath(path);
+    }
+
+    public Route(Predicate<HttpMethod> methodPredicate, String path, RouteHandler handler) {
+        this(methodPredicate, handler);
+        setPath(path);
+    }
+
     public void setPath(Pattern pathPattern) {
         this.pathPattern = pathPattern;
     }
