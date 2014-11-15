@@ -3,6 +3,7 @@ package hex.routing;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,14 +21,22 @@ public class Route {
 
     private Map<Integer,String> params = new HashMap<>();
 
-    private HttpMethod method = HttpMethod.GET;
+    private Predicate<HttpMethod> methodPredicate = (m) -> m == HttpMethod.GET;
 
     public void addParam(String paramName) {
         params.put(++paramIndex, paramName);
     }
 
+    public Route(RouteHandler handler) {
+        this(HttpMethod.ANY, handler);
+    }
+
     public Route(HttpMethod method, RouteHandler handler) {
-        this.method = method;
+        this(m -> m == method, handler);
+    }
+
+    public Route(Predicate<HttpMethod> methodPredicate, RouteHandler handler) {
+        this.methodPredicate = methodPredicate;
         this.handler = handler;
     }
 
@@ -45,7 +54,7 @@ public class Route {
     }
 
     public boolean matches(HttpMethod method, String path) {
-        return method == this.method && pathPattern.matcher(path).matches();
+        return methodPredicate.test(method) && pathPattern.matcher(path).matches();
     }
 
     private Map<String,String> getParamValues(String path) {
