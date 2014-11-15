@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -17,18 +18,16 @@ import java.util.function.Predicate;
  * Created by jason on 14-11-05.
  */
 public abstract class AbstractRepository<T> implements Repository<T>, Queryable<T> {
-    private T record_not_found = null;
-
     public abstract Metadata<T> get_metadata();
 
     public Queryable<T> where(Predicate<T> predicate) {
         return query().where(predicate);
     }
 
-    public T find(int id) {
-        List<T> query = query().where(new Condition<>(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id))).toList();
-        if(query.isEmpty()) return record_not_found;
-        return query.get(0);
+    public Optional<T> find(int id) {
+        return query().where(new Condition<>(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id))).toList()
+                .stream().findFirst()
+                ;
     }
 
     @Override
