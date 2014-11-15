@@ -8,12 +8,8 @@ import servlet_mock.HttpServletRequestHandler;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
-import static hex.routing.HttpMethod.POST;
 import static hex.routing.RoutingConfigTest.getRouteParams;
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;

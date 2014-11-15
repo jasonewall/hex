@@ -3,7 +3,6 @@ package hex.action;
 import hex.action.examples.PostsController;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 

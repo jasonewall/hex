@@ -3,8 +3,6 @@ package hex.routing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static hex.routing.HttpMethod.GET;
 

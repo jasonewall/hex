@@ -1,13 +1,12 @@
 package hex.action;
 
-import org.junit.After;
 import org.junit.Test;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-import static servlet_mock.HttpMock.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+import static servlet_mock.HttpMock.GET;
 
 /**
  * Created by jason on 14-11-15.
