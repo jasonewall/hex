@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 public class Route {
     public static final String ROUTE_PARAMS = "hex.hex_routing.Route.ROUTE_PARAMS";
 
+    private static final Pattern PATH_PARAM_DETECTOR = Pattern.compile("/:(\\w+)");
+
     private Pattern pathPattern;
 
     private RouteHandler handler;
@@ -42,6 +44,14 @@ public class Route {
 
     public void setPath(Pattern pathPattern) {
         this.pathPattern = pathPattern;
+    }
+
+    public void setPath(String path) {
+        Matcher m = PATH_PARAM_DETECTOR.matcher(path);
+        while(m.find()) {
+            addParam(m.group(1));
+        }
+        setPath(Pattern.compile(m.replaceAll("/([\\\\w.-]+)")));
     }
 
     public RouteHandler getHandler() {
