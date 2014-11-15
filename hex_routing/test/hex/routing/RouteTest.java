@@ -17,5 +17,6 @@ public class RouteTest {
 
         assertTrue("GET", route.matches(HttpMethod.GET, "/posts"));
         assertTrue("POST", route.matches(HttpMethod.POST, "/posts"));
+        assertFalse("Wrong path", route.matches(HttpMethod.POST, "/comments"));
     }
 }
