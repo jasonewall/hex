@@ -25,10 +25,6 @@ public class Route {
 
     private Predicate<HttpMethod> methodPredicate = (m) -> m == HttpMethod.GET;
 
-    public void addParam(String paramName) {
-        params.put(++paramIndex, paramName);
-    }
-
     public Route(RouteHandler handler) {
         this(HttpMethod.ANY, handler);
     }
@@ -75,6 +71,10 @@ public class Route {
 
     public boolean matches(HttpMethod method, String path) {
         return methodPredicate.test(method) && pathPattern.matcher(path).matches();
+    }
+
+    private void addParam(String paramName) {
+        params.put(++paramIndex, paramName);
     }
 
     private Map<String,String> getParamValues(String path) {
