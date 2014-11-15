@@ -226,7 +226,7 @@ class MockHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
-    @Override
+    @Override @Deprecated
     public String getRealPath(String s) {
         return null;
     }
@@ -411,7 +411,7 @@ class MockHttpServletRequest implements HttpServletRequest {
         return false;
     }
 
-    @Override
+    @Override @Deprecated
     public boolean isRequestedSessionIdFromUrl() {
         return false;
     }
@@ -468,12 +468,12 @@ class MockHttpServletResponse implements HttpServletResponse {
         return null;
     }
 
-    @Override
+    @Override @Deprecated
     public String encodeUrl(String s) {
         return null;
     }
 
-    @Override
+    @Override @Deprecated
     public String encodeRedirectUrl(String s) {
         return null;
     }
@@ -528,7 +528,7 @@ class MockHttpServletResponse implements HttpServletResponse {
 
     }
 
-    @Override
+    @Override @Deprecated
     public void setStatus(int i, String s) {
 
     }
