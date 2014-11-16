@@ -39,11 +39,7 @@ public class ControllerAction implements RouteHandler {
         servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
         try {
             if(getAction().isPresent()) {
-                if(action.get().getParameterCount() == 0) {
-                    action.get().invoke(controller);
-                } else {
-                    invokeWithParameters(action.get(), controller, (RouteParams)servletRequest.getAttribute(Route.ROUTE_PARAMS));
-                }
+                invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
             } else {
                 renderActionNotFound(servletResponse, String.format("Action method (%s) not found in Controller(%s)", actionName, controller.getClass().getSimpleName()));
             }
@@ -55,7 +51,7 @@ public class ControllerAction implements RouteHandler {
 
     }
 
-    private void invokeWithParameters(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
+    private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
         Object[] params = Stream.of(method.getParameters())
                 .map(p -> routeParams.get(p.getType(), p.getAnnotation(RouteParam.class).value()))
                 .toArray();
