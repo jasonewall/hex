@@ -35,7 +35,7 @@ public class ControllerActionTest {
     @SuppressWarnings("UnusedDeclaration")
     class ControllerActionTestController extends Controller {
         public void setCalled() {
-            viewContext.put("CALLED", true);
+            view.put("CALLED", true);
         }
 
         public void errorInAction() {
@@ -46,7 +46,7 @@ public class ControllerActionTest {
         }
 
         public void withRouteParams(@RouteParam("id") int id) {
-            viewContext.put("id", id);
+            view.put("id", id);
         }
     }
 

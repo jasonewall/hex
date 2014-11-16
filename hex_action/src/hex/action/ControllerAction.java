@@ -39,8 +39,7 @@ public class ControllerAction implements RouteHandler {
     @Override
     public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException {
         Controller controller = supplier.get();
-        controller.viewContext = new ViewContext();
-        servletRequest.setAttribute(VIEW_CONTEXT, controller.viewContext);
+        servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
         try {
             if(getAction().isPresent()) {
                 if(action.get().getParameterCount() == 0) {
