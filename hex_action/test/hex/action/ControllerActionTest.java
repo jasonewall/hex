@@ -3,6 +3,7 @@ package hex.action;
 import hex.action.annotations.RouteParam;
 import hex.routing.Route;
 import hex.routing.RouteParams;
+import org.junit.After;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -42,6 +43,7 @@ public class ControllerActionTest {
         public void errorInAction() {
             throw new RuntimeException("What happens when our action goes bad?");
         }
+
         private void tryPrivateAction() {
             throw new UnsupportedOperationException("Just kidding, can't get here!");
         }
@@ -53,6 +55,15 @@ public class ControllerActionTest {
         public void misMatchedParamTypes(@RouteParam("id") int id) {
             fail("Expected the invocation to fail because if type mismatches.");
         }
+
+        public void missingRouteParamAnnotation(String username) {
+            fail("Expected the invocation to fail because we don't know what route param to use.");
+        }
+    }
+
+    @After
+    public void assertSuccess() {
+        assertNull(servletException);
     }
 
     private void initAction(String actionName) {
@@ -103,6 +114,14 @@ public class ControllerActionTest {
         assertNotFound();
     }
 
+    @Test
+    public void shouldBeNotFoundWhenParamAnnoationMissing() {
+        initAction("missingRouteParamAnnotation");
+        initRouteParams(p -> p.put("username", "a.einstein"));
+        GET("/profile/a.einstein", this::handleRequest);
+        assertNotFound();
+    }
+
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
@@ -126,6 +145,7 @@ public class ControllerActionTest {
 
     private void assert500() {
         assertNotNull(servletException);
+        servletException = null;
     }
 
     private ViewContext getViewContext() {

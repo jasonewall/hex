@@ -12,8 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -51,6 +53,13 @@ public class ControllerAction implements RouteHandler {
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
+        if(Stream.of(method.getParameters()).anyMatch(p -> !p.isAnnotationPresent(RouteParam.class))) {
+            throw new IllegalAccessException(String.format("Missing route parameter annotation for action method (%s) arguments: %s",
+                    actionName,
+                    Stream.of(method.getParameters()).filter(p -> !p.isAnnotationPresent(RouteParam.class)).map(Parameter::getName)
+                    .collect(Collectors.joining(", "))
+                    ));
+        }
         Object[] params = Stream.of(method.getParameters())
                 .map(p -> routeParams.get(p.getType(), p.getAnnotation(RouteParam.class).value()))
                 .toArray();
