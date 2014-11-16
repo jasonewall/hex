@@ -49,6 +49,10 @@ public class ControllerActionTest {
         public void withRouteParams(@RouteParam("id") int id) {
             view.put("id", id);
         }
+
+        public void misMatchedParamTypes(@RouteParam("id") int id) {
+            fail("Expected the invocation to fail because if type mismatches.");
+        }
     }
 
     private void initAction(String actionName) {
@@ -89,6 +93,14 @@ public class ControllerActionTest {
         GET("/theRequestPath", this::handleRequest)
                 .andThen((q,r) -> assertEquals(8, getViewContext().getInt("id")))
                 ;
+    }
+
+    @Test
+    public void shouldBeSmartAboutTypeMismatchesInRouteParams() {
+        initAction("misMatchedParamTypes");
+        initRouteParams(p -> p.put("id", "neil.dt"));
+        GET("/profile/neil.dt", this::handleRequest);
+        assertNotFound();
     }
 
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {

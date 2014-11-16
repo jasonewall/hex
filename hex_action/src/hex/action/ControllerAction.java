@@ -45,10 +45,9 @@ public class ControllerAction implements RouteHandler {
             }
         } catch (InvocationTargetException e) {
             throw new ServletException(e.getCause());
-        } catch (IllegalAccessException e) {
+        } catch (IllegalAccessException | IllegalArgumentException e) {
             renderActionNotFound(servletResponse, e.getMessage());
         }
-
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {

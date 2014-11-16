@@ -13,7 +13,7 @@ public class RouteParams {
         this.params = params;
     }
 
-    public Object get(Class<?> type, String name) {
+    public Object get(Class<?> type, String name) throws IllegalArgumentException {
         if(type == int.class || type == Integer.class) {
             return getInt(name);
         } else {
@@ -21,8 +21,12 @@ public class RouteParams {
         }
     }
 
-    public int getInt(String paramName) {
-        return Integer.parseInt(params.get(paramName), 10);
+    public int getInt(String paramName) throws IllegalArgumentException {
+        try {
+            return Integer.parseInt(params.get(paramName), 10);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
+        }
     }
 
     public String getString(String paramName) {
