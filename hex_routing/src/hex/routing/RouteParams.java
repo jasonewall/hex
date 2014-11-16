@@ -9,8 +9,16 @@ import java.util.Map;
 public class RouteParams {
     private Map<String,String> params = new HashMap<>();
 
-    protected RouteParams(Map<String,String> params) {
+    public RouteParams(Map<String,String> params) {
         this.params = params;
+    }
+
+    public Object get(Class<?> type, String name) {
+        if(type == int.class || type == Integer.class) {
+            return getInt(name);
+        } else {
+            return getString(name);
+        }
     }
 
     public int getInt(String paramName) {
