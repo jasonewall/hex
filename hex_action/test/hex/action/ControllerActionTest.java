@@ -10,6 +10,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -98,6 +99,8 @@ public class ControllerActionTest {
             action.handleRequest(servletRequest, servletResponse);
         } catch (ServletException e) {
             this.servletException = e;
+        } catch (IOException e) {
+            e.printStackTrace(); // basically shouldn't happen in test world
         }
     }
 

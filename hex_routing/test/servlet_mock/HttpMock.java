@@ -478,8 +478,8 @@ class MockHttpServletResponse implements HttpServletResponse {
     }
 
     @Override
-    public void sendError(int i, String s) throws IOException {
-
+    public void sendError(int status, String s) throws IOException {
+        this.status = status;
     }
 
     @Override

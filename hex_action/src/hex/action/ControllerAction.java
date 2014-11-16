@@ -9,15 +9,11 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.annotation.Annotation;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -36,8 +32,9 @@ public class ControllerAction implements RouteHandler {
         this.supplier = supplier;
         this.actionName = actionName;
     }
+
     @Override
-    public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException {
+    public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         Controller controller = supplier.get();
         servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
         try {
@@ -48,12 +45,12 @@ public class ControllerAction implements RouteHandler {
                     invokeWithParameters(action.get(), controller, (RouteParams)servletRequest.getAttribute(Route.ROUTE_PARAMS));
                 }
             } else {
-                renderActionNotFound(servletResponse);
+                renderActionNotFound(servletResponse, String.format("Action method (%s) not found in Controller(%s)", actionName, controller.getClass().getSimpleName()));
             }
         } catch (InvocationTargetException e) {
             throw new ServletException(e.getCause());
         } catch (IllegalAccessException e) {
-            renderActionNotFound(servletResponse);
+            renderActionNotFound(servletResponse, e.getMessage());
         }
 
     }
@@ -65,8 +62,8 @@ public class ControllerAction implements RouteHandler {
         method.invoke(controller, params);
     }
 
-    private void renderActionNotFound(ServletResponse servletResponse) {
-        ((HttpServletResponse) servletResponse).setStatus(404);
+    private void renderActionNotFound(ServletResponse servletResponse, String message) throws IOException {
+        ((HttpServletResponse) servletResponse).sendError(404, message);
     }
 
     private Optional<Method> getAction() {
