@@ -44,6 +44,10 @@ public class RoutingConfig {
         routes.add(new Route(method, path, handler));
     }
 
+    public void addRoute(Route route) {
+        routes.add(route);
+    }
+
     private Optional<Route> findRouteFor(HttpMethod method, String path) {
         return routes.stream().filter((r) -> r.matches(method, path)).findFirst();
     }

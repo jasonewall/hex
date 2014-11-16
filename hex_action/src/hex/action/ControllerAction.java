@@ -8,6 +8,7 @@ import hex.routing.RouteParams;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +39,7 @@ public class ControllerAction implements RouteHandler {
     @Override
     public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
         Controller controller = supplier.get();
-        servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
+        prepareController(controller, servletRequest, servletResponse);
         try {
             if(getAction().isPresent()) {
                 invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
@@ -52,9 +53,15 @@ public class ControllerAction implements RouteHandler {
         }
     }
 
+    public void prepareController(Controller controller, ServletRequest servletRequest, ServletResponse servletResponse) {
+        controller.request = (HttpServletRequest)servletRequest;
+        controller.response = (HttpServletResponse)servletResponse;
+    }
+
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
         if(Stream.of(method.getParameters()).anyMatch(p -> !p.isAnnotationPresent(RouteParam.class))) {
-            throw new IllegalAccessException(String.format("Missing route parameter annotation for action method (%s) arguments: %s",
+            throw new IllegalAccessException(String.format("Missing route parameter annotation in %s#%s for arguments: %s",
+                    controller.getClass().getSimpleName(),
                     actionName,
                     Stream.of(method.getParameters()).filter(p -> !p.isAnnotationPresent(RouteParam.class)).map(Parameter::getName)
                     .collect(Collectors.joining(", "))
