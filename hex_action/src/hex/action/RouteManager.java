@@ -17,6 +17,10 @@ public class RouteManager {
         return definedRoutes;
     }
 
+    public RouteManager() {
+        defineRoutes();
+    }
+
     public void defineRoutes() {
 
     }
