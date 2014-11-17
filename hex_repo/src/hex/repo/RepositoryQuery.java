@@ -1,10 +1,10 @@
 package hex.repo;
 
-import jill.Query;
 import jill.Queryable;
 import jill.ast.InvalidAstException;
 import jill.ast.Node;
 import jill.ast.Variable;
+import jill.ast.predicates.NullPredicate;
 import jill.collections.CollectionQuery;
 import jill.sql.SqlQuery;
 
@@ -26,9 +26,9 @@ public class RepositoryQuery<T> implements Queryable<T> {
 
     private final AbstractRepository<T> repository;
 
-    private Query<T> query = new Query<>();
-
     private Node[] where;
+
+    private Predicate<T> predicate = new NullPredicate<>();
 
     private List<Exception> exceptions = new ArrayList<>();
 
@@ -40,7 +40,6 @@ public class RepositoryQuery<T> implements Queryable<T> {
         return repository;
     }
 
-    @Override
     public List<T> toList() {
         String sql;
         try {
@@ -73,10 +72,10 @@ public class RepositoryQuery<T> implements Queryable<T> {
     @Override
     public Queryable<T> where(Predicate<T> predicate) {
         RepositoryQuery<T> q = duplicate();
-        q.query = query.where(predicate);
-        if(q.query.getPredicate() != null && q.query.getPredicate() instanceof Node) {
+        q.predicate = this.predicate.and(predicate);
+        if(q.predicate instanceof Node) {
             try {
-                q.where = ((Node) q.query.getPredicate()).toTree();
+                q.where = ((Node) q.predicate).toTree();
                 return q;
             } catch (InvalidAstException e) {
                 // ignored
@@ -102,7 +101,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
 
     private RepositoryQuery<T> duplicate() {
         RepositoryQuery<T> dup = new RepositoryQuery<>(this.repository);
-        dup.query = query;
+        dup.predicate = predicate;
         dup.where = where;
         return dup;
     }
