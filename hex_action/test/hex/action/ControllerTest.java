@@ -4,6 +4,7 @@ import hex.action.examples.PostsController;
 import org.junit.Before;
 import org.junit.Test;
 import servlet_mock.HttpMock;
+import servlet_mock.MockHttpServletRequest;
 import servlet_mock.MockHttpServletResponse;
 
 import static org.junit.Assert.*;
@@ -30,11 +31,22 @@ public class ControllerTest {
         assertContent("This too shall pass.\n");
     }
 
+    @Test
+    public void renderPageShouldForwardToSomethingNew() {
+        controller.renderPage("blogs_list.jsp");
+        assertContentType("text/html");
+        assertRenderedPage("blogs_list.jsp");
+    }
+
     private void assertContentType(String contentType) {
         assertEquals(contentType, controller.response.getContentType());
     }
 
     private void assertContent(String content) {
         assertEquals(content, ((MockHttpServletResponse) controller.response).getOutput());
+    }
+
+    private void assertRenderedPage(String page) {
+        assertEquals(page, ((MockHttpServletRequest)controller.request).getRenderedPage());
     }
 }

@@ -150,9 +150,26 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return false;
     }
 
+    private String renderedPage;
+
+    public String getRenderedPage() {
+        return renderedPage;
+    }
+
     @Override
-    public RequestDispatcher getRequestDispatcher(String s) {
-        return null;
+    public RequestDispatcher getRequestDispatcher(String path) {
+        return new RequestDispatcher() {
+            @Override
+            public void forward(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                renderedPage = path;
+                servletResponse.setContentType("text/html");
+            }
+
+            @Override
+            public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+                throw new UnsupportedOperationException("RequestDispatcher#include not implemented for servlet_mock");
+            }
+        };
     }
 
     @Override @Deprecated
