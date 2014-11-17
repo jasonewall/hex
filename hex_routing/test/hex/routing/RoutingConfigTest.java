@@ -117,6 +117,13 @@ public class RoutingConfigTest {
     }
 
     @Test
+    public void shouldAllowTrailingSlashesInRoutePattern() {
+        config.addRoute("/profiles/:username/", CALLED);
+        assertTrue("Concrete without", config.hasRoute("/profiles/socrates"));
+        assertTrue("Concrete with", config.hasRoute("/profiles/socrates/"));
+    }
+
+    @Test
     public void shouldDifferentiateBetweenMethods() {
         config.addRoute(HttpMethod.POST, "/articles", UNEXPECTED);
         assertTrue("Has POST route", config.hasRoute(HttpMethod.POST, "/articles"));
