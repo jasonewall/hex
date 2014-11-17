@@ -70,7 +70,7 @@ public class RepositoryQuery<T> implements Queryable<T> {
     }
 
     @Override
-    public Queryable<T> where(Predicate<T> predicate) {
+    public Queryable<T> where(Predicate<? super T> predicate) {
         RepositoryQuery<T> q = duplicate();
         q.predicate = this.predicate.and(predicate);
         if(q.predicate instanceof Node) {

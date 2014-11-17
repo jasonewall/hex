@@ -11,5 +11,5 @@ import java.util.function.Predicate;
 public interface Repository<T> extends Queryable<T> {
     public Optional<T> find(int id);
 
-    public Queryable<T> where(Predicate<T> predicate);
+    public Queryable<T> where(Predicate<? super T> predicate);
 }

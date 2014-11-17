@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 public abstract class AbstractRepository<T> implements Repository<T>, Queryable<T> {
     public abstract Metadata<T> get_metadata();
 
-    public Queryable<T> where(Predicate<T> predicate) {
+    public Queryable<T> where(Predicate<? super T> predicate) {
         return query().where(predicate);
     }
 
