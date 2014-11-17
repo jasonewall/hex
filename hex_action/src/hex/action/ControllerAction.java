@@ -51,6 +51,12 @@ public class ControllerAction implements RouteHandler {
             throw new ServletException(e.getCause());
         } catch (IllegalAccessException | IllegalArgumentException e) {
             renderActionNotFound(servletResponse, e.getMessage());
+        } catch (ActionAbortedException e) {
+            if(e.getServletExceptionCause().isPresent()) {
+                throw e.getServletExceptionCause().get();
+            } else {
+                throw e.getIOExceptionCause().get();
+            }
         }
     }
 

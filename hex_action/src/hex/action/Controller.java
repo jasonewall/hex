@@ -18,29 +18,26 @@ public class Controller {
 
     protected HttpServletResponse response;
 
-    protected Optional<IOException> ioException = Optional.empty();
-
-    private Optional<ServletException> servletException = Optional.empty();
-
-    protected void render(String text) {
+    protected void renderText(String text) {
         try {
             response.setContentType("text/plain");
             PrintWriter writer = response.getWriter();
             writer.println(text);
             writer.flush();
         } catch (IOException e) {
-            ioException = Optional.of(e);
+            throw new ActionAbortedException(e);
         }
     }
 
     protected void renderPage(String pagePath) {
+        //noinspection TryWithIdenticalCatches
         try {
             RequestDispatcher dispatcher = request.getRequestDispatcher(pagePath);
             dispatcher.forward(request, response);
         } catch (ServletException e) {
-            servletException = Optional.of(e);
-        } catch (IOException e) {
-            ioException = Optional.of(e);
+            throw new ActionAbortedException(e);
+        } catch (IOException io) {
+            throw new ActionAbortedException(io);
         }
     }
 }
