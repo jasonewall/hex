@@ -1,13 +1,12 @@
 package hex.action;
 
 import hex.action.examples.PostsController;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import servlet_mock.HttpMock;
 import servlet_mock.MockHttpServletResponse;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by jason on 14-11-16.

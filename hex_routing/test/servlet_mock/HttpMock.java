@@ -1,10 +1,7 @@
 package servlet_mock;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
-import java.io.*;
-import java.security.Principal;
-import java.util.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by jason on 14-11-11.
