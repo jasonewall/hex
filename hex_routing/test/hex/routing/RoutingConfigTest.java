@@ -110,6 +110,13 @@ public class RoutingConfigTest {
     }
 
     @Test
+    public void shouldAllowTrailingSlashes() {
+        config.addRoute("/articles/:id", CALLED);
+        GET("/articles/88/", config.getRouteHandler("/articles/88/")::handleRequest)
+                .andThen((q,r) -> assertTrue("Called", (boolean)q.getAttribute("Called")));
+    }
+
+    @Test
     public void shouldDifferentiateBetweenMethods() {
         config.addRoute(HttpMethod.POST, "/articles", UNEXPECTED);
         assertTrue("Has POST route", config.hasRoute(HttpMethod.POST, "/articles"));
