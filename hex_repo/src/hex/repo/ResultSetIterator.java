@@ -1,7 +1,5 @@
 package hex.repo;
 
-import jill.ast.InvalidAstException;
-
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,7 +10,7 @@ import java.util.Iterator;
  * Created by jason on 14-11-02.
  */
 public class ResultSetIterator<T> implements Iterator<T> {
-    private final RepositoryQuery<T> query;
+    private final AbstractRepository<T> repository;
 
     private Connection connection;
 
@@ -22,8 +20,11 @@ public class ResultSetIterator<T> implements Iterator<T> {
 
     private boolean hasNext;
 
-    public ResultSetIterator(RepositoryQuery<T> query) {
-        this.query = query;
+    private String sql;
+
+    public ResultSetIterator(AbstractRepository<T> repository, String sql) {
+        this.repository = repository;
+        this.sql = sql;
     }
 
     @Override
@@ -35,12 +36,11 @@ public class ResultSetIterator<T> implements Iterator<T> {
     public T next() {
         return withResults((rs) -> {
             try {
-                T result = query.getRepository().get_metadata().mapRecord(rs);
+                T result = repository.get_metadata().mapRecord(rs);
                 hasNext = rs.next();
                 return result;
             } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
                 close();
-                query.getExceptions().add(e);
             }
             return null;
         });
@@ -51,7 +51,7 @@ public class ResultSetIterator<T> implements Iterator<T> {
             if(this.resultSet == null) {
                 this.connection = ConnectionManager.getConnection();
                 this.stmt = connection.createStatement();
-                this.resultSet = new ResultSetWrapper(stmt.executeQuery(query.toSql()));
+                this.resultSet = new ResultSetWrapper(stmt.executeQuery(sql));
                 this.hasNext = this.resultSet.next();
             }
 
@@ -60,8 +60,7 @@ public class ResultSetIterator<T> implements Iterator<T> {
                 close();
             }
             return result;
-        } catch (SQLException | InvalidAstException e) {
-            this.query.getExceptions().add(e);
+        } catch (SQLException e) {
             close();
         }
         return null;
@@ -78,7 +77,7 @@ public class ResultSetIterator<T> implements Iterator<T> {
             try {
                 closeable.close();
             } catch (Exception e) {
-                this.query.getExceptions().add(e);
+                // ignored it
             }
         }
     }
