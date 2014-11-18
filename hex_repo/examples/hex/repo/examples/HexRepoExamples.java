@@ -4,7 +4,7 @@ import hex.repo.Person;
 import hex.repo.PersonRepository;
 import hex.repo.Repository;
 
-import static jill.QueryLanguage.*;
+import static hex.ql.QueryLanguage.*;
 
 public class HexRepoExamples {
     public static void main(String[] args) {

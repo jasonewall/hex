@@ -1,11 +1,8 @@
 package hex.repo;
 
-import jill.Query;
-import jill.Queryable;
+import hex.ql.Queryable;
 
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * Created by jason on 14-11-01.

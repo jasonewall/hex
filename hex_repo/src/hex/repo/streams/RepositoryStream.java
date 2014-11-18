@@ -2,15 +2,14 @@ package hex.repo.streams;
 
 import hex.repo.AbstractRepository;
 import hex.repo.ResultSetIterator;
-import jill.queries.AbstractQuery;
-import jill.Query;
-import jill.ast.*;
-import jill.ast.predicates.NullPredicate;
-import jill.queries.StreamQuery;
-import jill.sql.SqlQuery;
+import hex.ql.queries.AbstractQuery;
+import hex.ql.Query;
+import hex.ql.ast.*;
+import hex.ql.ast.predicates.NullPredicate;
+import hex.ql.queries.StreamQuery;
+import hex.ql.sql.SqlQuery;
 
 import java.util.*;
-import java.util.Comparator;
 import java.util.function.*;
 import java.util.stream.*;
 
@@ -202,7 +201,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      *
      * If subsequent actions cause this RepositoryStream to be terminated before
      * execution, the collection of peek actions are passed on to the resulting
-     * {@link jill.queries.StreamQuery} before returning the new stream.
+     * {@link hex.ql.queries.StreamQuery} before returning the new stream.
      * <p>
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.

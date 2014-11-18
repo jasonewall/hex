@@ -1,9 +1,9 @@
 package hex.repo;
 
 import hex.repo.streams.RepositoryStream;
-import jill.Queryable;
-import jill.ast.InvalidAstException;
-import jill.ast.predicates.EqualityPredicate;
+import hex.ql.Queryable;
+import hex.ql.ast.InvalidAstException;
+import hex.ql.ast.predicates.EqualityPredicate;
 
 import java.util.Iterator;
 import java.util.Optional;

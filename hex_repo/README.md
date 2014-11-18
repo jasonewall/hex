@@ -1,11 +1,11 @@
 Hex Repo
 ======================
 
-ORM using the API declared in [thejayvm/jill](http://github.com/thejayvm/jill)
+ORM using the API declared in [hex/hexql](http://github.com/thejayvm/hex/hexql)
 
 Use the `QueryLanguage` defined in JILL.
 
-    import static jill.QueryLangauge.*
+    import static hex.ql.QueryLangauge.*
 
 Instantiate your repo instance
 
@@ -58,11 +58,6 @@ All mapping metadata should be able to be declared outside of the "Model" classe
 
     NOTE: As of now I still haven't figured out how I'm going to declare custom mapping of fields to columns.
 
-### All queries should be able to be queried by JILL
-
-This is a sister project of [thejayvm/jill](https://github.com/thejayvm/jill). The idea behind that project is a Java written
-query language for querying [java.util.Collection](http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html)
-instances. All of the results of querying in HexRepo implement a construct from JILL in some form or fashion.
 
 ### All queries should implement the `Stream` interfaces from Java 8
 

@@ -1,13 +1,12 @@
 package hex.repo;
 
 import hex.repo.streams.RepositoryStream;
-import jill.Query;
-import jill.ast.InvalidAstException;
+import hex.ql.ast.InvalidAstException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static jill.QueryLanguage.*;
+import static hex.ql.QueryLanguage.*;
 
 /**
  * Created by jason on 14-10-25.
