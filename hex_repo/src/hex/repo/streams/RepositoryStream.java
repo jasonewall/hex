@@ -21,6 +21,10 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private boolean distinct = false;
 
+    private long limit = -1;
+
+    private long offset = -1;
+
     private boolean parallel = false;
 
     private Consumer<T> peeker = (t) -> {};
@@ -34,6 +38,8 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     private RepositoryStream<T> duplicate() {
         RepositoryStream<T> dup = new RepositoryStream<>(repository);
         dup.distinct = distinct;
+        dup.limit = limit;
+        dup.offset = offset;
         dup.parallel = parallel;
         dup.peeker = peeker;
         dup.predicate = predicate;
@@ -249,10 +255,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * @return the new stream
      * @throws IllegalArgumentException if {@code maxSize} is negative
      */
-//    @Override
-//    public Query<T> limit(long maxSize) {
-//        return null;
-//    }
+    @Override
+    public Query<T> limit(long maxSize) {
+        RepositoryStream<T> dup = duplicate();
+        dup.limit = maxSize;
+        return dup;
+    }
 
     @Override
     public Optional<T> findFirst() {
@@ -268,7 +276,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * Sets the {@code OFFSET} clause of the query being created by this stream
      * and returns the resulting stream.
      *
-     * TODO: Check to see if the database behaviour for OFFSET matches this.
      * If this stream contains fewer than {@code n} elements then an
      * empty stream will be returned.
      * <p>
@@ -279,10 +286,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * @return the new stream
      * @throws IllegalArgumentException if {@code n} is negative
      */
-//    @Override
-//    public Stream<T> skip(long n) {
-//        return null;
-//    }
+    @Override
+    public Query<T> skip(long n) {
+        RepositoryStream<T> dup = duplicate();
+        dup.offset = n;
+        return dup;
+    }
 
     /**
      * Returns whether this stream, if a terminal operation were to be executed,
