@@ -28,9 +28,5 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
         return stream().iterator();
     }
 
-    public String toSql() throws InvalidAstException {
-        return stream().toSql();
-    }
-
     public abstract String getTableName();
 }
