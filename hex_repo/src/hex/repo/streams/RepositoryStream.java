@@ -7,6 +7,7 @@ import hex.ql.Query;
 import hex.ql.ast.*;
 import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.StreamQuery;
+import hex.repo.RepositoryException;
 import hex.repo.sql.SqlQuery;
 
 import java.util.*;
@@ -55,11 +56,15 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         return stream;
     }
 
-    public String toSql() throws InvalidAstException {
+    public String toSql() {
         SqlQuery result = new SqlQuery(repository.get_metadata());
         result.from(new Node[]{new Variable(repository.getTableName())});
         result.where(where);
-        return result.toSql();
+        try {
+            return result.toSql();
+        } catch(InvalidAstException e) {
+            throw new RepositoryException(e);
+        }
     }
 
     public RepositoryStream(AbstractRepository<T> repository) {
@@ -342,13 +347,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public QueryResult<T> iterator() {
-        try {
-            return new QueryResult<>(repository, toSql());
-        } catch (InvalidAstException e) {
-            e.printStackTrace();
-            // TODO: need to deal with this exception in a better way
-            return null;
-        }
+        return new QueryResult<>(repository, toSql());
     }
 
     @Override
