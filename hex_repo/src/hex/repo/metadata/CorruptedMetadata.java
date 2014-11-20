@@ -1,5 +1,7 @@
 package hex.repo.metadata;
 
+import hex.repo.RepositoryException;
+
 import java.lang.reflect.Method;
 import java.util.function.Function;
 
@@ -16,7 +18,7 @@ public class CorruptedMetadata<T> extends Metadata<T> {
 
     @Override
     public Method getSetter(String fieldName) throws NoSuchMethodException {
-        return super.getSetter(fieldName);
+        throw new CorruptedMetadataException(cause);
     }
 
     @Override
