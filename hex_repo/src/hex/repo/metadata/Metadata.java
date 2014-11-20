@@ -1,4 +1,6 @@
-package hex.repo;
+package hex.repo.metadata;
+
+import hex.repo.ResultSetWrapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -152,8 +154,3 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
     }
 }
 
-class UnhandledFieldTypeException extends Exception {
-    public UnhandledFieldTypeException(String message) {
-        super(message);
-    }
-}

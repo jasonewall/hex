@@ -1,5 +1,6 @@
 package hex.repo;
 
+import hex.repo.metadata.Metadata;
 import hex.repo.streams.RepositoryStream;
 import hex.ql.Queryable;
 import hex.ql.ast.InvalidAstException;

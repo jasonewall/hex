@@ -1,4 +1,4 @@
-package hex.repo;
+package hex.repo.metadata;
 
 import java.lang.reflect.Method;
 import java.util.function.Function;

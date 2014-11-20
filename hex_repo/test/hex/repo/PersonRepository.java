@@ -1,5 +1,7 @@
 package hex.repo;
 
+import hex.repo.metadata.Metadata;
+
 /**
  * Created by jason on 14-10-26.
  */

@@ -1,7 +1,7 @@
 package hex.repo.streams;
 
 import hex.repo.AbstractRepository;
-import hex.repo.ResultSetIterator;
+import hex.repo.QueryResult;
 import hex.ql.queries.AbstractQuery;
 import hex.ql.Query;
 import hex.ql.ast.*;
@@ -341,11 +341,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     @Override
-    public ResultSetIterator<T> iterator() {
+    public QueryResult<T> iterator() {
         try {
-            return new ResultSetIterator<>(repository, toSql());
+            return new QueryResult<>(repository, toSql());
         } catch (InvalidAstException e) {
             e.printStackTrace();
+            // TODO: need to deal with this exception in a better way
             return null;
         }
     }

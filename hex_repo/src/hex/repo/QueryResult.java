@@ -9,7 +9,7 @@ import java.util.Iterator;
 /**
  * Created by jason on 14-11-02.
  */
-public class ResultSetIterator<T> implements Iterator<T> {
+public class QueryResult<T> implements Iterator<T>, AutoCloseable {
     private final AbstractRepository<T> repository;
 
     private Connection connection;
@@ -22,7 +22,7 @@ public class ResultSetIterator<T> implements Iterator<T> {
 
     private String sql;
 
-    public ResultSetIterator(AbstractRepository<T> repository, String sql) {
+    public QueryResult(AbstractRepository<T> repository, String sql) {
         this.repository = repository;
         this.sql = sql;
     }
@@ -66,7 +66,7 @@ public class ResultSetIterator<T> implements Iterator<T> {
         return null;
     }
 
-    private void close() {
+    public void close() {
         closeQuietly(resultSet);
         closeQuietly(stmt);
         closeQuietly(connection);
