@@ -1,4 +1,4 @@
-package hex.ql.sql;
+package hex.repo.sql;
 
 import java.util.HashMap;
 import java.util.Map;

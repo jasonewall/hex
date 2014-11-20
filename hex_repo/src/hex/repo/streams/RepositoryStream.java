@@ -7,7 +7,7 @@ import hex.ql.Query;
 import hex.ql.ast.*;
 import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.StreamQuery;
-import hex.ql.sql.SqlQuery;
+import hex.repo.sql.SqlQuery;
 
 import java.util.*;
 import java.util.function.*;

@@ -1,10 +1,10 @@
-package hex.ql.sql;
+package hex.repo.sql;
 
 import hex.ql.ast.InvalidAstException;
 import hex.ql.ast.Node;
 import hex.ql.ast.Variable;
 import hex.ql.ast.predicates.Condition;
-import hex.ql.sql.test.Book;
+import hex.repo.sql.test.Book;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

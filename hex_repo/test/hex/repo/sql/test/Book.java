@@ -1,6 +1,6 @@
-package hex.ql.sql.test;
+package hex.repo.sql.test;
 
-import hex.ql.sql.Metadata;
+import hex.repo.sql.Metadata;
 
 /**
  * Created by jason on 14-10-26.

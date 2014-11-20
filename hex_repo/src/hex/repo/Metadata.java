@@ -14,7 +14,7 @@ import static hex.repo.utils.Inflection.*;
 /**
  * Created by jason on 14-10-29.
  */
-public class Metadata<T> extends hex.ql.sql.Metadata {
+public class Metadata<T> extends hex.repo.sql.Metadata {
     private static final int FAILED_PK_RETRIEVAL = -1;
 
     public static <T> Metadata<T> fromClass(Class<T> keyClass) {

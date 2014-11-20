@@ -1,4 +1,4 @@
-package hex.ql.sql;
+package hex.repo.sql;
 
 /**
  * Created by jason on 14-10-26.
