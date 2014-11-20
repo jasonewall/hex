@@ -44,6 +44,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private Stream<T> terminateRepositoryStream() {
         Stream<T> stream = StreamSupport.stream(spliterator(), this.isParallel());
+        //TODO: maybe we should pass in the close handlers too?
         stream = stream.peek(peeker);
         return stream;
     }
@@ -87,7 +88,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
                 // ignore and fallback to normal stream mode
             }
         }
-        //TODO: maybe we should pass in the close handlers too?
         return new StreamQuery<>(terminateRepositoryStream().filter(predicate));
     }
 
