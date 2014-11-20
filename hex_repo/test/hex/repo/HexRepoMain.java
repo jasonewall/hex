@@ -14,8 +14,8 @@ import static hex.ql.QueryLanguage.*;
 public class HexRepoMain {
     public static void main(String[] args) throws InvalidAstException {
         String sql, expected;
-        RepositoryBase<Person> repo = new PersonRepository();
-        sql = repo.toSql();
+        Repository<Person> repo = new PersonRepository();
+        sql = repo.stream().toSql();
         expected = "SELECT * FROM people";
         if(!expected.equals(sql)) System.exit(-1);
 
@@ -30,7 +30,7 @@ public class HexRepoMain {
         expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
         if(!expected.equals(sql)) System.exit(2);
 
-        q = (RepositoryStream<Person>)new RepositoryStream<>(repo).filter(
+        q = (RepositoryStream<Person>)repo.stream().filter(
                 where(Person::getLastName, is("Wall"))
                         .and(where(Person::getFirstName, is("Jason")).or(where(Person::getFirstName, is("Natalie"))))
         );

@@ -1,6 +1,7 @@
 package hex.repo;
 
 import hex.ql.Queryable;
+import hex.repo.streams.RepositoryStream;
 
 import java.util.Optional;
 
@@ -9,4 +10,6 @@ import java.util.Optional;
  */
 public interface Repository<T> extends Queryable<T> {
     Optional<T> find(int id);
+
+    RepositoryStream<T> stream();
 }
