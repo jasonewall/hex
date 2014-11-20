@@ -4,6 +4,7 @@ import hex.ql.Query;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.*;
 
@@ -27,6 +28,11 @@ public class StreamQuery<T> extends AbstractQuery<T> {
         StreamQuery<T> dup = duplicate();
         dup.stream = stream.filter(predicate);
         return dup;
+    }
+
+    @Override
+    public <R> Query<R> map(Function<? super T, ? extends R> mapper) {
+        return new StreamQuery<R>(stream.map(mapper));
     }
 
     @Override
