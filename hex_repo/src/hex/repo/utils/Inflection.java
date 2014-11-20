@@ -41,6 +41,8 @@ public class Inflection {
     }
 
     public static String pluralize(String string) {
+        if("Person".equals(string) || "PERSON".equals(string)) return "People";
+        if("person".equals(string.toLowerCase())) return "people";
         return string.concat("s");
     }
 }

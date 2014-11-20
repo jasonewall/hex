@@ -37,7 +37,7 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
                 }
             };
 
-            metadata.tableName = tableize(keyClass.getCanonicalName());
+            metadata.tableName = tableize(keyClass.getSimpleName());
 
             return metadata;
         } catch (InstantiationException|IllegalAccessException|UnhandledFieldTypeException|NoSuchMethodException e) {
