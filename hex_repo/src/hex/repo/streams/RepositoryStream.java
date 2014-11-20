@@ -341,7 +341,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public ResultSetIterator<T> iterator() {
         try {
             return new ResultSetIterator<>(repository, toSql());
         } catch (InvalidAstException e) {
