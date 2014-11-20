@@ -84,12 +84,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      */
     @Override
     public Query<T> filter(Predicate<? super T> predicate) {
-        RepositoryStream<T> stream = duplicate();
-        stream.predicate = this.predicate.and(predicate);
+        RepositoryStream<T> dup = duplicate();
+        dup.predicate = this.predicate.and(predicate);
         if(predicate instanceof Node) {
             try {
-                stream.where = ((Node)stream.predicate).toTree();
-                return stream;
+                dup.where = ((Node)dup.predicate).toTree();
+                return dup;
             } catch (InvalidAstException e) {
                 // ignore and fallback to normal stream mode
             }
