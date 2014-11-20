@@ -27,7 +27,7 @@ public class SqlQueryTest {
         SqlQuery q = new SqlQuery(Book.metadata());
         q.from(new Node[]{ new Variable("books") });
 
-        Condition<Book,String> condition = (Condition<Book,String>)field(Book::getTitle, is("1984"));
+        Condition<Book,String> condition = (Condition<Book,String>) where(Book::getTitle, is("1984"));
         q.where(condition.toTree());
 
         String expected = "SELECT * FROM books WHERE title = '1984'";
@@ -47,7 +47,7 @@ public class SqlQueryTest {
 
     @Test
     public void testCompoundCondition() throws InvalidAstException {
-        Node condition = (Node) field(Book::getTitle, is("1984")).and(field(Book::getPublishedYear, is(1984)));
+        Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
         SqlQuery q = new SqlQuery(Book.metadata());
         q.from(new Node[]{ new Variable("books") });
         q.where(condition.toTree());

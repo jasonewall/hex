@@ -25,7 +25,7 @@ public interface QueryLanguage {
         return from(source).filter(predicate).collect(Collectors.toList());
     }
 
-    public static <T, U> Predicate<T> field(Function<T,U> extractor, Predicate<U> predicate) {
+    public static <T, U> Predicate<T> where(Function<T, U> extractor, Predicate<U> predicate) {
         return new Condition<>(extractor, predicate);
     }
 

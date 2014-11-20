@@ -31,8 +31,8 @@ public class HexRepoMain {
         if(!expected.equals(sql)) System.exit(2);
 
         q = (RepositoryStream<Person>)new RepositoryStream<>(repo).filter(
-                field(Person::getLastName, is("Wall"))
-                    .and(field(Person::getFirstName, is("Jason")).or(field(Person::getFirstName, is("Natalie"))))
+                where(Person::getLastName, is("Wall"))
+                        .and(where(Person::getFirstName, is("Jason")).or(where(Person::getFirstName, is("Natalie"))))
         );
 
         sql = q.toSql();
