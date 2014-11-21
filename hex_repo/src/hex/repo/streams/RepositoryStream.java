@@ -248,8 +248,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      *               non-interfering</a> action to perform on the elements as
      *               they are consumed from the stream
      * @return the new stream
-     * @apiNote This method exists mainly to support debugging, where you want
-     * to see the elements as they flow past a certain point in a pipeline:
      * <pre>
      *     Stream.of("one", "two", "three", "four")
      *         .filter(e -> e.length() > 3)
