@@ -6,8 +6,13 @@ import hex.ql.Queryable;
 import hex.ql.ast.InvalidAstException;
 import hex.ql.ast.predicates.EqualityPredicate;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Created by jason on 14-11-05.
@@ -21,6 +26,16 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
 
     public RepositoryStream<T> stream() {
         return new RepositoryStream<>(this);
+    }
+
+    public <R> R executeQuery(String sql, Function<ResultSetWrapper,R> consumer) {
+        try(Connection conn = ConnectionManager.getConnection();
+            Statement stmt = conn.createStatement();
+            ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(sql))) {
+            return consumer.apply(rs);
+        } catch (SQLException e) {
+            throw new RepositoryException(e);
+        }
     }
 
     @Override

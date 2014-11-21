@@ -7,9 +7,11 @@ import hex.ql.Query;
 import hex.ql.ast.*;
 import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.StreamQuery;
+import hex.repo.Repository;
 import hex.repo.RepositoryException;
 import hex.repo.sql.SqlQuery;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -289,12 +291,14 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public Optional<T> findFirst() {
-        Iterator<T> it = iterator();
-        if(it.hasNext()) {
-            ////// TODO: BAAAAAAARF potential connection leak here.
-            return Optional.of(it.next());
-        }
-        return Optional.empty();
+        return repository.executeQuery(toSql(), (rs) -> {
+            try {
+                if(rs.next()) return Optional.of(repository.get_metadata().mapRecord(rs));
+            } catch (SQLException e) {
+                throw new RepositoryException(e);
+            }
+            return Optional.empty();
+        });
     }
 
     /**

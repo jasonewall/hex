@@ -1,5 +1,6 @@
 package hex.repo.metadata;
 
+import hex.repo.Repository;
 import hex.repo.RepositoryException;
 import hex.repo.ResultSetWrapper;
 import hex.repo.streams.RepositoryStream;
@@ -66,14 +67,18 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         return getKeyRecordClass().getMethod(this.setters.get(fieldName), this.fieldTypes.get(fieldName));
     }
 
-    public T mapRecord(ResultSetWrapper rs) throws InstantiationException, IllegalAccessException, SQLException, NoSuchMethodException, InvocationTargetException {
-        T record = newInstance();
-        ResultSetMetaData metaData = rs.getMetaData();
-        for(int i = 1; i <= metaData.getColumnCount(); i++) {
-            Method setter = getSetter(metaData.getColumnLabel(i));
-            setter.invoke(record, rs.getValue(i));
+    public T mapRecord(ResultSetWrapper rs) {
+        try {
+            T record = newInstance();
+            ResultSetMetaData metaData = rs.getMetaData();
+            for(int i = 1; i <= metaData.getColumnCount(); i++) {
+                Method setter = getSetter(metaData.getColumnLabel(i));
+                setter.invoke(record, rs.getValue(i));
+            }
+            return record;
+        } catch (IllegalAccessException | SQLException | NoSuchMethodException | InvocationTargetException e) {
+            throw new RepositoryException(e);
         }
-        return record;
     }
 
     @SuppressWarnings("unchecked")
@@ -88,8 +93,12 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         return tableName;
     }
 
-    public T newInstance() throws IllegalAccessException, InstantiationException {
-        return this.getKeyRecordClass().newInstance();
+    public T newInstance() {
+        try {
+            return this.getKeyRecordClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RepositoryException(e);
+        }
     }
 
     private Map<String,String> setters = new HashMap<>();
@@ -101,11 +110,7 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
     }
 
     private T invocationTracker() {
-        try {
-            return getKeyRecordClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RepositoryException(e);
-        }
+        return newInstance();
     }
 
     public Object setFieldMeta(Field f) throws UnhandledFieldTypeException {
