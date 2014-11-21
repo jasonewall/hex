@@ -2,7 +2,6 @@ package hex.repo;
 
 import hex.repo.metadata.DataMappingException;
 
-import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -64,8 +63,11 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
             return result;
         } catch (SQLException e) {
             close();
+            throw new RepositoryException(e);
+        } catch (RuntimeException | Error e) { // really ensure we call close if something bad happens
+            close();
+            throw e;
         }
-        return null;
     }
 
     public void close() {
