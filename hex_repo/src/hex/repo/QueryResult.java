@@ -1,5 +1,7 @@
 package hex.repo;
 
+import hex.repo.metadata.DataMappingException;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,10 +41,10 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
                 T result = repository.get_metadata().mapRecord(rs);
                 hasNext = rs.next();
                 return result;
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            }  catch (DataMappingException e) {
                 close();
+                throw new RepositoryException(e.getCause());
             }
-            return null;
         });
     }
 

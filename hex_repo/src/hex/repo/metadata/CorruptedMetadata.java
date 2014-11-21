@@ -20,7 +20,7 @@ public class CorruptedMetadata<T> extends Metadata<T> {
     }
 
     @Override
-    public T newInstance() throws IllegalAccessException, InstantiationException {
+    public T newInstance() {
         return super.newInstance();
     }
 

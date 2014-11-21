@@ -8,6 +8,7 @@ import hex.ql.ast.*;
 import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.StreamQuery;
 import hex.repo.RepositoryException;
+import hex.repo.metadata.DataMappingException;
 import hex.repo.sql.SqlQuery;
 
 import java.sql.SQLException;
@@ -297,8 +298,10 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
                 if(rs.next()) return Optional.of(repository.get_metadata().mapRecord(rs));
             } catch (SQLException e) {
                 throw new RepositoryException(e);
+            } catch (DataMappingException e) {
+                throw new RepositoryException(e.getCause());
             }
-            return Optional.empty();
+            return Optional.<T>empty();
         });
     }
 

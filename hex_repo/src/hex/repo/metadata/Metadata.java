@@ -66,7 +66,7 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         return getKeyRecordClass().getMethod(this.setters.get(fieldName), this.fieldTypes.get(fieldName));
     }
 
-    public T mapRecord(ResultSetWrapper rs) {
+    public T mapRecord(ResultSetWrapper rs) throws DataMappingException {
         try {
             T record = newInstance();
             ResultSetMetaData metaData = rs.getMetaData();
@@ -76,7 +76,7 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
             }
             return record;
         } catch (IllegalAccessException | SQLException | NoSuchMethodException | InvocationTargetException e) {
-            throw new RepositoryException(e);
+            throw new DataMappingException(e);
         }
     }
 

@@ -1,7 +1,10 @@
 package hex.repo;
 
 /**
- * Created by jason on 14-11-20.
+ * Catch all wrapper exception for anything that goes wrong during
+ * query execution. Inspect root cause to understand what went wrong. You
+ * should be catching this exception in a generic location in your application
+ * to provide developer information in an appropriate location.
  */
 public class RepositoryException extends RuntimeException {
     /**
