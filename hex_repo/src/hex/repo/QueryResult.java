@@ -36,14 +36,9 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
     @Override
     public T next() {
         return withResults((rs) -> {
-            try {
-                T result = repository.get_metadata().mapRecord(rs);
-                hasNext = rs.next();
-                return result;
-            }  catch (DataMappingException e) {
-                close();
-                throw new RepositoryException(e.getCause());
-            }
+            T result = repository.get_metadata().mapRecord(rs);
+            hasNext = rs.next();
+            return result;
         });
     }
 
@@ -61,7 +56,7 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
                 close();
             }
             return result;
-        } catch (SQLException e) {
+        } catch (SQLException | DataMappingException e) {
             close();
             throw new RepositoryException(e);
         } catch (RuntimeException | Error e) { // really ensure we call close if something bad happens

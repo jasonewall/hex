@@ -1,5 +1,6 @@
 package hex.repo;
 
+import hex.repo.metadata.DataMappingException;
 import hex.repo.metadata.Metadata;
 import hex.repo.streams.RepositoryStream;
 import hex.ql.Queryable;
@@ -30,7 +31,7 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
             Statement stmt = conn.createStatement();
             ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(sql))) {
             return mapper.apply(rs);
-        } catch (SQLException e) {
+        } catch (SQLException | DataMappingException e) {
             throw new RepositoryException(e);
         }
     }
