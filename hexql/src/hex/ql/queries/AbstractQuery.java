@@ -10,7 +10,8 @@ import java.util.function.*;
 import java.util.stream.*;
 
 /**
- * Created by jason on 14-11-17.
+ * Only reason to extend from this is to lazily have all the methods implemented by
+ * throwing an {@code UnsupportedOperationException}
  */
 public abstract class AbstractQuery<T> implements Query<T> {
     @Override
