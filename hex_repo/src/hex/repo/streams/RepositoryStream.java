@@ -369,7 +369,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public QueryResult<T> iterator() {
-        return new QueryResult<>(repository, toSql());
+        return new QueryResult<>(repository, toSql()).peek(peeker);
     }
 
     @Override

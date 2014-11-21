@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 /**
  * Created by jason on 14-11-02.
@@ -22,6 +23,8 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
     private boolean hasNext;
 
     private String sql;
+
+    private Consumer<T> peeker = t -> {};
 
     public QueryResult(AbstractRepository<T> repository, String sql) {
         this.repository = repository;
@@ -63,6 +66,11 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
             close();
             throw e;
         }
+    }
+
+    public QueryResult<T> peek(Consumer<T> peeker) {
+        this.peeker = this.peeker.andThen(peeker);
+        return this;
     }
 
     public void close() {
