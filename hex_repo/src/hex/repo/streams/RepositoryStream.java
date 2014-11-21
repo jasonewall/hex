@@ -268,7 +268,9 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public void forEach(Consumer<? super T> action) {
-        for(T t : this) action.accept(t);
+        try(QueryResult<T> results = iterator()) {
+            results.forEachRemaining(action::accept);
+        }
     }
 
     /**
@@ -407,9 +409,8 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     @Override
     public <R, A> R collect(Collector<? super T, A, R> collector) {
         A a = collector.supplier().get();
-        for(T t : this) {
-            peeker.accept(t);
-            collector.accumulator().accept(a, t);
+        try(QueryResult<T> results = iterator()) {
+            results.forEachRemaining(t -> collector.accumulator().accept(a, t));
         }
         return collector.finisher().apply(a);
     }
