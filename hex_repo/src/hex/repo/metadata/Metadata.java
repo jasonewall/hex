@@ -1,6 +1,5 @@
 package hex.repo.metadata;
 
-import hex.repo.Repository;
 import hex.repo.RepositoryException;
 import hex.repo.ResultSetWrapper;
 import hex.repo.streams.RepositoryStream;

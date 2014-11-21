@@ -1,7 +1,5 @@
 package hex.repo.metadata;
 
-import hex.repo.RepositoryException;
-
 import java.lang.reflect.Method;
 import java.util.function.Function;
 

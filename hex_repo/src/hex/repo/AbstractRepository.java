@@ -3,7 +3,6 @@ package hex.repo;
 import hex.repo.metadata.Metadata;
 import hex.repo.streams.RepositoryStream;
 import hex.ql.Queryable;
-import hex.ql.ast.InvalidAstException;
 import hex.ql.ast.predicates.EqualityPredicate;
 
 import java.sql.Connection;
@@ -11,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
