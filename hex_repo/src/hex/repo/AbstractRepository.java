@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Created by jason on 14-11-05.
@@ -26,11 +25,11 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
         return new RepositoryStream<>(this);
     }
 
-    public <R> R executeQuery(String sql, Function<ResultSetWrapper,R> consumer) {
+    public <R> R executeQuery(String sql, ResultSetMapper<R> mapper) {
         try(Connection conn = ConnectionManager.getConnection();
             Statement stmt = conn.createStatement();
             ResultSetWrapper rs = new ResultSetWrapper(stmt.executeQuery(sql))) {
-            return consumer.apply(rs);
+            return mapper.apply(rs);
         } catch (SQLException e) {
             throw new RepositoryException(e);
         }

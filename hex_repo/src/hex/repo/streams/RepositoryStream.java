@@ -296,9 +296,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         return repository.executeQuery(toSql(), (rs) -> {
             try {
                 if(rs.next()) return Optional.of(repository.get_metadata().mapRecord(rs));
-            } catch (SQLException e) {
-                throw new RepositoryException(e);
-            } catch (DataMappingException e) {
+            }  catch (DataMappingException e) {
                 throw new RepositoryException(e.getCause());
             }
             return Optional.<T>empty();

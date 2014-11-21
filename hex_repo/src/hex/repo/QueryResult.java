@@ -48,7 +48,7 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
         });
     }
 
-    private <R> R withResults(SQLFunction<ResultSetWrapper,R> consumer) {
+    private <R> R withResults(ResultSetMapper<R> mapper) {
         try {
             if(this.resultSet == null) {
                 this.connection = ConnectionManager.getConnection();
@@ -57,7 +57,7 @@ public class QueryResult<T> implements Iterator<T>, AutoCloseable {
                 this.hasNext = this.resultSet.next();
             }
 
-            R result = consumer.apply(resultSet);
+            R result = mapper.apply(resultSet);
             if(!hasNext) {
                 close();
             }
