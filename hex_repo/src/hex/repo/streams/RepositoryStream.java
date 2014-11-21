@@ -32,6 +32,8 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private Predicate<T> predicate = new NullPredicate<>();
 
+    private List<RepositoryStream> joins = new ArrayList<>();
+
     private Node[] where;
 
     private Node[] orderBy;
@@ -44,6 +46,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         dup.parallel = parallel;
         dup.peeker = peeker;
         dup.predicate = predicate;
+        dup.joins = joins;
         dup.where = where;
         dup.orderBy = orderBy;
         return dup;
@@ -103,6 +106,31 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     /**
+     * Returns a stream consisting of the results of applying the given
+     * function to the elements of this stream.
+     *
+     * In the database sense, should be used to adjust your result into:
+     * <ol>
+     *     <li>A single column not represented by the native map methods</li>
+     *     <li>Mapping additional columns to a new class type in more complicated queries</li>
+     *     <li>Possibly mapping to a One-to-one or a Many-to-one relationship</li>
+     * </ol>
+     *
+     * <p>This is an <a href="package-summary.html#StreamOps">intermediate
+     * operation</a>.
+     *
+     * @param <R> The element type of the new stream
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function to apply to each element
+     * @return the new stream
+     */
+    @Override
+    public <R> Query<R> map(Function<? super T, ? extends R> mapper) {
+        return super.map(mapper);
+    }
+
+    /**
      * Returns a {@code RepositoryIntStream} that is essentially a single column
      * query that has an {@code int} for a single column. Once terminated the results
      * are delegated to a traditional {@link java.util.stream.IntStream}. Destroys the
@@ -122,13 +150,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 //    }
 
     /**
-     * TODO: This might be a sub-query? Or also good for mapping to relations.
      * Returns a stream consisting of the results of replacing each element of
      * this stream with the contents of a mapped stream produced by applying
-     * the provided mapping function to each element.  Each mapped stream is
-     * {@link java.util.stream.BaseStream#close() closed} after its contents
-     * have been placed into this stream.  (If a mapped stream is {@code null}
-     * an empty stream is used, instead.)
+     * the provided mapping function to each element.
+     *
+     * This is effectively this is an inner join to a one-to-many relationship in a
+     * relational database.
      * <p>
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
      * operation</a>.
@@ -138,7 +165,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      *               function to apply to each element which produces a stream
      *               of new values
      * @return the new stream
-     * @apiNote The {@code flatMap()} operation has the effect of applying a one-to-many
+     * The {@code flatMap()} operation has the effect of applying a one-to-many
      * transformation to the elements of the stream, and then flattening the
      * resulting elements into a new stream.
      * <p>
@@ -147,24 +174,17 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * <p>If {@code orders} is a stream of purchase orders, and each purchase
      * order contains a collection of line items, then the following produces a
      * stream containing all the line items in all the orders:
-     * <pre>{@code
+     * <pre>
      *     orders.flatMap(order -> order.getLineItems().stream())...
-     * }</pre>
+     * </pre>
      * <p>
-     * <p>If {@code path} is the path to a file, then the following produces a
-     * stream of the {@code words} contained in that file:
-     * <pre>{@code
-     *     Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8);
-     *     Stream<String> words = lines.flatMap(line -> Stream.of(line.split(" +")));
-     * }</pre>
-     * The {@code mapper} function passed to {@code flatMap} splits a line,
-     * using a simple regular expression, into an array of words, and then
-     * creates a stream of words from that array.
      */
-//    @Override
-//    public <R> Query<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
-//        return null;
-//    }
+    @Override
+    public <R> Query<R> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper) {
+        RepositoryStream<R> newStream = repository.get_metadata().mapToRepositoryStream(mapper);
+        newStream.joins.add(this);
+        return newStream;
+    }
 
     /**
      * Indicates that the query will call {@code DISTINCT} when it queries

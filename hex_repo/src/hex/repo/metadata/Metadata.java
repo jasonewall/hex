@@ -1,6 +1,8 @@
 package hex.repo.metadata;
 
+import hex.repo.RepositoryException;
 import hex.repo.ResultSetWrapper;
+import hex.repo.streams.RepositoryStream;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -10,6 +12,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static hex.repo.utils.Inflection.*;
 
@@ -97,6 +100,13 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         this.fieldTypes.put(fieldName, fieldType);
     }
 
+    private T invocationTracker() {
+        try {
+            return getKeyRecordClass().newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RepositoryException(e);
+        }
+    }
 
     public Object setFieldMeta(Field f) throws UnhandledFieldTypeException {
         String fieldName = f.getName();
@@ -136,6 +146,18 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         }
 
         throw new UnhandledFieldTypeException("Unhandled field type in generateKey()");
+    }
+
+    public <R> RepositoryStream<R> mapToRepositoryStream(Function<? super T, ? extends Stream<? extends R>> mapper) {
+        T o = invocationTracker();
+        Stream<? extends R> childStream = mapper.apply(o);
+        if(childStream instanceof RepositoryStream) {
+            @SuppressWarnings("unchecked")
+            RepositoryStream<R> childRepo = (RepositoryStream<R>)childStream;
+            return childRepo;
+        }
+
+        throw new RepositoryException(new IllegalStateException("flatMap did not result in repository stream"));
     }
 
     private int lastIntKey = 0;
