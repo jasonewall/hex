@@ -8,10 +8,8 @@ import hex.ql.ast.*;
 import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.StreamQuery;
 import hex.repo.RepositoryException;
-import hex.repo.metadata.DataMappingException;
 import hex.repo.sql.SqlQuery;
 
-import java.sql.SQLException;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
@@ -367,6 +365,16 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         return dup;
     }
 
+    /**
+     * You probably shouldn't use this, it's actually kind of dangerous. If you do
+     * use this, use it in the form of:
+     * <pre><code>
+     *     try(QueryResult&lt;T> results = stream.iterator()) {
+     *         results.forEachRemaining(t -> t.myAction());
+     *     }
+     * </code></pre>
+     * @return {@link QueryResult} based on the contents of this stream, which implements {@link java.util.Iterator}
+     */
     @Override
     public QueryResult<T> iterator() {
         return new QueryResult<>(repository, toSql()).peek(peeker);
