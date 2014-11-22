@@ -25,8 +25,7 @@ public class Application {
             String[] routingConfigClasses = Stream.of(adapterProperties.getProperty(ROUTES).split(","))
                     .map(String::trim).toArray(String[]::new);
 
-            RoutingConfigBase routingConfig = null;
-            routingConfig = new RoutingConfigBase();
+            RoutingConfigBase routingConfig = new RoutingConfigBase();
             for (String className : routingConfigClasses) {
                 RouteManager routeManager = (RouteManager) Class.forName(className, false, classLoader).newInstance();
                 routeManager.getDefinedRoutes().forEach(routingConfig::addRoute);
