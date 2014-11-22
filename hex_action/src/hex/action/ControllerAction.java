@@ -45,7 +45,7 @@ public class ControllerAction implements RouteHandler {
                 servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
                 invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
             } else {
-                renderActionNotFound(servletResponse, String.format("Action method (%s) not found in Controller(%s)", actionName, controller.getClass().getSimpleName()));
+                renderActionNotFound(servletResponse, String.format("Action method (%s) not found in controller (%s)", actionName, controller.getClass().getSimpleName()));
             }
         } catch (InvocationTargetException e) {
             throw new ServletException(e.getCause());
