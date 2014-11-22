@@ -47,7 +47,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs())) {
-            Compiler.compile(sourcePaths.get(), outPath);
+            Compiler.compile(sourcePaths, outPath);
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {
