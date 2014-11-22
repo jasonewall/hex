@@ -25,6 +25,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try (URLClassLoader requestClassLoader = new URLClassLoader(new URL[]{new URL("file:/Users/jason/Code/embedded_jetty/out/production/")})) {
+            Compiler.compile();
             config = new RoutingConfigBase();
             RouteManager routeManager = (RouteManager) requestClassLoader.loadClass("embedded_jetty.ApplicationRoutes").newInstance();
             routeManager.getDefinedRoutes().forEach(config::addRoute);
