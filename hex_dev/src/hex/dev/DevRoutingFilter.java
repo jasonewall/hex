@@ -1,38 +1,56 @@
 package hex.dev;
 
-import hex.action.RouteManager;
+import hex.Application;
 import hex.routing.*;
 
 import javax.servlet.*;
-import java.io.IOException;
+import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * Created by jason on 14-11-21.
  */
 public class DevRoutingFilter implements Filter, RoutingConfig {
-    private RoutingConfigBase config;
+    private RoutingConfig config;
 
     private RoutingFilter filter = new RoutingFilter();
 
+    private Supplier<Stream<String>> sourcePaths;
+
+    private String outPath;
+
+    private URL[] getSourcePathURLs() throws MalformedURLException {
+        return new URL[] {
+                new File(System.getProperty("user.dir"), outPath).toURI().toURL()
+        };
+    }
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
-        filter.init(filterConfig);
+        Properties applicationProperties = new Properties();
+        try(InputStream propStream = new FileInputStream(new File(System.getProperty("user.dir"), Application.CONFIG))) {
+            applicationProperties.load(propStream);
+            sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
+            outPath = applicationProperties.getProperty("out");
+            filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
+            filter.init(filterConfig);
+        } catch (IOException e) {
+            throw new ServletException(e);
+        }
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try (URLClassLoader requestClassLoader = new URLClassLoader(new URL[]{new URL("file:/Users/jason/Code/embedded_jetty/out/production/")})) {
-            Compiler.compile();
-            config = new RoutingConfigBase();
-            RouteManager routeManager = (RouteManager) requestClassLoader.loadClass("embedded_jetty.ApplicationRoutes").newInstance();
-            routeManager.getDefinedRoutes().forEach(config::addRoute);
+        try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs())) {
+            Compiler.compile(sourcePaths.get());
+            config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-            throw new ServletException(e);
-        } finally {
+        }  finally {
             config = null;
         }
     }
