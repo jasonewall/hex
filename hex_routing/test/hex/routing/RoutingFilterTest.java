@@ -45,7 +45,7 @@ import static servlet_mock.HttpMock.POST;
 public class RoutingFilterTest {
     private RoutingFilter filter;
 
-    private final RoutingConfig routingConfig = new RoutingConfig();
+    private final RoutingConfigBase routingConfig = new RoutingConfigBase();
 
     @BeforeClass
     public static void initHttpMockContext() {

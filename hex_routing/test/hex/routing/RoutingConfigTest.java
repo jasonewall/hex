@@ -38,7 +38,7 @@ import static servlet_mock.HttpMock.*;
  */
 public class RoutingConfigTest {
     final static RouteHandler CALLED = (q, r) -> q.setAttribute("Called", true);
-    private RoutingConfig config;
+    private RoutingConfigBase config;
 
     public static final RouteHandler UNEXPECTED = (q, r) -> {
         throw new RuntimeException("Dummy handler did not expect your call.");
@@ -48,7 +48,7 @@ public class RoutingConfigTest {
 
     @Before
     public void setupRoutingConfig() {
-        this.config = new RoutingConfig();
+        this.config = new RoutingConfigBase();
     }
     @Test
     public void staticRoutes() {
