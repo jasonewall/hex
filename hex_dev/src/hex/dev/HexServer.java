@@ -16,7 +16,6 @@ public class HexServer {
         org.eclipse.jetty.server.Server server = new org.eclipse.jetty.server.Server(8080);
 
         WebAppContext context = new WebAppContext();
-        context.setContextPath("/myapp");
         FilterHolder holder = new FilterHolder(DevRoutingFilter.class);
         holder.setInitParameter(Application.ROOT, System.getProperty("user.dir"));
         context.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
