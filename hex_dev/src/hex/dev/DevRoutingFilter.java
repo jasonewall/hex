@@ -26,14 +26,18 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     private URL[] getSourcePathURLs() throws MalformedURLException {
         return new URL[] {
-                new File(System.getProperty("user.dir"), outPath).toURI().toURL()
+                new File(applicationRoot, outPath).toURI().toURL()
         };
     }
 
+    private String applicationRoot;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+        applicationRoot = filterConfig.getInitParameter(Application.ROOT);
         Properties applicationProperties = new Properties();
-        try(InputStream propStream = new FileInputStream(new File(System.getProperty("user.dir"), Application.CONFIG))) {
+        File applicationRoot = new File(this.applicationRoot, Application.CONFIG);
+        try(InputStream propStream = new FileInputStream(applicationRoot)) {
             applicationProperties.load(propStream);
             sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
             outPath = applicationProperties.getProperty("out");
@@ -46,8 +50,8 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs())) {
-            Compiler.compile(sourcePaths, outPath);
+        try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs(), this.getClass().getClassLoader())) {
+            new Compiler(applicationRoot).compile(sourcePaths, outPath);
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {

@@ -1,5 +1,7 @@
 package hex.dev;
 
+import hex.Application;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 import javax.servlet.DispatcherType;
@@ -15,7 +17,9 @@ public class HexServer {
 
         WebAppContext context = new WebAppContext();
         context.setContextPath("/myapp");
-        context.addFilter(DevRoutingFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+        FilterHolder holder = new FilterHolder(DevRoutingFilter.class);
+        holder.setInitParameter(Application.ROOT, System.getProperty("user.dir"));
+        context.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
         context.setResourceBase("./views");
         context.setInitParameter("org.eclipse.jetty.servlet.Default.dirAllowed", "false");
         server.setHandler(context);

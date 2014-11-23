@@ -15,9 +15,15 @@ import java.util.stream.Stream;
  * Created by jason on 14-11-21.
  */
 public class Compiler {
-    public static void compile(Supplier<Stream<String>> sourcePaths, String outPath) {
+    private final String applicationRoot;
+
+    public Compiler(String applicationRoot) {
+        this.applicationRoot = applicationRoot;
+    }
+
+    public void compile(Supplier<Stream<String>> sourcePaths, String outPath) {
         Project project = new Project();
-        project.setBasedir(System.getProperty("user.dir"));
+        project.setBasedir(applicationRoot);
         File destDir = new File(project.getBaseDir(), outPath);
         Mkdir mkdir = new Mkdir();
         mkdir.setDir(destDir);
