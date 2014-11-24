@@ -5,6 +5,8 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="example_application"/>
     <dependencies>
-        <dependency org="hex" name="hex_dev" rev="latest.integration"/>
+        <dependency org="hex" name="hex_dev" rev="latest.integration">
+            <exclude name="hex_dev"/>
+        </dependency>
     </dependencies>
 </ivy-module>
