@@ -435,4 +435,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         dup.orderBy = null;
         return dup;
     }
+
+    public void update(Consumer<T> updateDescriptor) {
+
+    }
+
+    public void update(T t) {
+
+    }
 }

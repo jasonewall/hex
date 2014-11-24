@@ -1,5 +1,6 @@
 package hex.repo;
 
+import hex.ql.Query;
 import hex.repo.metadata.DataMappingException;
 import hex.repo.metadata.Metadata;
 import hex.repo.streams.RepositoryStream;
@@ -11,6 +12,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created by jason on 14-11-05.
@@ -34,6 +38,23 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
         } catch (SQLException | DataMappingException e) {
             throw new RepositoryException(e);
         }
+    }
+
+    @Override
+    public void update(Query<T> queryToUpdate, Consumer<T> updateDescriptor) {
+        if(queryToUpdate instanceof RepositoryStream) {
+            ((RepositoryStream<T>) queryToUpdate).update(updateDescriptor);
+        } else {
+            // TODO: Log INFO about performance of this
+            queryToUpdate.forEach(updateDescriptor.andThen(this::update));
+        }
+    }
+
+    @Override
+    public void update(T t) {
+        Function<T, Integer> primaryKey = get_metadata().getPrimaryKey();
+        RepositoryStream<T> stream = (RepositoryStream<T>) where(primaryKey, new EqualityPredicate<>(primaryKey.apply(t)));
+        stream.update(t);
     }
 
     @Override

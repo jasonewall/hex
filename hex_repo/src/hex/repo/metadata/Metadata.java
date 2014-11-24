@@ -1,5 +1,6 @@
 package hex.repo.metadata;
 
+import hex.ql.ast.Node;
 import hex.repo.RepositoryException;
 import hex.repo.ResultSetWrapper;
 import hex.repo.streams.RepositoryStream;
@@ -11,6 +12,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
