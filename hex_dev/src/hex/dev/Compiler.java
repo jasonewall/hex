@@ -17,6 +17,16 @@ import java.util.stream.Stream;
 public class Compiler {
     private final String applicationRoot;
 
+    private String compiler;
+
+    public String getCompiler() {
+        return compiler;
+    }
+
+    public void setCompiler(String compiler) {
+        this.compiler = compiler;
+    }
+
     public Compiler(String applicationRoot) {
         this.applicationRoot = applicationRoot;
     }
@@ -30,6 +40,7 @@ public class Compiler {
         mkdir.setProject(project);
         mkdir.execute();
         Javac javac = new Javac();
+        javac.setCompiler(getCompiler());
         javac.setProject(project);
         Path srcs = new Path(project);
         sourcePaths.get().map(s -> new Path(project, s)).forEach(srcs::add);

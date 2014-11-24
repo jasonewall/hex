@@ -66,6 +66,8 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     private void initCompiler(String applicationRootPath) {
         applicationCompiler = new Compiler(applicationRootPath);
+        if(applicationProperties.containsKey("build.compiler"))
+            applicationCompiler.setCompiler(applicationProperties.getProperty("build.compiler"));
     }
 
     @Override
