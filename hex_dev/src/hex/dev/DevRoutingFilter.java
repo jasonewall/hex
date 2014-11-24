@@ -26,19 +26,24 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     private URL[] getSourcePathURLs() throws MalformedURLException {
         return new URL[] {
-                new File(applicationRoot, outPath).toURI().toURL()
+                new File(applicationRootPath, outPath).toURI().toURL()
         };
     }
 
-    private String applicationRoot;
+    private String applicationRootPath;
+
+    private Properties applicationProperties;
+
+    private Compiler applicationCompiler;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        applicationRoot = filterConfig.getInitParameter(Application.ROOT);
-        Properties applicationProperties = new Properties();
-        File applicationRoot = new File(this.applicationRoot, Application.CONFIG);
-        try(InputStream propStream = new FileInputStream(applicationRoot)) {
+        applicationRootPath = filterConfig.getInitParameter(Application.ROOT);
+        applicationProperties = new Properties();
+        File applicationConfigFile = new File(applicationRootPath, Application.CONFIG);
+        try(InputStream propStream = new FileInputStream(applicationConfigFile)) {
             applicationProperties.load(propStream);
+            initCompiler(applicationRootPath);
             sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
             outPath = applicationProperties.getProperty("out");
             filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
@@ -51,12 +56,16 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs(), this.getClass().getClassLoader())) {
-            new Compiler(applicationRoot).compile(sourcePaths, outPath);
+            applicationCompiler.compile(sourcePaths, outPath);
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {
             config = null;
         }
+    }
+
+    private void initCompiler(String applicationRootPath) {
+        applicationCompiler = new Compiler(applicationRootPath);
     }
 
     @Override

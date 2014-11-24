@@ -9,6 +9,11 @@
     </head>
     <body>
         <h1>People App</h1>
-        ${message}
+        <p>${message}</p>
+        <p>${java_home}</p>
+        <p>
+            <%= application.getAttribute("javax.servlet.context.tempdir") %>
+        </p>
+        <p>from Controller: ${from_hex_class_loader}</p>
     </body>
 </html>

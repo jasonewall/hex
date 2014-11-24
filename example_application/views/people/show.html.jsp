@@ -3,4 +3,5 @@
         pageContext.setAttribute(e.getKey(), e.getValue());
     }
 %>
-<h2>${message}</h2>
+
+${person.id}
