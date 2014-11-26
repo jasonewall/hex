@@ -5,10 +5,12 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_action"/>
     <configurations>
+        <conf name="build" visibility="public" description="For dependencies that our dependents depend on."/>
+        <conf name="compile" visibility="private" description="For dependencies we only need to compile with"/>
         <conf name="test" visibility="private" description="Unit test"/>
     </configurations>
     <dependencies>
-        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0"/>
+        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="compile->default"/>
         <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
     </dependencies>
 </ivy-module>

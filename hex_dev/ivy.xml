@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:noNamespaceSchemaLocation=
@@ -13,5 +14,7 @@
         <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.3.0.M0"/>
         <dependency org="org.eclipse.jetty.toolchain" name="jetty-jsp-jdt" rev="2.3.2"/>
         <dependency org="ant" name="ant" rev="1.7.0"/>
+        <dependency org="hex" name="hex_action" rev="latest.integration" changing="true"/>
+        <dependency org="hex" name="hex_repo" rev="latest.integration" changing="true"/>
     </dependencies>
 </ivy-module>
