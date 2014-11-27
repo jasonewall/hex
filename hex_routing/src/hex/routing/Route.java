@@ -71,7 +71,7 @@ public class Route {
         setPath(path);
     }
 
-    private void setPath(Pattern pathPattern) {
+    private void setPattern(Pattern pathPattern) {
         this.pathPattern = pathPattern;
     }
 
@@ -80,7 +80,7 @@ public class Route {
         while(m.find()) {
             addParam(m.group(1));
         }
-        setPath(Pattern.compile(m.replaceAll("/([\\\\w.-]+)[/]?")));
+        setPattern(Pattern.compile(m.replaceAll("/([\\\\w.-]+)") + "[/]?"));
     }
 
     public RouteHandler getHandler() {
