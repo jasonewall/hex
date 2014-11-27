@@ -24,7 +24,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     private String outPath;
 
-    private URL[] getSourcePathURLs() throws MalformedURLException {
+    private URL[] getClassPathURLs() throws MalformedURLException {
         return new URL[] {
                 new File(applicationRootPath, outPath).toURI().toURL()
         };
@@ -55,8 +55,8 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        try (URLClassLoader requestClassLoader = new URLClassLoader(getSourcePathURLs(), this.getClass().getClassLoader())) {
-            applicationCompiler.compile(sourcePaths, outPath);
+        applicationCompiler.compile(sourcePaths, outPath);
+        try (URLClassLoader requestClassLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader())) {
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {
