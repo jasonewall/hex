@@ -71,7 +71,7 @@ public class Route {
         setPath(path);
     }
 
-    public void setPath(Pattern pathPattern) {
+    private void setPath(Pattern pathPattern) {
         this.pathPattern = pathPattern;
     }
 

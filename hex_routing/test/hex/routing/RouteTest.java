@@ -37,7 +37,7 @@ public class RouteTest {
     @Test
     public void shouldAllowPredicateMethodMatching() {
         Route route = new Route(HttpMethod.ANY, RoutingConfigTest.NULL_HANDLER);
-        route.setPath(Pattern.compile("/posts"));
+        route.setPath("/posts");
 
         assertTrue("GET", route.matches(HttpMethod.GET, "/posts"));
         assertTrue("POST", route.matches(HttpMethod.POST, "/posts"));
