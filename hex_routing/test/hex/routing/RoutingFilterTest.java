@@ -106,7 +106,6 @@ public class RoutingFilterTest {
                 filter.doFilter(q, r, filterChain);
             } catch (ServletException | IOException e) {
                 fail(e.getMessage());
-                e.printStackTrace();
             }
         };
     }
