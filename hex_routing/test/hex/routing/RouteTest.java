@@ -58,4 +58,10 @@ public class RouteTest {
                 .andThen((q,r) -> assertNotNull("RouteParams", q.getAttribute(Route.ROUTE_PARAMS)))
                 ;
     }
+
+    @Test
+    public void shouldAllowTrailingSlashesInStaticRoutes() {
+        Route route = new Route(HttpMethod.GET, "/people", RoutingConfigTest.CALLED);
+        assertTrue(route.matches(HttpMethod.GET, "/people/"));
+    }
 }

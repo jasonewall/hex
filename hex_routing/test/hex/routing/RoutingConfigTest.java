@@ -117,6 +117,13 @@ public class RoutingConfigTest {
     }
 
     @Test
+    public void shouldAllowTrailingSlashesInIndexRoutes() {
+        config.addRoute("/people", CALLED);
+        GET("/people/", config.getRouteHandler("/people/")::handleRequest)
+                .andThen((q,r) -> assertTrue("Called", (boolean)q.getAttribute("Called")));
+    }
+
+    @Test
     public void shouldAllowTrailingSlashesInRoutePattern() {
         config.addRoute("/profiles/:username/", CALLED);
         assertTrue("Concrete without", config.hasRoute("/profiles/socrates"));
