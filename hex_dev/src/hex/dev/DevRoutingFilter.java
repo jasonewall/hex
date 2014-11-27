@@ -8,6 +8,8 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -16,17 +18,19 @@ import java.util.stream.Stream;
  * Created by jason on 14-11-21.
  */
 public class DevRoutingFilter implements Filter, RoutingConfig {
+    private static final String OUT_DIR_PROPERTY = "out";
+
     private RoutingConfig config;
 
     private RoutingFilter filter = new RoutingFilter();
 
     private Supplier<Stream<String>> sourcePaths;
 
-    private String outPath;
+    private File outPath;
 
     private URL[] getClassPathURLs() throws MalformedURLException {
         return new URL[] {
-                new File(applicationRootPath, outPath).toURI().toURL()
+                outPath.toURI().toURL()
         };
     }
 
@@ -45,11 +49,19 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
             applicationProperties.load(propStream);
             initCompiler(applicationRootPath);
             sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
-            outPath = applicationProperties.getProperty("out");
+            setOutPath();
             filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
             filter.init(filterConfig);
         } catch (IOException e) {
             throw new ServletException(e);
+        }
+    }
+
+    private void setOutPath() {
+        if (applicationProperties.containsKey(OUT_DIR_PROPERTY)) {
+            outPath = new File(applicationRootPath, applicationProperties.getProperty(OUT_DIR_PROPERTY));
+        } else {
+            outPath = new File(System.getProperty("java.io.tmpdir"), "hex" + applicationRootPath.replaceAll("/", "_"));
         }
     }
 
@@ -73,6 +85,23 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     @Override
     public void destroy() {
         filter.destroy();
+        try {
+            Files.walkFileTree(outPath.toPath(), new SimpleFileVisitor<Path>(){
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace(); // nothing else we can do at this point I guess
+        }
     }
 
     @Override

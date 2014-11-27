@@ -31,10 +31,9 @@ public class Compiler {
         this.applicationRoot = applicationRoot;
     }
 
-    public void compile(Supplier<Stream<String>> sourcePaths, String outPath) {
+    public void compile(Supplier<Stream<String>> sourcePaths, File destDir) {
         Project project = new Project();
         project.setBasedir(applicationRoot);
-        File destDir = new File(project.getBaseDir(), outPath);
         Mkdir mkdir = new Mkdir();
         mkdir.setDir(destDir);
         mkdir.setProject(project);
