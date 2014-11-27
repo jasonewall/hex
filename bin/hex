@@ -13,6 +13,11 @@ if [ -n "$JAVA_HOME" ]; then
     CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
 fi
 
+if [ ! -f $JAVA_HOME/lib/tools.jar ]; then
+    echo "WARNING: Missing tools.jar in JAVA_HOME/lib"
+    echo "Please ensure you have your JAVA_HOME variable set to a JDK and not a JRE"
+fi
+
 function server() {
     java -cp $CLASSPATH -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 hex.dev.HexServer
 }
