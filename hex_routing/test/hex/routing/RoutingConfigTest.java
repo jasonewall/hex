@@ -134,6 +134,7 @@ public class RoutingConfigTest {
     public void shouldDifferentiateBetweenMethods() {
         config.addRoute(HttpMethod.POST, "/articles", UNEXPECTED);
         assertTrue("Has POST route", config.hasRoute(HttpMethod.POST, "/articles"));
+        assertFalse("But not GET", config.hasRoute(HttpMethod.GET, "/articles"));
     }
 
     public static RouteParams getRouteParams(ServletRequest request) {
