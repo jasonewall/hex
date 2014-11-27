@@ -27,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static servlet_mock.HttpMock.*;
 
@@ -69,5 +70,15 @@ public class RouteTest {
     public void shouldNotWorkIfYouForgetSlashes() {
         Route route = new Route(HttpMethod.ANY, "/people/:id/comments", RoutingConfigTest.UNEXPECTED);
         assertFalse(route.matches(HttpMethod.GET, "/people/13comments"));
+    }
+
+    @Test
+    public void theRootRouteShouldWork() {
+        // I don't know if this is a good thing but whatevs fo now.
+        Stream.of("/", "").forEach(r -> {
+            Route route = new Route(HttpMethod.GET, r, RoutingConfigTest.CALLED);
+            Stream.of("/", "").forEach(
+                    p -> assertTrue(String.format("%s -> %s", r, p), route.matches(HttpMethod.GET, p)));
+        });
     }
 }
