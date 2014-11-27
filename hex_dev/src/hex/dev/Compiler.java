@@ -52,7 +52,7 @@ public class Compiler {
             copy.setTodir(destDir);
             copy.setProject(project);
             FileSet fileSet = new FileSet();
-            fileSet.createExclude().setName("**/*/java");
+            fileSet.createExclude().setName("**/*.java");
             fileSet.setDir(new File(project.getBaseDir(), s));
             fileSet.setProject(project);
             copy.addFileset(fileSet);
