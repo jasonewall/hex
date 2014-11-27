@@ -56,7 +56,7 @@ public class RoutingConfigBase implements RoutingConfig {
     }
 
     public RouteHandler getRouteHandler(HttpMethod method, String path) {
-        return findRouteFor(method, path).map(Route::getHandler).get();
+        return findRouteFor(method, path).get().getHandler();
     }
 
     public void addRoute(String path, RouteHandler handler) {
