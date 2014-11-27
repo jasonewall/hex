@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+if [ -n "`which jenv`" ]; then
+    JAVA_HOME=`jenv javahome`
+fi
+
+BIN=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+LIB=$( cd "$BIN/../lib" && pwd )
+CLASSPATH=$(JARS=("$LIB"/*.jar); IFS=:; echo "${JARS[*]}")
+
+if [ -n "$JAVA_HOME" ]; then
+    echo "Using tools.jar found in $JAVA_HOME/lib"
+    CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/tools.jar
+fi
+
+function server() {
+    java -cp $CLASSPATH -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 hex.dev.HexServer
+}
+
+case $1 in
+    server|s)
+        shift
+        server $@
+        ;;
+esac
