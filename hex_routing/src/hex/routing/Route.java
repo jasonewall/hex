@@ -80,7 +80,7 @@ public class Route {
         while(m.find()) {
             addParam(m.group(1));
         }
-        setPattern(Pattern.compile(m.replaceAll("/([\\\\w.-]+)") + "[/]?"));
+        setPattern(Pattern.compile(m.replaceAll("/([\\\\w.-]+)[/]?") + "[/]?"));
     }
 
     public RouteHandler getHandler() {
