@@ -64,4 +64,10 @@ public class RouteTest {
         Route route = new Route(HttpMethod.GET, "/people", RoutingConfigTest.CALLED);
         assertTrue(route.matches(HttpMethod.GET, "/people/"));
     }
+
+    @Test
+    public void shouldNotWorkIfYouForgetSlashes() {
+        Route route = new Route(HttpMethod.ANY, "/people/:id/comments", RoutingConfigTest.UNEXPECTED);
+        assertFalse(route.matches(HttpMethod.GET, "/people/13comments"));
+    }
 }
