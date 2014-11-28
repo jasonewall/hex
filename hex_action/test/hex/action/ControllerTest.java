@@ -42,7 +42,7 @@ public class ControllerTest {
     public void renderActionShouldObeyViewPathRules() {
         controller.renderAction("homeBoy");
         assertContentType("text/html");
-        assertRenderedPage("/posts/html/home_boy.jsp");
+        assertRenderedPage("/posts/home_boy.html.jsp");
     }
 
     private void assertContentType(String contentType) {

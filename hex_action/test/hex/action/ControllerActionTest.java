@@ -128,14 +128,14 @@ public class ControllerActionTest {
         initAction("withRouteParams");
         initRouteParams(p -> p.put("id", "17"));
         GET("/controller_action_tests/17", this::handleRequest);
-        assertRendered("/controller_action_tests/html/with_route_params.jsp");
+        assertRendered("/controller_action_tests/with_route_params.html.jsp");
     }
 
     @Test
     public void shouldBeSmartAboutGoingToIndexRoutes() {
         initAction("setCalled");
         GET("/does_this_really_matter", this::handleRequest);
-        assertRendered("/controller_action_tests/html/set_called.jsp");
+        assertRendered("/controller_action_tests/set_called.html.jsp");
     }
 
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {

@@ -33,9 +33,11 @@ public class Controller {
         String engine = "jsp";
         return new ViewPath()
                 .set(templateDirectory())
-                .set(format)
                 .set(underscore(forActionName))
-                .set(engine);
+                .set(format)
+                .set(engine)
+                .toString()
+                ;
     }
 
     protected void renderText(String text) {
