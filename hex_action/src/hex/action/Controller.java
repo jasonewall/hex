@@ -14,13 +14,15 @@ import static hex.utils.utils.Inflection.underscore;
  * Created by jason on 14-11-15.
  */
 public class Controller {
+    private static final Pattern CONTROLLER_NAMES = Pattern.compile("(.*)Controller");
+
     protected ViewContext view = new ViewContext();
 
     protected HttpServletRequest request;
 
     protected HttpServletResponse response;
 
-    private static final Pattern CONTROLLER_NAMES = Pattern.compile("(.*)Controller");
+    private String viewBase = "";
 
     private String templateDirectory() {
         Matcher m = CONTROLLER_NAMES.matcher(getClass().getSimpleName());
@@ -28,10 +30,14 @@ public class Controller {
         return underscore(m.replaceAll(m.group(1)));
     }
 
+    public void setViewBase(String viewBase) {
+        this.viewBase = viewBase;
+    }
+
     protected String getViewPath(String forActionName) {
         String format = "html";
         String engine = "jsp";
-        return new ViewPath()
+        return new ViewPath(viewBase)
                 .set(templateDirectory())
                 .set(underscore(forActionName))
                 .set(format)

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
@@ -136,6 +137,16 @@ public class ControllerActionTest {
         initAction("setCalled");
         GET("/does_this_really_matter", this::handleRequest);
         assertRendered("/controller_action_tests/set_called.html.jsp");
+    }
+
+    @Test
+    public void shouldRespectViewBaseSetting() {
+        Properties props = new Properties();
+        props.setProperty("viewBase", "/resources");
+        initAction("setCalled");
+        action.setHexActionConfig(props);
+        GET("/people/13", this::handleRequest);
+        assertRendered("/resources/controller_action_tests/set_called.html.jsp");
     }
 
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {

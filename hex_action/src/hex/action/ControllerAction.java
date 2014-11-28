@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,7 +30,13 @@ public class ControllerAction implements RouteHandler {
 
     private final Supplier<Controller> supplier;
 
+    private Properties hexActionConfig = new Properties();
+
     private Optional<Method> action;
+
+    public void setHexActionConfig(Properties hexActionConfig) {
+        this.hexActionConfig = hexActionConfig;
+    }
 
     public ControllerAction(Supplier<Controller> supplier, String actionName) {
         this.supplier = supplier;
@@ -66,6 +73,10 @@ public class ControllerAction implements RouteHandler {
     public void prepareController(Controller controller, ServletRequest servletRequest, ServletResponse servletResponse) {
         controller.request = (HttpServletRequest)servletRequest;
         controller.response = (HttpServletResponse)servletResponse;
+
+        if(hexActionConfig.containsKey("viewBase")) {
+            controller.setViewBase(hexActionConfig.getProperty("viewBase"));
+        }
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
