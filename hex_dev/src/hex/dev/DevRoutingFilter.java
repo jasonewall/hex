@@ -1,6 +1,6 @@
 package hex.dev;
 
-import hex.Application;
+import hex.action.Application;
 import hex.routing.*;
 
 import javax.servlet.*;

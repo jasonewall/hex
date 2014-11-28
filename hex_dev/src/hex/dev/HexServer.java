@@ -1,6 +1,6 @@
 package hex.dev;
 
-import hex.Application;
+import hex.action.Application;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.webapp.WebAppContext;
 
