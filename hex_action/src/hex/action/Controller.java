@@ -49,6 +49,15 @@ public class Controller {
         }
     }
 
+    /**
+     * Delegates directly to the servlet containers implementation of
+     * {@link javax.servlet.RequestDispatcher#forward(javax.servlet.ServletRequest, javax.servlet.ServletResponse)}.
+     * Probably want to use this very sparingly, as the other {@code render*} methods of controller resolve relative to your
+     * views directory(ies).
+     * @see {@link #renderAction(String)}
+     * @see {@link #renderPath(String)}
+     * @param pagePath The path of the page to render
+     */
     protected void renderPage(String pagePath) {
         //noinspection TryWithIdenticalCatches
         try {
@@ -59,5 +68,29 @@ public class Controller {
         } catch (IOException io) {
             throw new ActionAbortedException(io);
         }
+    }
+
+    /**
+     * Renders the view that {@code path} resolves to according to the view resolving rules,
+     * including implied format and engines that normally accompany the default rendering
+     * path of a typical {@link ControllerAction} request.
+     * @param path The path to resolve into a view
+     */
+    protected void renderPath(String path) {
+
+    }
+
+    /**
+     * Renders the view that would normally be rendered had the action named by {@code actionName}
+     * been called (and assumes that action does not provide it's own {@code render} call).
+     *
+     * e.g. Given a controller {@code PostsController} with action methods {@code update(int id)} and
+     * {@code show(int id)}, where {@code update} calls {@code renderAction("show")}, the view found at
+     * {@code /viewRoot/posts/html/show.jsp} will be rendered, even if the show action method explicitly renders
+     * a different view.
+     * @param actionName The name of the action to resolve the view for
+     */
+    protected void renderAction(String actionName) {
+        renderPage(getViewPath(actionName));
     }
 }
