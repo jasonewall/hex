@@ -29,6 +29,8 @@ public class Application {
             RoutingConfigBase routingConfig = new RoutingConfigBase();
             for (String className : routingConfigClasses) {
                 RouteManager routeManager = (RouteManager) Class.forName(className, false, classLoader).newInstance();
+                routeManager.setHexActionProperties(adapterProperties);
+                routeManager.defineRoutes();
                 routeManager.getDefinedRoutes().forEach(routingConfig::addRoute);
             }
             return routingConfig;
