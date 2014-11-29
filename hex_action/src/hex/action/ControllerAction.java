@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.annotations.RouteParam;
+import hex.action.initialization.InitializationException;
 import hex.routing.Route;
 import hex.routing.RouteHandler;
 import hex.routing.RouteParams;
@@ -45,6 +46,7 @@ public class ControllerAction implements RouteHandler {
 
     @Override
     public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        checkException(servletRequest);
         Controller controller = supplier.get();
         prepareController(controller, servletRequest, servletResponse);
         try {
@@ -77,6 +79,14 @@ public class ControllerAction implements RouteHandler {
         if(hexActionConfig.containsKey("viewBase")) {
             controller.setViewBase(hexActionConfig.getProperty("viewBase"));
         }
+    }
+
+    private void checkException(ServletRequest request) throws ServletException {
+        InitializationException e = (InitializationException)
+                request.getServletContext().getAttribute(InitializationException.class.getName());
+        if(e == null) return;
+
+        throw new ServletException(Errors.INITIALIZATION_ERROR_OCCURRED, e);
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
