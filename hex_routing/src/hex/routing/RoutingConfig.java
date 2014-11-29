@@ -1,37 +1,41 @@
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Jason E. Wall
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package hex.routing;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by jason on 14-11-11.
  */
-public class RoutingConfig {
-    private List<Route> routes = new ArrayList<>();
+public interface RoutingConfig {
+    boolean hasRoute(String path);
 
-    public boolean hasRoute(String path) {
-        return findRouteFor(path).isPresent();
-    }
+    boolean hasRoute(String method, String path);
 
-    public RouteHandler getRouteHandler(String path) {
-        return findRouteFor(path).map(Route::getHandler).get();
-    }
+    boolean hasRoute(HttpMethod method, String path);
 
-    private Pattern path_params = Pattern.compile("/:(\\w+)");
+    RouteHandler getRouteHandler(String path);
 
-    public void addRoute(String path, RouteHandler handler) {
-        Route route = new Route();
-        Matcher m = path_params.matcher(path);
-        while(m.find()) {
-            route.addParam(m.group(1));
-        }
-        route.setPath(Pattern.compile(m.replaceAll("/(\\\\w+)")));
-        route.setHandler(handler);
-        routes.add(route);
-    }
+    RouteHandler getRouteHandler(String method, String path);
 
-    private Optional<Route> findRouteFor(String path) {
-        return routes.stream().filter((r) -> r.matches(path)).findFirst();
-    }
+    RouteHandler getRouteHandler(HttpMethod method, String path);
 }

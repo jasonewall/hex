@@ -1,14 +1,15 @@
 package hex.repo;
 
-import jill.Queryable;
+import hex.ql.Queryable;
+import hex.repo.streams.RepositoryStream;
 
-import java.util.function.Predicate;
+import java.util.Optional;
 
 /**
  * Created by jason on 14-11-01.
  */
 public interface Repository<T> extends Queryable<T> {
-    public T find(int id);
+    Optional<T> find(int id);
 
-    public Queryable<T> where(Predicate<T> predicate);
+    RepositoryStream<T> stream();
 }

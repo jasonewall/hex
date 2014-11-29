@@ -1,11 +1,11 @@
 Hex Repo
 ======================
 
-ORM using the API declared in [thejayvm/jill](http://github.com/thejayvm/jill)
+ORM using the API declared in [hex/hexql](http://github.com/thejayvm/hex/hexql)
 
 Use the `QueryLanguage` defined in JILL.
 
-    import static jill.QueryLangauge.*
+    import static hex.ql.QueryLangauge.*
 
 Instantiate your repo instance
 
@@ -46,21 +46,26 @@ password:
 
 I'll welcome contributors but keep in mind the following:
 
-### No byte code manipulation
+### No byte code manipulation of "business classes"
 
-It's a pretty common practice for a lot of JVM based ORMs out there. I'd like to see something that doesn't do it.
+It's a pretty common practice for a lot of JVM based ORMs out there. I'd like to see something that doesn't do it. At 
+first I tried to do zero byte manipulation, but that seemed excessively idealistic. I'm breaking down and allowing the creating
+of subclasses off of model objects.
 
 ### All queries map to POJOs
 
-All mapping metadata should be declared outside of the "Model" classes.
+All mapping metadata should be able to be declared outside of the "Model" classes.
 
     NOTE: As of now I still haven't figured out how I'm going to declare custom mapping of fields to columns.
 
-### All queries should be able to be queried by JILL
 
-This is a sister project of [thejayvm/jill](https://github.com/thejayvm/jill). The idea behind that project is a Java written
-query language for querying [java.util.Collection](http://docs.oracle.com/javase/7/docs/api/java/util/Collection.html)
-instances. All of the results of querying in HexRepo implement a construct from JILL in some form or fashion.
+### All queries should implement the `Stream` interfaces from Java 8
+
+A new directive I'm enforcing in JILL. It's going to require a lot of re-working what is currently here. I'm thinking
+something like: `Queryable` -> `stream()` or `query()` that returns an object that implements the `Stream` interface
+as well as an additional `Query` interface.
+
+e.g. Calling `Stream#filter` on a Repository Query will translate itself to an addition the where clause.
 
 ### What to do?
 

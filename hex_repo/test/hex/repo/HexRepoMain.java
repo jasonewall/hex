@@ -1,10 +1,12 @@
 package hex.repo;
 
-import jill.ast.InvalidAstException;
+import hex.repo.streams.RepositoryStream;
+import hex.ql.ast.InvalidAstException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static jill.QueryLanguage.*;
+import static hex.ql.QueryLanguage.*;
 
 /**
  * Created by jason on 14-10-25.
@@ -12,50 +14,43 @@ import static jill.QueryLanguage.*;
 public class HexRepoMain {
     public static void main(String[] args) throws InvalidAstException {
         String sql, expected;
-        RepositoryBase<Person> repo = new PersonRepository();
-        sql = repo.toSql();
+        Repository<Person> repo = new PersonRepository();
+        sql = repo.stream().toSql();
         expected = "SELECT * FROM people";
         if(!expected.equals(sql)) System.exit(-1);
 
-        RepositoryQuery<Person> q = (RepositoryQuery<Person>) repo.where(field(Person::getFirstName, is("Jason")));
+        RepositoryStream<Person> q = (RepositoryStream<Person>) repo.where(Person::getFirstName, is("Jason"));
 
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE first_name = 'Jason'";
         if(!expected.equals(sql)) System.exit(1);
 
-        q = (RepositoryQuery<Person>) q.where(field(Person::getLastName, is("Wall")));
+        q = (RepositoryStream<Person>) q.where(Person::getLastName, is("Wall"));
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
         if(!expected.equals(sql)) System.exit(2);
 
-        q = (RepositoryQuery<Person>) repo.where(
-                field(Person::getLastName, is("Wall"))
-                    .and(field(Person::getFirstName, is("Jason")).or(field(Person::getFirstName, is("Natalie"))))
+        q = (RepositoryStream<Person>)repo.stream().filter(
+                where(Person::getLastName, is("Wall"))
+                        .and(where(Person::getFirstName, is("Jason")).or(where(Person::getFirstName, is("Natalie"))))
         );
 
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
         if(!expected.equals(sql)) System.exit(3);
 
-        List<Person> people = q.toList();
-        if(people == RepositoryQuery.LIST_ERROR) {
-            q.getExceptions().forEach(Exception::printStackTrace);
-            System.exit(4);
-        }
-
+        List<Person> people = q.collect(Collectors.toList());
         if(people.size() != 2) System.exit(5);
 
-        people.forEach((p) -> {
-            System.out.println(String.format("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()));
-        });
+        people.forEach((p) -> System.out.printf("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()).println());
 
-        q = (RepositoryQuery<Person>) q.where(field(Person::getFirstName, is("Bryce")));
+        q = (RepositoryStream<Person>) q.where(Person::getFirstName, is("Bryce"));
 
-        if(q.toList().size() > 0) System.exit(6);
+        if(q.collect(Collectors.toList()).size() > 0) System.exit(6);
 
-        q.where((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
+        q.filter((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
 
-        Person j = repo.find(1);
+        Person j = repo.find(1).get();
         if(!j.getFirstName().equals("Jason")) System.exit(8);
     }
 }
