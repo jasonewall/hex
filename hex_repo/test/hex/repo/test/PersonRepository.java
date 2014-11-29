@@ -1,5 +1,6 @@
-package hex.repo;
+package hex.repo.test;
 
+import hex.repo.RepositoryBase;
 import hex.repo.metadata.Metadata;
 
 /**

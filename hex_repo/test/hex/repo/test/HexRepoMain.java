@@ -1,7 +1,10 @@
-package hex.repo;
+package hex.repo.test;
 
+import hex.repo.Repository;
 import hex.repo.streams.RepositoryStream;
 import hex.ql.ast.InvalidAstException;
+import hex.repo.test.Person;
+import hex.repo.test.PersonRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
