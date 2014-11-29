@@ -5,6 +5,7 @@ import hex.routing.Route;
 import hex.routing.RouteParams;
 import org.junit.After;
 import org.junit.Test;
+import servlet_mock.MockHttpServletRequest;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
@@ -35,7 +37,7 @@ public class ControllerActionTest {
     private RouteParams routeParams;
 
     @SuppressWarnings("UnusedDeclaration")
-    class ControllerActionTestController extends Controller {
+    class ControllerActionTestsController extends Controller {
         public void setCalled() {
             view.put("CALLED", true);
         }
@@ -67,7 +69,7 @@ public class ControllerActionTest {
     }
 
     private void initAction(String actionName) {
-        action = new ControllerAction(ControllerActionTestController::new, actionName);
+        action = new ControllerAction(ControllerActionTestsController::new, actionName);
     }
 
     private void initRouteParams(Consumer<Map<String,String>> paramsConsumer) {
@@ -122,6 +124,31 @@ public class ControllerActionTest {
         assertNotFound();
     }
 
+    @Test
+    public void shouldRenderDefaultRoutes() {
+        initAction("withRouteParams");
+        initRouteParams(p -> p.put("id", "17"));
+        GET("/controller_action_tests/17", this::handleRequest);
+        assertRendered("/controller_action_tests/with_route_params.html.jsp");
+    }
+
+    @Test
+    public void shouldBeSmartAboutGoingToIndexRoutes() {
+        initAction("setCalled");
+        GET("/does_this_really_matter", this::handleRequest);
+        assertRendered("/controller_action_tests/set_called.html.jsp");
+    }
+
+    @Test
+    public void shouldRespectViewBaseSetting() {
+        Properties props = new Properties();
+        props.setProperty("viewBase", "/resources");
+        initAction("setCalled");
+        action.setHexActionConfig(props);
+        GET("/people/13", this::handleRequest);
+        assertRendered("/resources/controller_action_tests/set_called.html.jsp");
+    }
+
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
@@ -146,6 +173,11 @@ public class ControllerActionTest {
     private void assert500() {
         assertNotNull(servletException);
         servletException = null;
+    }
+
+    private void assertRendered(String jspFilePath) {
+        MockHttpServletRequest request = (MockHttpServletRequest) servletRequest;
+        assertEquals(jspFilePath, request.getRenderedPage());
     }
 
     private ViewContext getViewContext() {

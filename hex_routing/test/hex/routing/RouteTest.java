@@ -27,6 +27,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import static servlet_mock.HttpMock.*;
 
@@ -37,7 +38,7 @@ public class RouteTest {
     @Test
     public void shouldAllowPredicateMethodMatching() {
         Route route = new Route(HttpMethod.ANY, RoutingConfigTest.NULL_HANDLER);
-        route.setPath(Pattern.compile("/posts"));
+        route.setPath("/posts");
 
         assertTrue("GET", route.matches(HttpMethod.GET, "/posts"));
         assertTrue("POST", route.matches(HttpMethod.POST, "/posts"));
@@ -57,5 +58,27 @@ public class RouteTest {
         GET("/posts/100", route.getHandler()::handleRequest)
                 .andThen((q,r) -> assertNotNull("RouteParams", q.getAttribute(Route.ROUTE_PARAMS)))
                 ;
+    }
+
+    @Test
+    public void shouldAllowTrailingSlashesInStaticRoutes() {
+        Route route = new Route(HttpMethod.GET, "/people", RoutingConfigTest.CALLED);
+        assertTrue(route.matches(HttpMethod.GET, "/people/"));
+    }
+
+    @Test
+    public void shouldNotWorkIfYouForgetSlashes() {
+        Route route = new Route(HttpMethod.ANY, "/people/:id/comments", RoutingConfigTest.UNEXPECTED);
+        assertFalse(route.matches(HttpMethod.GET, "/people/13comments"));
+    }
+
+    @Test
+    public void theRootRouteShouldWork() {
+        // I don't know if this is a good thing but whatevs fo now.
+        Stream.of("/", "").forEach(r -> {
+            Route route = new Route(HttpMethod.GET, r, RoutingConfigTest.CALLED);
+            Stream.of("/", "").forEach(
+                    p -> assertTrue(String.format("%s -> %s", r, p), route.matches(HttpMethod.GET, p)));
+        });
     }
 }

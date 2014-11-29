@@ -5,6 +5,7 @@ import hex.routing.Route;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.function.Supplier;
 
 /**
@@ -13,12 +14,21 @@ import java.util.function.Supplier;
 public class RouteManager {
     private List<Route> definedRoutes = new ArrayList<>();
 
+    private Properties hexActionProperties;
+
+    public Properties getHexActionConfig() {
+        return hexActionProperties;
+    }
+
+    public void setHexActionProperties(Properties hexActionProperties) {
+        this.hexActionProperties = hexActionProperties;
+    }
+
     public List<Route> getDefinedRoutes() {
         return definedRoutes;
     }
 
     public RouteManager() {
-        defineRoutes();
     }
 
     public void defineRoutes() {
@@ -26,22 +36,28 @@ public class RouteManager {
     }
 
     public void get(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.GET, path, new ControllerAction(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.GET, path, getHandler(controllerSupplier, action)));
     }
 
     public void post(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.POST, path, new ControllerAction(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.POST, path, getHandler(controllerSupplier, action)));
     }
 
     public void put(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.PUT, path, new ControllerAction(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.PUT, path, getHandler(controllerSupplier, action)));
     }
 
     public void delete(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.DELETE, path, new ControllerAction(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.DELETE, path, getHandler(controllerSupplier, action)));
     }
 
     public void matches(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.ANY, path, new ControllerAction(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+    }
+
+    private ControllerAction getHandler(Supplier<Controller> controllerSupplier, String action) {
+        ControllerAction controllerAction = new ControllerAction(controllerSupplier, action);
+        controllerAction.setHexActionConfig(getHexActionConfig());
+        return controllerAction;
     }
 }

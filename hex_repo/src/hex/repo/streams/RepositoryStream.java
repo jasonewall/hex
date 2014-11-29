@@ -435,4 +435,9 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         dup.orderBy = null;
         return dup;
     }
+
+    @Override
+    public Object[] toArray() {
+        return collect(Collectors.toList()).toArray();
+    }
 }

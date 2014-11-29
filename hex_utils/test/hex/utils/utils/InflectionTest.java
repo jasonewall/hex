@@ -1,9 +1,9 @@
-package hex.repo.utils;
+package hex.utils.utils;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static hex.repo.utils.Inflection.*;
+import static hex.utils.utils.Inflection.*;
 
 /**
  * Created by jason on 14-11-01.

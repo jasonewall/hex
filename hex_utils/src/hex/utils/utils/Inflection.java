@@ -1,4 +1,4 @@
-package hex.repo.utils;
+package hex.utils.utils;
 
 import java.util.Arrays;
 import java.util.function.Function;

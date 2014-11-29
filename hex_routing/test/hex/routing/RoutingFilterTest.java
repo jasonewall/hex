@@ -92,7 +92,8 @@ public class RoutingFilterTest {
 
     @Test
     public void filterShouldDelegatePOSTToHandler() {
-        routingConfig.addRoute(HttpMethod.POST, "/posts/:id/comments", (q,r) -> q.setAttribute("post_id", getRouteParams(q).getInt("id")));
+        routingConfig.addRoute(HttpMethod.POST, "/posts/:id/comments",
+                (q,r) -> q.setAttribute("post_id", getRouteParams(q).getInt("id")));
 
         POST("/posts/17/comments", doFilter((q,r) -> fail("Expected filter to handle POST request")))
                 .andThen((q,r) -> assertEquals(17, q.getAttribute("post_id")))
@@ -105,7 +106,6 @@ public class RoutingFilterTest {
                 filter.doFilter(q, r, filterChain);
             } catch (ServletException | IOException e) {
                 fail(e.getMessage());
-                e.printStackTrace();
             }
         };
     }
