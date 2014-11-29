@@ -1,6 +1,5 @@
 package hex.action;
 
-import hex.action.RouteManager;
 import hex.routing.RoutingConfig;
 import hex.routing.RoutingConfigBase;
 
