@@ -2,6 +2,9 @@ package controllers;
 
 import hex.action.Controller;
 import hex.action.annotations.RouteParam;
+import hex.ql.Query;
+import hex.repo.Repository;
+import hex.repo.RepositoryBase;
 import people.Person;
 
 /**
@@ -9,7 +12,10 @@ import people.Person;
  */
 public class PeopleController extends Controller {
     public void index() {
-        view.put("message", "This is a list of people.");
+        Repository<Person> repo = new RepositoryBase<>(Person.class);
+        Query<Person> people = repo.stream();
+        // frell... F JSTL, custom tags it is!
+        view.put("people", people.iterator());
     }
 
     public void show(@RouteParam("id") int id) {
