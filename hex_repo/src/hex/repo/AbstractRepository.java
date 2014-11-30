@@ -9,7 +9,9 @@ import hex.ql.ast.predicates.EqualityPredicate;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -34,6 +36,14 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
         } catch (SQLException | DataMappingException e) {
             throw new RepositoryException(e);
         }
+    }
+
+    public List<T> executeQuery(String sql) {
+        return executeQuery(sql, rs -> {
+            List<T> results = new ArrayList<>();
+            while(rs.next()) results.add(get_metadata().mapRecord(rs));
+            return results;
+        });
     }
 
     @Override

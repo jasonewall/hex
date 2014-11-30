@@ -1,7 +1,7 @@
 package hex.repo.examples;
 
-import hex.repo.Person;
-import hex.repo.PersonRepository;
+import hex.repo.test.Person;
+import hex.repo.test.PersonRepository;
 import hex.repo.Repository;
 
 import static hex.ql.QueryLanguage.*;

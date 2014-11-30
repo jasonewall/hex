@@ -1,4 +1,4 @@
-package hex.repo;
+package hex.repo.test;
 
 /**
  * Created by jason on 14-10-25.
