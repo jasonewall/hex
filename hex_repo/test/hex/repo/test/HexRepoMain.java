@@ -42,7 +42,7 @@ public class HexRepoMain {
         expected = "SELECT * FROM people WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
         if(!expected.equals(sql)) System.exit(3);
 
-        List<Person> people = q.collect(Collectors.toList());
+        List<Person> people = q.parallel().collect(Collectors.toList());
         if(people.size() != 2) System.exit(5);
 
         people.forEach((p) -> System.out.printf("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()).println());
