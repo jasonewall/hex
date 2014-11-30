@@ -10,6 +10,7 @@ import hex.ql.queries.StreamQuery;
 import hex.repo.AbstractRepository;
 import hex.repo.RepositoryException;
 import hex.repo.sql.SqlQuery;
+import hex.repo.streams.spliterators.RepositorySpliterator;
 
 import java.util.*;
 import java.util.function.*;
