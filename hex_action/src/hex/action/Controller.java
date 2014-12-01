@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static hex.utils.utils.Inflection.underscore;
+import static hex.utils.Inflection.underscore;
 /**
  * Created by jason on 14-11-15.
  */

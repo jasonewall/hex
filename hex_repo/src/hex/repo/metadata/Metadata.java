@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static hex.utils.utils.Inflection.*;
+import static hex.utils.Inflection.*;
 
 /**
  * Created by jason on 14-10-29.
