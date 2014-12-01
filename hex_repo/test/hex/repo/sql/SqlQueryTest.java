@@ -27,8 +27,7 @@ public class SqlQueryTest {
         SqlQuery q = new SqlQuery(Book.metadata());
         q.from(new Node[]{ new Variable("books") });
 
-        @SuppressWarnings("unchecked") // TODO figure out if we can get around this
-        Condition<Book,String> condition = (Condition<Book,String>) where(Book::getTitle, is("1984"));
+        Condition<Book,String> condition = where(Book::getTitle, is("1984"));
         q.where(condition.toTree());
 
         String expected = "SELECT * FROM books WHERE title = '1984'";
