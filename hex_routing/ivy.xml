@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation=
+                    "http://ant.apache.org/ivy/schemas/ivy.xsd">
+    <info organisation="hex" module="hex_routing"/>
+    <configurations>
+        <conf name="compile" description="For talking about dependencies we only need for compiling" visibility="private"/>
+    </configurations>
+    <dependencies>
+        <dependency name="javax.servlet-api" rev="3.1.0" org="javax.servlet" conf="compile->default"/>
+    </dependencies>
+</ivy-module>
