@@ -12,7 +12,7 @@ import java.util.function.Function;
  * Created by jason on 14-10-26.
  */
 public class SqlQuery {
-    private final Dialect dialect;
+    protected final Dialect dialect;
 
     private final Metadata metadata;
 
@@ -99,7 +99,7 @@ public class SqlQuery {
         throw new InvalidAstException("Unhandled comparator type found while generating SQL.");
     }
 
-    private StringBuilder renderLiteral(StringBuilder sql, Literal node) {
+    protected StringBuilder renderLiteral(StringBuilder sql, Literal node) {
         Object value = node.getValue();
         if(value instanceof Number) {
             sql.append(value);

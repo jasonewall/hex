@@ -69,4 +69,9 @@ public interface Dialect {
     default public StringBuilder or(StringBuilder sql) {
         return sql.append(OR);
     }
+
+    static final String BOUND_PARAM = "?";
+    default public StringBuilder boundParam(StringBuilder sql) {
+        return sql.append(BOUND_PARAM);
+    }
 }

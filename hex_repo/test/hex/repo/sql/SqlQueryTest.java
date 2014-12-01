@@ -24,14 +24,23 @@ public class SqlQueryTest {
 
     @Test
     public void testSelectStarWithWhere() throws InvalidAstException {
-        SqlQuery q = new SqlQuery(Book.metadata());
+        SqlQuery q = getSelectStarWithWhere();
+
+        String expected = "SELECT * FROM books WHERE title = '1984'";
+        assertEquals(expected, q.toSql());
+    }
+
+    protected SqlQuery getSelectStarWithWhere() throws InvalidAstException {
+        SqlQuery q = getSqlQuery();
         q.from(new Node[]{ new Variable("books") });
 
         Condition<Book,String> condition = where(Book::getTitle, is("1984"));
         q.where(condition.toTree());
+        return q;
+    }
 
-        String expected = "SELECT * FROM books WHERE title = '1984'";
-        assertEquals(expected, q.toSql());
+    protected SqlQuery getSqlQuery() {
+        return new SqlQuery(Book.metadata());
     }
 
     @Test
@@ -47,11 +56,16 @@ public class SqlQueryTest {
 
     @Test
     public void testCompoundCondition() throws InvalidAstException {
-        Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
-        SqlQuery q = new SqlQuery(Book.metadata());
-        q.from(new Node[]{ new Variable("books") });
-        q.where(condition.toTree());
+        SqlQuery q = getCompoundWhere();
         String expected = "SELECT * FROM books WHERE (title = '1984') AND (published_year = 1984)";
         assertEquals(expected, q.toSql());
+    }
+
+    protected SqlQuery getCompoundWhere() throws InvalidAstException {
+        Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
+        SqlQuery q = getSqlQuery();
+        q.from(new Node[]{ new Variable("books") });
+        q.where(condition.toTree());
+        return q;
     }
 }
