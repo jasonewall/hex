@@ -304,7 +304,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public Optional<T> findFirst() {
-        return repository.executeQuery(toSql(), (rs) -> {
+        return repository.executeQuery(getPreparedQuery(), (rs) -> {
             if(!rs.next())
                 return Optional.<T>empty();
 
