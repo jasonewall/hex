@@ -1,6 +1,7 @@
 package hex.repo.streams;
 
 import hex.repo.AbstractRepository;
+import hex.repo.sql.PreparedSqlQuery;
 
 import java.util.Iterator;
 import java.util.function.Consumer;
@@ -11,13 +12,13 @@ import java.util.function.Consumer;
 public class RepositoryIterator<T> implements Iterator<T> {
     private AbstractRepository<T> repository;
 
-    private String query;
+    private PreparedSqlQuery query;
 
     private Consumer<T> peekers;
 
     private Iterator<T> iterator;
 
-    public RepositoryIterator(AbstractRepository<T> repository, String query, Consumer<T> peekers) {
+    public RepositoryIterator(AbstractRepository<T> repository, PreparedSqlQuery query, Consumer<T> peekers) {
         this.repository = repository;
         this.query = query;
         this.peekers = peekers;

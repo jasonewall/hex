@@ -63,9 +63,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     public String toSql() {
-        SqlQuery result = new SqlQuery(repository.get_metadata());
-        result.from(new Node[]{new Variable(repository.getTableName())});
-        result.where(where);
+        SqlQuery result = prepareQuery(new SqlQuery(repository.get_metadata()));
         try {
             return result.toSql();
         } catch(InvalidAstException e) {
@@ -74,9 +72,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     public String toPreparedSql() {
-        SqlQuery result = new PreparedSqlQuery(repository.get_metadata());
-        result.from(new Node[]{new Variable(repository.getTableName())});
-        result.where(where);
+        SqlQuery result = getPreparedQuery();
         try {
             return result.toSql();
         } catch(InvalidAstException e) {
@@ -84,9 +80,38 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         }
     }
 
+    private PreparedSqlQuery getPreparedQuery() {
+        return prepareQuery(new PreparedSqlQuery(repository.get_metadata()));
+    }
+
+    private <Q extends SqlQuery> Q prepareQuery(Q result) {
+        result.from(new Node[]{new Variable(repository.getTableName())});
+        result.where(where);
+        return result;
+    }
+
     public RepositoryStream(AbstractRepository<T> repository) {
         this.repository = repository;
     }
+
+    /**
+     * Returns a {@code RepositoryIntStream} that is essentially a single column
+     * query that has an {@code int} for a single column. Once terminated the results
+     * are delegated to a traditional {@link java.util.stream.IntStream}. Destroys the
+     * existing {@code SELECT} clause if there was one.
+     * <p>
+     * <p>This is an <a href="package-summary.html#StreamOps">
+     * intermediate operation</a>.
+     *
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function to apply to each element
+     * @return the new stream
+     */
+//    @Override
+//    public IntStream mapToInt(ToIntFunction<? super T> mapper) {
+//        return null;
+//    }
 
     /**
      * Returns a stream resulting from applying the predicate in the form of a
@@ -143,25 +168,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     public <R> Query<R> map(Function<? super T, ? extends R> mapper) {
         return super.map(mapper);
     }
-
-    /**
-     * Returns a {@code RepositoryIntStream} that is essentially a single column
-     * query that has an {@code int} for a single column. Once terminated the results
-     * are delegated to a traditional {@link java.util.stream.IntStream}. Destroys the
-     * existing {@code SELECT} clause if there was one.
-     * <p>
-     * <p>This is an <a href="package-summary.html#StreamOps">
-     * intermediate operation</a>.
-     *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
-     * @return the new stream
-     */
-//    @Override
-//    public IntStream mapToInt(ToIntFunction<? super T> mapper) {
-//        return null;
-//    }
 
     /**
      * Returns a stream consisting of the results of replacing each element of
@@ -379,12 +385,12 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        return new RepositoryIterator<>(repository, toSql(), peeker);
+        return new RepositoryIterator<>(repository, getPreparedQuery(), peeker);
     }
 
     @Override
     public Spliterator<T> spliterator() {
-        return new RepositorySpliterator<>(repository, toSql(), peeker);
+        return new RepositorySpliterator<>(repository, getPreparedQuery(), peeker);
     }
 
     @Override

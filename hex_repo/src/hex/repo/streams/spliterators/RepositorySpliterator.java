@@ -1,6 +1,7 @@
 package hex.repo.streams.spliterators;
 
 import hex.repo.AbstractRepository;
+import hex.repo.sql.PreparedSqlQuery;
 
 import java.util.Spliterator;
 import java.util.function.Consumer;
@@ -11,11 +12,11 @@ import java.util.function.Consumer;
 public class RepositorySpliterator<T> extends AbstractPeekingSpliterator<T> {
     private final AbstractRepository<T> repository;
 
-    private final String query;
+    private final PreparedSqlQuery query;
 
     private Spliterator<T> spliterator;
 
-    public RepositorySpliterator(AbstractRepository<T> repository, String query, Consumer<T> peekers) {
+    public RepositorySpliterator(AbstractRepository<T> repository, PreparedSqlQuery query, Consumer<T> peekers) {
         super(peekers);
         this.repository = repository;
         this.query = query;
