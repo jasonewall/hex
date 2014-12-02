@@ -18,6 +18,8 @@ public class SqlQuery {
 
     private Node[] select = new Node[] { new Variable("*") };
 
+    private boolean distinct;
+
     private Node[] from;
 
     private Node[] where;
@@ -29,6 +31,11 @@ public class SqlQuery {
 
     public SqlQuery select(Node[] select) {
         this.select = select;
+        return this;
+    }
+
+    public SqlQuery distinct(boolean isDistinct) {
+        this.distinct = isDistinct;
         return this;
     }
 
@@ -56,6 +63,7 @@ public class SqlQuery {
 
     private StringBuilder renderSelect(StringBuilder sql) throws InvalidAstException {
         dialect.select(sql);
+        if(distinct) dialect.distinct(sql);
         return renderList(sql, select, (node) -> dialect.separateColumn(sql));
     }
 

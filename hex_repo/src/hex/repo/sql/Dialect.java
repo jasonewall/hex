@@ -11,6 +11,11 @@ public interface Dialect {
         return sql.append(SELECT);
     }
 
+    static final String DISTINCT = "DISTINCT ";
+    default public StringBuilder distinct(StringBuilder sql) {
+        return sql.append(DISTINCT);
+    }
+
     static final String FROM = "FROM ";
     default public StringBuilder from(StringBuilder sql) {
         return sql.append(FROM);

@@ -30,24 +30,11 @@ public class SqlQueryTest {
         assertEquals(expected, q.toSql());
     }
 
-    protected SqlQuery getSelectStarWithWhere() throws InvalidAstException {
-        SqlQuery q = getSqlQuery();
-        q.from(new Node[]{ new Variable("books") });
-
-        Condition<Book,String> condition = where(Book::getTitle, is("1984"));
-        q.where(condition.toTree());
-        return q;
-    }
-
-    protected SqlQuery getSqlQuery() {
-        return new SqlQuery(Book.metadata());
-    }
-
     @Test
     public void testSelectWithColumns() throws InvalidAstException {
         SqlQuery q = new SqlQuery(null);
 
-        q.select(new Node[] { new Variable("id"), new Variable("first_name"), new Variable("last_name") });
+        q.select(new Node[]{new Variable("id"), new Variable("first_name"), new Variable("last_name")});
         q.from(new Node[]{ new Variable("employees") });
 
         String expected = "SELECT id, first_name, last_name FROM employees";
@@ -61,11 +48,35 @@ public class SqlQueryTest {
         assertEquals(expected, q.toSql());
     }
 
+    @Test
+    public void shouldUseDistinctKeywordWhenSet() throws InvalidAstException {
+        SqlQuery q = getSqlQuery();
+        q.select(new Node[] { new Variable("title") });
+        q.distinct(true);
+        q.from(new Node[]{ new Variable("books") });
+
+        String expected = "SELECT DISTINCT title FROM books";
+        assertEquals(expected, q.toSql());
+    }
+
     protected SqlQuery getCompoundWhere() throws InvalidAstException {
         Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
         SqlQuery q = getSqlQuery();
         q.from(new Node[]{ new Variable("books") });
         q.where(condition.toTree());
         return q;
+    }
+
+    protected SqlQuery getSelectStarWithWhere() throws InvalidAstException {
+        SqlQuery q = getSqlQuery();
+        q.from(new Node[]{ new Variable("books") });
+
+        Condition<Book,String> condition = where(Book::getTitle, is("1984"));
+        q.where(condition.toTree());
+        return q;
+    }
+
+    protected SqlQuery getSqlQuery() {
+        return new SqlQuery(Book.metadata());
     }
 }
