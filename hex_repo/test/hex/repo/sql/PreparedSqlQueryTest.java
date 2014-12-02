@@ -2,6 +2,9 @@ package hex.repo.sql;
 
 import hex.ql.ast.InvalidAstException;
 import hex.repo.sql.test.Book;
+import org.junit.Test;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -26,5 +29,15 @@ public class PreparedSqlQueryTest extends SqlQueryTest {
         SqlQuery q = getCompoundWhere();
         String expected = "SELECT * FROM books WHERE (title = ?) AND (published_year = ?)";
         assertEquals(expected, q.toSql());
+    }
+
+    @Test
+    public void shouldTrackParametersItBinds() throws InvalidAstException {
+        PreparedSqlQuery q = (PreparedSqlQuery) getCompoundWhere();
+        q.toSql(); // to gather params
+        List<Object> parameterValues = q.getParameterValues();
+        assertEquals("Should be 2 bound parameters", 2, parameterValues.size());
+        assertEquals("Param 1", parameterValues.get(0), "1984");
+        assertEquals("Param 2", parameterValues.get(1), 1984);
     }
 }
