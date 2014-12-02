@@ -9,6 +9,7 @@ import hex.ql.queries.AbstractQuery;
 import hex.ql.queries.StreamQuery;
 import hex.repo.AbstractRepository;
 import hex.repo.RepositoryException;
+import hex.repo.sql.PreparedSqlQuery;
 import hex.repo.sql.SqlQuery;
 import hex.repo.streams.spliterators.RepositorySpliterator;
 
@@ -63,6 +64,17 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     public String toSql() {
         SqlQuery result = new SqlQuery(repository.get_metadata());
+        result.from(new Node[]{new Variable(repository.getTableName())});
+        result.where(where);
+        try {
+            return result.toSql();
+        } catch(InvalidAstException e) {
+            throw new RepositoryException(e);
+        }
+    }
+
+    public String toPreparedSql() {
+        SqlQuery result = new PreparedSqlQuery(repository.get_metadata());
         result.from(new Node[]{new Variable(repository.getTableName())});
         result.where(where);
         try {

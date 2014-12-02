@@ -28,10 +28,18 @@ public class HexRepoMain {
         expected = "SELECT * FROM people WHERE first_name = 'Jason'";
         if(!expected.equals(sql)) System.exit(1);
 
+        sql = q.toPreparedSql();
+        expected = "SELECT * FROM people WHERE first_name = ?";
+        if(!expected.equals(sql)) System.exit(11);
+
         q = (RepositoryStream<Person>) q.where(Person::getLastName, is("Wall"));
         sql = q.toSql();
         expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
         if(!expected.equals(sql)) System.exit(2);
+
+        sql = q.toPreparedSql();
+        expected = "SELECT * FROM people WHERE (first_name = ?) AND (last_name = ?)";
+        if(!expected.equals(sql)) System.exit(21);
 
         q = (RepositoryStream<Person>)repo.stream().filter(
                 where(Person::getLastName, is("Wall"))
