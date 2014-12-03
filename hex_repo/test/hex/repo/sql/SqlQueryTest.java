@@ -59,6 +59,14 @@ public class SqlQueryTest {
         assertEquals(expected, q.toSql());
     }
 
+    @Test
+    public void shouldRespectLimit() throws InvalidAstException {
+        SqlQuery q = getBooksQuery();
+        q.limit(10);
+        String expected = "SELECT id, title, published_year FROM books LIMIT 10";
+        assertEquals(expected, q.toSql());
+    }
+
     protected SqlQuery getCompoundWhere() throws InvalidAstException {
         Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
         SqlQuery q = getSqlQuery();
@@ -73,6 +81,13 @@ public class SqlQueryTest {
 
         Condition<Book,String> condition = where(Book::getTitle, is("1984"));
         q.where(condition.toTree());
+        return q;
+    }
+
+    protected SqlQuery getBooksQuery() {
+        SqlQuery q = getSqlQuery();
+        q.select(new Node[]{ new Variable("id"), new Variable("title"), new Variable("published_year") });
+        q.from(new Node[]{ new Variable("books")});
         return q;
     }
 

@@ -31,6 +31,15 @@ public class PreparedSqlQueryTest extends SqlQueryTest {
         assertEquals(expected, q.toSql());
     }
 
+    @Override
+    public void shouldRespectLimit() throws InvalidAstException {
+        PreparedSqlQuery q = (PreparedSqlQuery)getBooksQuery();
+        q.limit(10);
+        String expected = "SELECT id, title, published_year FROM books LIMIT ?";
+        assertEquals(expected, q.toSql());
+        assertEquals("Should have parameter value", 10L, q.getParameterValues().get(0));
+    }
+
     @Test
     public void shouldTrackParametersItBinds() throws InvalidAstException {
         PreparedSqlQuery q = (PreparedSqlQuery) getCompoundWhere();

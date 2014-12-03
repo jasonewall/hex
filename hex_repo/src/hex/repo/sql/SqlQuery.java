@@ -24,6 +24,8 @@ public class SqlQuery {
 
     private Node[] where;
 
+    private long limit = -1;
+
     public SqlQuery(Metadata metadata) {
         this.metadata = metadata;
         this.dialect = new Dialect(){};
@@ -49,6 +51,11 @@ public class SqlQuery {
         return this;
     }
 
+    public SqlQuery limit(long limit) {
+        this.limit = limit;
+        return this;
+    }
+
     public String toSql() throws InvalidAstException {
         StringBuilder sql = new StringBuilder();
         renderSelect(sql);
@@ -57,6 +64,10 @@ public class SqlQuery {
         if(where != null) {
             dialect.separateClause(sql);
             renderWhere(sql);
+        }
+        if(limit > 0) {
+            dialect.separateClause(sql);
+            renderLimit(sql);
         }
         return sql.toString();
     }
@@ -75,6 +86,11 @@ public class SqlQuery {
     private StringBuilder renderWhere(StringBuilder sql) throws InvalidAstException {
         dialect.where(sql);
         return renderTree(sql, where, (node) -> dialect.startParens(sql), (node) -> dialect.endParens(sql));
+    }
+
+    private StringBuilder renderLimit(StringBuilder sql) throws InvalidAstException {
+        dialect.limit(sql);
+        return renderNode(sql, new Literal<Object>(limit));
     }
 
     private StringBuilder renderNode(StringBuilder sql, Node node) throws InvalidAstException {

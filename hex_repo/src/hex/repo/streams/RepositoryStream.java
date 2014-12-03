@@ -88,6 +88,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         result.from(new Node[]{new Variable(repository.getTableName())});
         result.where(where);
         result.distinct(distinct);
+        result.limit(limit);
         return result;
     }
 

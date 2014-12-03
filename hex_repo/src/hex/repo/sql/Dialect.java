@@ -79,4 +79,9 @@ public interface Dialect {
     default public StringBuilder boundParam(StringBuilder sql) {
         return sql.append(BOUND_PARAM);
     }
+
+    static final String LIMIT = "LIMIT ";
+    default public StringBuilder limit(StringBuilder sql) {
+        return sql.append(LIMIT);
+    }
 }
