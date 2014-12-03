@@ -22,19 +22,19 @@ public class HexRepoMain {
         expected = "SELECT * FROM people";
         if(!expected.equals(sql)) System.exit(-1);
 
-        RepositoryStream<Person> q = (RepositoryStream<Person>) repo.where(Person::getFirstName, is("Jason"));
+        RepositoryStream<Person> q = (RepositoryStream<Person>) repo.where(Person::getFirstName, is("Isaac"));
 
         sql = q.toSql();
-        expected = "SELECT * FROM people WHERE first_name = 'Jason'";
+        expected = "SELECT * FROM people WHERE first_name = 'Isaac'";
         if(!expected.equals(sql)) System.exit(1);
 
         sql = q.toPreparedSql();
         expected = "SELECT * FROM people WHERE first_name = ?";
         if(!expected.equals(sql)) System.exit(11);
 
-        q = (RepositoryStream<Person>) q.where(Person::getLastName, is("Wall"));
+        q = (RepositoryStream<Person>) q.where(Person::getLastName, is("Newton"));
         sql = q.toSql();
-        expected = "SELECT * FROM people WHERE (first_name = 'Jason') AND (last_name = 'Wall')";
+        expected = "SELECT * FROM people WHERE (first_name = 'Isaac') AND (last_name = 'Newton')";
         if(!expected.equals(sql)) System.exit(2);
 
         sql = q.toPreparedSql();
@@ -42,12 +42,12 @@ public class HexRepoMain {
         if(!expected.equals(sql)) System.exit(21);
 
         q = (RepositoryStream<Person>)repo.stream().filter(
-                where(Person::getLastName, is("Wall"))
-                        .and(where(Person::getFirstName, is("Jason")).or(where(Person::getFirstName, is("Natalie"))))
+                where(Person::getLastName, is("Newton"))
+                        .and(where(Person::getFirstName, is("Isaac")).or(where(Person::getFirstName, is("Wayne"))))
         );
 
         sql = q.toSql();
-        expected = "SELECT * FROM people WHERE (last_name = 'Wall') AND ((first_name = 'Jason') OR (first_name = 'Natalie'))";
+        expected = "SELECT * FROM people WHERE (last_name = 'Newton') AND ((first_name = 'Isaac') OR (first_name = 'Wayne'))";
         if(!expected.equals(sql)) System.exit(3);
 
         List<Person> people = q.parallel().collect(Collectors.toList());
@@ -55,13 +55,13 @@ public class HexRepoMain {
 
         people.forEach((p) -> System.out.printf("%d:%s %s", p.getId(), p.getFirstName(), p.getLastName()).println());
 
-        q = (RepositoryStream<Person>) q.where(Person::getFirstName, is("Bryce"));
+        q = (RepositoryStream<Person>) q.where(Person::getFirstName, is("Fig"));
 
         if(q.collect(Collectors.toList()).size() > 0) System.exit(6);
 
         q.filter((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
 
-        Person j = repo.find(1).get();
-        if(!j.getFirstName().equals("Jason")) System.exit(8);
+        Person j = repo.find(7).get();
+        if(!j.getFirstName().equals("Fig")) System.exit(8);
     }
 }
