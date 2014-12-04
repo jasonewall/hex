@@ -49,6 +49,11 @@ public interface Dialect {
         return sql.append(EQUALS);
     }
 
+    static final String NOT_EQUALS = " <> ";
+    default public StringBuilder notEqualsComparison(StringBuilder sql) {
+        return sql.append(NOT_EQUALS);
+    }
+
     static final char QUOTE = '\'';
     default public StringBuilder quote(StringBuilder sql, Object value) {
         return sql.append(QUOTE).append(value).append(QUOTE);

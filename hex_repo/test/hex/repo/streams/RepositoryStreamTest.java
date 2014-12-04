@@ -5,7 +5,7 @@ import hex.repo.test.PersonRepository;
 import org.junit.Test;
 
 import static hex.ql.QueryLanguage.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Created by jason on 14-12-02.
@@ -24,5 +24,14 @@ public class RepositoryStreamTest {
         PersonRepository repo = new PersonRepository();
         repo.stream().where(Person::getFirstName, is("Fig")).peek(p -> tester.append(p.getLastName())).toArray();
         assertEquals("Newton", tester.toString());
+    }
+
+    @Test
+    public void notEqualsShouldFilter() {
+        PersonRepository repo = new PersonRepository();
+        repo.stream().filter(
+                where(Person::getLastName, isNot("Newton"))
+                    .and(where(Person::getLastName, is("Newton")))
+        ).forEach(p -> fail(p.getFullName()));
     }
 }

@@ -119,6 +119,7 @@ public class SqlQuery {
     private StringBuilder renderComparator(StringBuilder sql, Comparator node) throws InvalidAstException {
         switch(node.getType()) {
             case Equals: return dialect.equalityComparison(sql);
+            case NotEquals: return dialect.notEqualsComparison(sql);
         }
         throw new InvalidAstException("Unhandled comparator type found while generating SQL.");
     }
