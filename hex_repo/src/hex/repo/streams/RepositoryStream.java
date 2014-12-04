@@ -407,6 +407,11 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     @Override
+    public Object[] toArray() {
+        return terminateRepositoryStream().toArray();
+    }
+
+    @Override
     public <A> A[] toArray(IntFunction<A[]> generator) {
         return terminateRepositoryStream().toArray(generator);
     }
@@ -441,10 +446,5 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         RepositoryStream<T> dup = duplicate();
         dup.orderBy = null;
         return dup;
-    }
-
-    @Override
-    public Object[] toArray() {
-        return terminateRepositoryStream().toArray();
     }
 }
