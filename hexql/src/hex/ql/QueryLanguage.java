@@ -2,6 +2,7 @@ package hex.ql;
 
 import hex.ql.ast.predicates.Condition;
 import hex.ql.ast.predicates.EqualityPredicate;
+import hex.ql.ast.predicates.NotEqualsPredicate;
 import hex.ql.queries.StreamQuery;
 
 import java.util.List;
@@ -31,5 +32,9 @@ public interface QueryLanguage {
 
     public static <U> Predicate<U> is(U value) {
         return new EqualityPredicate<>(value);
+    }
+
+    public static <U> Predicate<U> isNot(U value) {
+        return new NotEqualsPredicate<>(value);
     }
 }
