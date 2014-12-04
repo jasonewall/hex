@@ -12,6 +12,7 @@ import hex.repo.RepositoryException;
 import hex.repo.sql.PreparedSqlQuery;
 import hex.repo.sql.SqlQuery;
 import hex.repo.streams.spliterators.RepositorySpliterator;
+import hex.utils.Null;
 
 import java.util.*;
 import java.util.function.*;
@@ -33,7 +34,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private boolean parallel = false;
 
-    private Consumer<T> peeker = (t) -> {};
+    private Consumer<T> peeker = Null.Consumer();
 
     private Predicate<T> predicate = new NullPredicate<>();
 

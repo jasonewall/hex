@@ -17,4 +17,12 @@ public class RepositoryStreamTest {
         Person[] aPerson = repo.stream().where(Person::getLastName, is("Newton")).limit(1).toArray(Person[]::new);
         assertEquals(1, aPerson.length);
     }
+
+    @Test
+    public void peekShouldWork() {
+        StringBuilder tester = new StringBuilder();
+        PersonRepository repo = new PersonRepository();
+        repo.stream().where(Person::getFirstName, is("Fig")).peek(p -> tester.append(p.getLastName())).toArray();
+        assertEquals("Newton", tester.toString());
+    }
 }
