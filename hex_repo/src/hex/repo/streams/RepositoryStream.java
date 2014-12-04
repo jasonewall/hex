@@ -34,7 +34,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private boolean parallel = false;
 
-    private Consumer<T> peeker = Null.Consumer();
+    private Consumer<T> peeker = new Null.Consumer<>();
 
     private Predicate<T> predicate = new NullPredicate<>();
 

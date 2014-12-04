@@ -8,11 +8,11 @@ import java.util.function.Predicate;
 public abstract class BasePredicate<T> implements Predicate<T> {
     @Override
     public Predicate<T> and(Predicate<? super T> other) {
-        return new AndPredicate(this, other);
+        return new AndPredicate<>(this, other);
     }
 
     @Override
     public Predicate<T> or(Predicate<? super T> other) {
-        return new OrPredicate(this, other);
+        return new OrPredicate<>(this, other);
     }
 }
