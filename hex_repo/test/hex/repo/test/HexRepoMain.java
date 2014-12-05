@@ -32,8 +32,5 @@ public class HexRepoMain {
         if(q.collect(Collectors.toList()).size() > 0) System.exit(6);
 
         q.filter((p) -> p.getFirstName().equals("Wayne")).forEach((p) -> System.exit(7));
-
-        Person j = repo.find(7).get();
-        if(!j.getFirstName().equals("Fig")) System.exit(8);
     }
 }

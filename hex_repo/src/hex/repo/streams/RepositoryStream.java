@@ -8,7 +8,6 @@ import hex.ql.ast.predicates.NullPredicate;
 import hex.ql.queries.AbstractQuery;
 import hex.ql.queries.StreamQuery;
 import hex.repo.AbstractRepository;
-import hex.repo.RepositoryException;
 import hex.repo.sql.PreparedSqlQuery;
 import hex.repo.sql.SqlQuery;
 import hex.repo.streams.iterators.RepositoryIterator;
