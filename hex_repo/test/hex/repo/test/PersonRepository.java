@@ -1,18 +1,15 @@
 package hex.repo.test;
 
 import hex.ql.Query;
-import hex.ql.ast.predicates.Condition;
-import hex.ql.ast.predicates.EqualityPredicate;
 import hex.ql.ast.predicates.OrPredicate;
 import hex.repo.RepositoryBase;
 import hex.repo.metadata.Metadata;
 
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static hex.ql.QueryLanguage.*;
+import static hex.ql.QueryLanguage.is;
+import static hex.ql.QueryLanguage.where;
 
 /**
  * Created by jason on 14-10-26.
