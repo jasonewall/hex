@@ -2,9 +2,6 @@ package hex.repo.test;
 
 import hex.repo.Repository;
 import hex.repo.streams.RepositoryStream;
-import hex.ql.ast.InvalidAstException;
-import hex.repo.test.Person;
-import hex.repo.test.PersonRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,40 +12,15 @@ import static hex.ql.QueryLanguage.*;
  * Created by jason on 14-10-25.
  */
 public class HexRepoMain {
-    public static void main(String[] args) throws InvalidAstException {
-        String sql, expected;
+    public static void main(String[] args) {
         Repository<Person> repo = new PersonRepository();
-        sql = repo.stream().toSql();
-        expected = "SELECT * FROM people";
-        if(!expected.equals(sql)) System.exit(-1);
 
-        RepositoryStream<Person> q = (RepositoryStream<Person>) repo.where(Person::getFirstName, is("Isaac"));
-
-        sql = q.toSql();
-        expected = "SELECT * FROM people WHERE first_name = 'Isaac'";
-        if(!expected.equals(sql)) System.exit(1);
-
-        sql = q.toPreparedSql();
-        expected = "SELECT * FROM people WHERE first_name = ?";
-        if(!expected.equals(sql)) System.exit(11);
-
-        q = (RepositoryStream<Person>) q.where(Person::getLastName, is("Newton"));
-        sql = q.toSql();
-        expected = "SELECT * FROM people WHERE (first_name = 'Isaac') AND (last_name = 'Newton')";
-        if(!expected.equals(sql)) System.exit(2);
-
-        sql = q.toPreparedSql();
-        expected = "SELECT * FROM people WHERE (first_name = ?) AND (last_name = ?)";
-        if(!expected.equals(sql)) System.exit(21);
+        RepositoryStream<Person> q;
 
         q = (RepositoryStream<Person>)repo.stream().filter(
                 where(Person::getLastName, is("Newton"))
                         .and(where(Person::getFirstName, is("Isaac")).or(where(Person::getFirstName, is("Wayne"))))
         );
-
-        sql = q.toSql();
-        expected = "SELECT * FROM people WHERE (last_name = 'Newton') AND ((first_name = 'Isaac') OR (first_name = 'Wayne'))";
-        if(!expected.equals(sql)) System.exit(3);
 
         List<Person> people = q.parallel().collect(Collectors.toList());
         if(people.size() != 2) System.exit(5);
