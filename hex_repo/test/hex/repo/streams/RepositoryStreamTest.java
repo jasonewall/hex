@@ -4,6 +4,9 @@ import hex.repo.test.Person;
 import hex.repo.test.PersonRepository;
 import org.junit.Test;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static hex.ql.QueryLanguage.*;
 import static org.junit.Assert.*;
 
@@ -33,5 +36,28 @@ public class RepositoryStreamTest {
                 where(Person::getLastName, isNot("Newton"))
                     .and(where(Person::getLastName, is("Newton")))
         ).forEach(p -> fail(p.getFullName()));
+    }
+
+    @Test
+    public void complicatedQueriesShouldWork() {
+        PersonRepository repo = new PersonRepository();
+        List<Person> people = repo.familyMembers("Newton", "Wayne", "Isaac").parallel().collect(Collectors.toList());
+
+        assertEquals(2, people.size());
+    }
+
+    @Test
+    public void complicatedQueriesShouldWorkEvenIfTheReturnNoResults() {
+        PersonRepository repo = new PersonRepository();
+        repo.familyMembers("Newton", "Wayne", "Isaac").where(Person::getFirstName, is("Fig"))
+                .forEach(p -> fail("Did not expect " + p.getFirstName()));
+    }
+
+    @Test
+    public void breakingOutOfTheDatabaseShouldBeSeamless() {
+        PersonRepository repo = new PersonRepository();
+        repo.familyMembers("Newton", "Fig")
+                .filter(p -> p.getFirstName().equals("Wayne"))
+                .forEach(p -> fail("Did not expect " + p.getFirstName()));
     }
 }

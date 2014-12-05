@@ -24,7 +24,7 @@ public abstract class AbstractRepository<T> implements Repository<T>, Queryable<
     public abstract Metadata<T> get_metadata();
 
     public Optional<T> find(int id) {
-        return where(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id)).findFirst();
+        return stream().where(get_metadata().getPrimaryKey(), new EqualityPredicate<>(id)).findFirst();
     }
 
     public RepositoryStream<T> stream() {

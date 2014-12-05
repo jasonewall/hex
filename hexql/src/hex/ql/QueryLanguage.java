@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by jason on 14-10-25.
  */
-public interface QueryLanguage {
+public class QueryLanguage {
     public static <T> Query<T> from(List<T> source) {
         return new StreamQuery<>(source.stream());
     }
