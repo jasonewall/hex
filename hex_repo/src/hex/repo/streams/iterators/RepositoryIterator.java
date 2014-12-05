@@ -1,4 +1,4 @@
-package hex.repo.streams;
+package hex.repo.streams.iterators;
 
 import hex.repo.AbstractRepository;
 import hex.repo.sql.PreparedSqlQuery;

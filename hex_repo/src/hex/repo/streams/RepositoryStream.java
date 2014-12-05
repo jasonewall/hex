@@ -11,6 +11,7 @@ import hex.repo.AbstractRepository;
 import hex.repo.RepositoryException;
 import hex.repo.sql.PreparedSqlQuery;
 import hex.repo.sql.SqlQuery;
+import hex.repo.streams.iterators.RepositoryIterator;
 import hex.repo.streams.iterators.RepositorySpliterator;
 import hex.utils.Null;
 
