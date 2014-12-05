@@ -12,6 +12,7 @@ import org.junit.runners.Suite;
         ConditionTest.class,
         EqualityPredicateTest.class,
         NotEqualsPredicateTest.class,
+        OrPredicateTest.class
 })
 public class PredicateTests {
 }

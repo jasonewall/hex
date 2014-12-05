@@ -21,6 +21,7 @@ public class AndPredicateTest {
                 QueryLanguage.where(Person::getLastName, new EqualityPredicate<>("Newton"))
         );
     }
+
     @Test
     public void testShouldCheckBothPredicates() {
         Person p = new Person();

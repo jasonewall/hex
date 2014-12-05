@@ -20,6 +20,11 @@ public class OrPredicate<T> extends CompoundPredicate<T> implements Predicate<T>
     }
 
     @Override
+    public Predicate<T> negate() {
+        return new AndPredicate<>(lhs.negate(), rhs.negate());
+    }
+
+    @Override
     public Node[] toTree() throws InvalidAstException {
         return new Node[] {
                 getLhNode(),
