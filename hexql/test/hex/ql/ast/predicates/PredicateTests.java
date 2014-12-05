@@ -8,6 +8,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+        AndPredicateTest.class,
+        ConditionTest.class,
         EqualityPredicateTest.class,
         NotEqualsPredicateTest.class,
 })

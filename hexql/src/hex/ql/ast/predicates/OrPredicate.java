@@ -16,7 +16,7 @@ public class OrPredicate<T> extends CompoundPredicate<T> implements Predicate<T>
 
     @Override
     public boolean test(T t) {
-        return false;
+        return lhs.test(t) || rhs.test(t);
     }
 
     @Override
