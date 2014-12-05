@@ -1,4 +1,4 @@
-package hex.repo.streams.spliterators;
+package hex.repo.streams.iterators;
 
 import java.util.Spliterator;
 import java.util.function.Consumer;
