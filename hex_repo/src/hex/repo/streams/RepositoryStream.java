@@ -88,6 +88,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private <Q extends SqlQuery> Q prepareQuery(Q result) {
         result.from(new Node[]{new Variable(repository.getTableName())});
+        result.select(repository.get_metadata().getColumns());
         result.where(where);
         result.distinct(distinct);
         result.limit(limit);
