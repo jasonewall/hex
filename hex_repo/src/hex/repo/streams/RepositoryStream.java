@@ -64,24 +64,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         return StreamSupport.stream(spliterator(), this.isParallel());
     }
 
-    public String toSql() {
-        SqlQuery result = prepareQuery(new SqlQuery(repository.get_metadata()));
-        try {
-            return result.toSql();
-        } catch(InvalidAstException e) {
-            throw new RepositoryException(e);
-        }
-    }
-
-    public String toPreparedSql() {
-        SqlQuery result = getPreparedQuery();
-        try {
-            return result.toSql();
-        } catch(InvalidAstException e) {
-            throw new RepositoryException(e);
-        }
-    }
-
     private PreparedSqlQuery getPreparedQuery() {
         return prepareQuery(new PreparedSqlQuery(repository.get_metadata()));
     }
