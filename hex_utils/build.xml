@@ -1,9 +1,5 @@
-<project name="hex_utils" default="test" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="hex_utils" default="test">
     <include file="../build-common.xml" as="common"/>
-
-    <target name="clean" description="Clean all output directories to ensure a fresh build">
-        <ant target="common.clean"/>
-    </target>
 
     <target name="classpath">
         <path id="classpath"/>
