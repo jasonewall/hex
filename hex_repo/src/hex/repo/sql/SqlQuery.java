@@ -26,6 +26,8 @@ public class SqlQuery {
 
     private long limit = -1;
 
+    private long offset = -1;
+
     public SqlQuery(Metadata metadata) {
         this.metadata = metadata;
         this.dialect = new Dialect(){};
@@ -56,6 +58,11 @@ public class SqlQuery {
         return this;
     }
 
+    public SqlQuery offset(long offset) {
+        this.offset = offset;
+        return this;
+    }
+
     public String toSql() throws InvalidAstException {
         StringBuilder sql = new StringBuilder();
         renderSelect(sql);
@@ -68,6 +75,10 @@ public class SqlQuery {
         if(limit > 0) {
             dialect.separateClause(sql);
             renderLimit(sql);
+        }
+        if(offset > 0) {
+            dialect.separateClause(sql);
+            renderOffset(sql);
         }
         return sql.toString();
     }
@@ -90,7 +101,12 @@ public class SqlQuery {
 
     private StringBuilder renderLimit(StringBuilder sql) throws InvalidAstException {
         dialect.limit(sql);
-        return renderNode(sql, new Literal<Object>(limit));
+        return renderNode(sql, new Literal<>(limit));
+    }
+
+    private StringBuilder renderOffset(StringBuilder sql) throws InvalidAstException {
+        dialect.offset(sql);
+        return renderNode(sql, new Literal<>(offset));
     }
 
     private StringBuilder renderNode(StringBuilder sql, Node node) throws InvalidAstException {

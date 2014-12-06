@@ -40,6 +40,14 @@ public class PreparedSqlQueryTest extends SqlQueryTest {
         assertEquals("Should have parameter value", 10L, q.getParameterValues().get(0));
     }
 
+    @Override
+    public void shouldRespectOffset() throws InvalidAstException {
+        PreparedSqlQuery q = (PreparedSqlQuery)getBooksQuery();
+        q.offset(3);
+        String expected = "SELECT id, title, published_year FROM books OFFSET ?";
+        assertEquals(expected, q.toSql());
+    }
+
     @Test
     public void shouldTrackParametersItBinds() throws InvalidAstException {
         PreparedSqlQuery q = (PreparedSqlQuery) getCompoundWhere();

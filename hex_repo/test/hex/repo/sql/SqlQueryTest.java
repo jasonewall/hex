@@ -67,6 +67,14 @@ public class SqlQueryTest {
         assertEquals(expected, q.toSql());
     }
 
+    @Test
+    public void shouldRespectOffset() throws InvalidAstException {
+        SqlQuery q = getBooksQuery();
+        q.offset(3);
+        String expected = "SELECT id, title, published_year FROM books OFFSET 3";
+        assertEquals(expected, q.toSql());
+    }
+
     protected SqlQuery getCompoundWhere() throws InvalidAstException {
         Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
         SqlQuery q = getSqlQuery();

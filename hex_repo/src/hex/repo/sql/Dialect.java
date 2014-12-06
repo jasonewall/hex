@@ -89,4 +89,9 @@ public interface Dialect {
     default public StringBuilder limit(StringBuilder sql) {
         return sql.append(LIMIT);
     }
+
+    static final String OFFSET = "OFFSET ";
+    default public StringBuilder offset(StringBuilder sql) {
+        return sql.append(OFFSET);
+    }
 }

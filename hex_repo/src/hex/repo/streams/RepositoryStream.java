@@ -63,6 +63,15 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         return StreamSupport.stream(spliterator(), this.isParallel());
     }
 
+    public String toSql() throws InvalidAstException {
+        return prepareQuery(new SqlQuery(repository.get_metadata())).toSql();
+    }
+
+    public RepositoryStream<T> peekSql(Consumer<String> consumer) throws InvalidAstException {
+        consumer.accept(toSql());
+        return this;
+    }
+
     private PreparedSqlQuery getPreparedQuery() {
         return prepareQuery(new PreparedSqlQuery(repository.get_metadata()));
     }
@@ -73,6 +82,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
         result.where(where);
         result.distinct(distinct);
         result.limit(limit);
+        result.offset(offset);
         return result;
     }
 
