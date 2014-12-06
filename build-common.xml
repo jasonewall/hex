@@ -3,12 +3,6 @@
         <javac includeantruntime="false"/>
     </presetdef>
 
-    <presetdef name="run-tests">
-        <junit>
-            <formatter type="plain" usefile="false"/>
-        </junit>
-    </presetdef>
-
     <property name="out.dir" value="../out/production"/>
     <property name="test.out.dir" value="../out/test"/>
     <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
@@ -41,5 +35,15 @@
         <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
             <classpath refid="test.classpath"/>
         </javac>
+    </target>
+
+    <target name="run-tests">
+        <junit failureproperty="tests.failed">
+            <test name="${test.class.name}"/>
+            <formatter type="plain" usefile="false"/>
+            <classpath refid="test.classpath"/>
+            <classpath path="${test.classes.dir}"/>
+        </junit>
+        <fail if="tests.failed" message="${test.class.name} failed"/>
     </target>
 </project>
