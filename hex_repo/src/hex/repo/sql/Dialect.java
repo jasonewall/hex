@@ -4,7 +4,7 @@ package hex.repo.sql;
  * Created by jason on 14-10-26.
  */
 public interface Dialect {
-    static final String SPACE = " ";
+    static final char SPACE = ' ';
 
     static final String SELECT = "SELECT ";
     default public StringBuilder select(StringBuilder sql) {
