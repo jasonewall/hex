@@ -1,5 +1,5 @@
 <project name="hex_utils" default="test" xmlns:ivy="antlib:org.apache.ivy.ant">
-    <include file="../build-common.xml"/>
+    <include file="../build-common.xml" as="common"/>
     <property name="out.dir" value="../out/production"/>
     <property name="test.out.dir" value="../out/test"/>
     <property name="classes.dir" value="${out.dir}/hex_utils"/>

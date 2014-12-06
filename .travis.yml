@@ -1,4 +1,5 @@
 language: java
+before_install: ant ensure-ivy
 branches:
   only:
     - master

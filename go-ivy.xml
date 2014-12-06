@@ -20,7 +20,7 @@
 	<!-- here is the version of ivy we will use. change this property to try a newer
          version if you want -->
 	<property name="ivy.install.version" value="2.4.0-rc1" />
-	<property name="ivy.jar.dir" value="${ant.library.dir}" />
+	<property name="ivy.jar.dir" value="${user.home}/.ant/lib" />
 	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
 
     <target name="download-ivy" unless="skip.download">
@@ -43,7 +43,7 @@
     	      We will not fail as long as local lib dir exists (it may be empty) and
     	      ivy is in at least one of ant's lib dir or the local lib dir. -->
     	<path id="ivy.lib.path">
-    	    <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+            <file name="${ivy.jar.file}"/>
     	</path>
     	<taskdef resource="org/apache/ivy/ant/antlib.xml"
     	          uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
