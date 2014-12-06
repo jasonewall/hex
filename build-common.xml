@@ -17,6 +17,10 @@
         <ant dir="../hex_utils" target="common.compile" inheritall="false"/>
     </target>
 
+    <target name="hexql">
+        <ant dir="../hexql" target="common.compile" inheritall="false"/>
+    </target>
+
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
         <ivy:cachepath conf="development" pathid="ivy.cachepath"/>
@@ -24,6 +28,11 @@
             <classpath refid="classpath"/>
             <classpath refid="ivy.cachepath"/>
         </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${basedir}/src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="compile-tests" depends="compile">
@@ -37,6 +46,11 @@
         <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
             <classpath refid="test.classpath"/>
         </javac>
+        <copy todir="${test.classes.dir}">
+            <fileset dir="${basedir}/test">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
     </target>
 
     <target name="run-tests">
