@@ -8,9 +8,13 @@
     <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
     <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
 
-    <target name="clean">
+    <target name="clean" description="Delete all output created by build targets for this project">
         <delete dir="${classes.dir}"/>
         <delete dir="${test.classes.dir}"/>
+    </target>
+
+    <target name="hex_routing">
+        <ant dir="../hex_routing" target="common.compile" inheritall="false"/>
     </target>
 
     <target name="hex_utils">

@@ -8,9 +8,9 @@
         <conf name="test" visibility="private" extends="development"/>
     </configurations>
     <dependencies>
-        <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
-        <dependency org="org.hamcrest" name="hamcrest-library" rev="1.3" conf="test->default"/>
         <dependency org="org.liquibase" name="liquibase-core" rev="3.3.0" conf="development->default"/>
         <dependency org="org.postgresql" name="postgresql" rev="9.3-1102-jdbc41" conf="development->default"/>
+        <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
+        <dependency org="org.hamcrest" name="hamcrest-library" rev="1.3" conf="test->default"/>
     </dependencies>
 </ivy-module>
