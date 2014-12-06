@@ -1,0 +1,17 @@
+<project name="hexql" default="test">
+    <include file="../build-common.xml" as="common"/>
+
+    <target name="classpath" depends="common.hex_utils">
+        <path id="classpath">
+            <pathelement location="${out.dir}/hex_utils"/>
+        </path>
+    </target>
+
+    <target name="test" depends="classpath,common.compile,common.compile-tests">
+        <run-tests>
+            <test name="hex.ql.QueryLanguageTests"/>
+            <classpath refid="test.classpath"/>
+            <classpath path="${test.classes.dir}"/>
+        </run-tests>
+    </target>
+</project>

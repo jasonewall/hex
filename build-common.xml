@@ -1,5 +1,45 @@
-<project name="hex-common-builds">
+<project name="hex-common-builds" xmlns:ivy="antlib:org.apache.ivy.ant">
     <presetdef name="javac">
         <javac includeantruntime="false"/>
     </presetdef>
+
+    <presetdef name="run-tests">
+        <junit>
+            <formatter type="plain" usefile="false"/>
+        </junit>
+    </presetdef>
+
+    <property name="out.dir" value="../out/production"/>
+    <property name="test.out.dir" value="../out/test"/>
+    <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
+    <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
+
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+        <delete dir="${test.classes.dir}"/>
+    </target>
+
+    <target name="hex_utils">
+        <ant dir="../hex_utils" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <javac destdir="${classes.dir}" srcdir="${basedir}/src">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+
+    <target name="compile-tests" depends="compile">
+        <mkdir dir="${test.classes.dir}"/>
+        <ivy:cachepath conf="test" pathid="test.ivy.cachepath"/>
+        <path id="test.classpath">
+            <path refid="test.ivy.cachepath"/>
+            <path refid="classpath"/>
+            <pathelement location="${classes.dir}"/>
+        </path>
+        <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
+            <classpath refid="test.classpath"/>
+        </javac>
+    </target>
 </project>

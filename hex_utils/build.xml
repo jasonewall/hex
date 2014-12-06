@@ -1,35 +1,20 @@
 <project name="hex_utils" default="test" xmlns:ivy="antlib:org.apache.ivy.ant">
     <include file="../build-common.xml" as="common"/>
-    <property name="out.dir" value="../out/production"/>
-    <property name="test.out.dir" value="../out/test"/>
-    <property name="classes.dir" value="${out.dir}/hex_utils"/>
-    <property name="test.classes.dir" value="${test.out.dir}/hex_utils"/>
 
-    <target name="clean" description="Delete all output directories to ensure a fresh build">
-        <delete dir="${classes.dir}"/>
-        <delete dir="${test.classes.dir}"/>
+    <target name="clean" description="Clean all output directories to ensure a fresh build">
+        <ant target="common.clean"/>
     </target>
 
-    <target name="compile">
-        <mkdir dir="${classes.dir}"/>
-        <javac destdir="${classes.dir}" srcdir="${basedir}/src"/>
+    <target name="classpath">
+        <path id="classpath"/>
     </target>
 
-    <target name="compile-tests" depends="compile">
-        <mkdir dir="${test.classes.dir}"/>
-        <ivy:cachepath conf="test" pathid="ivy.cachepath"/>
-        <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
-            <classpath path="${classes.dir}"/>
-            <classpath refid="ivy.cachepath"/>
-        </javac>
-    </target>
-
-    <target name="test" description="Run the tests!" depends="compile,compile-tests">
-        <junit printsummary="true">
+    <target name="test" description="Run the tests!" depends="classpath,common.compile,common.compile-tests">
+        <junit>
             <test name="hex.utils.InflectionTest"/>
-            <classpath refid="ivy.cachepath"/>
-            <classpath path="${classes.dir}"/>
+            <classpath refid="test.classpath"/>
             <classpath path="${test.classes.dir}"/>
+            <formatter type="plain" usefile="false"/>
         </junit>
     </target>
 </project>
