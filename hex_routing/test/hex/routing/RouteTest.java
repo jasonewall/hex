@@ -24,12 +24,11 @@
 package hex.routing;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static servlet_mock.HttpMock.*;
+import static org.junit.Assert.*;
+import static servlet_mock.HttpMock.GET;
 
 /**
  * Created by jason on 14-11-14.
