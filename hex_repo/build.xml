@@ -1,10 +1,20 @@
-<project name="hex_repo" default="test">
+<project name="hex_repo" default="test" xmlns:ivy="antlib:org.apache.ivy.ant">
     <include as="common" file="../build-common.xml"/>
+
     <target name="classpath" depends="common.hex_utils,common.hexql">
         <path id="classpath">
             <pathelement location="${out.dir}/hex_utils"/>
             <pathelement location="${out.dir}/hexql"/>
         </path>
+    </target>
+
+    <target name="prepare-test-data" description="Run this to prepare the database for the unit tests">
+        <ivy:cachepath pathid="ivy.cachepath" conf="development"/>
+        <java classname="liquibase.integration.commandline.Main">
+            <classpath refid="ivy.cachepath"/>
+            <arg value="--changeLogFile=test_data/people.xml"/>
+            <arg value="update"/>
+        </java>
     </target>
 
     <target name="test" depends="classpath,common.compile,common.compile-tests">

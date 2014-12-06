@@ -4,6 +4,7 @@ before_script:
   - cp hex_repo/test/hex_repo.properties{.sample,}
   - cp hex_repo/liquibase.properties{.example,}
 before_install: ant ensure-ivy
+before_script: ant -f hex_repo/build.xml prepare-test-data
 branches:
   only:
     - master
