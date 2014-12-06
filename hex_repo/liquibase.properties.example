@@ -1,5 +1,4 @@
 driver: org.postgresql.Driver
-classpath: lib/postgresql-9.3-1102.jdbc41.jar
 url: jdbc:postgresql:hex_repo_test
 username: postgres
 password:

@@ -7,6 +7,7 @@
         <ant dir="hex_utils" target="test"/>
         <ant dir="hexql" target="test"/>
         <ant dir="hex_routing" target="test"/>
+        <ant dir="hex_repo" target="test"/>
     </target>
 
     <target name="clean">

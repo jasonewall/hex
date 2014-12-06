@@ -1,6 +1,8 @@
 language: java
 before_script:
   - psql -c 'create database hex_repo_test;' -U postgres
+  - cp hex_repo/test/hex_repo.properties{.sample,}
+  - cp hex_repo/liquibase.properties{.example,}
 before_install: ant ensure-ivy
 branches:
   only:
