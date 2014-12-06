@@ -1,0 +1,9 @@
+<project name="hex" default="test">
+    <target name="ensure-ivy">
+        <ant antfile="go-ivy.xml" target="go"/>
+    </target>
+
+    <target name="test" depends="ensure-ivy">
+        <ant dir="hex_utils" target="test"/>
+    </target>
+</project>

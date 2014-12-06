@@ -1,0 +1,5 @@
+<project name="hex-common-builds">
+    <presetdef name="javac">
+        <javac includeantruntime="false"/>
+    </presetdef>
+</project>
