@@ -3,3 +3,5 @@ before_install: ant ensure-ivy
 branches:
   only:
     - master
+jdk:
+  - oraclejdk8
