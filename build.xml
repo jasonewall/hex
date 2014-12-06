@@ -8,4 +8,8 @@
         <ant dir="hexql" target="test"/>
         <ant dir="hex_routing" target="test"/>
     </target>
+
+    <target name="clean">
+        <delete dir="out"/>
+    </target>
 </project>
