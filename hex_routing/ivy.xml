@@ -5,9 +5,11 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_routing"/>
     <configurations>
-        <conf name="compile" description="For talking about dependencies we only need for compiling" visibility="private"/>
+        <conf name="development" visibility="private"/>
+        <conf name="test" visibility="private" extends="development"/>
     </configurations>
     <dependencies>
-        <dependency name="javax.servlet-api" rev="3.1.0" org="javax.servlet" conf="compile->default"/>
+        <dependency name="javax.servlet-api" rev="3.1.0" org="javax.servlet" conf="development->default"/>
+        <dependency name="junit" rev="4.11" org="junit" conf="test->default"/>
     </dependencies>
 </ivy-module>

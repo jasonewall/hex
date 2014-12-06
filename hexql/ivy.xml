@@ -5,7 +5,8 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hexql"/>
     <configurations>
-        <conf name="test" visibility="private"/>
+        <conf name="development" visibility="private"/>
+        <conf name="test" visibility="private" extends="development"/>
     </configurations>
     <dependencies>
         <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
