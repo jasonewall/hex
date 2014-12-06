@@ -14,7 +14,7 @@ public class NotEqualsPredicateTest {
     @Test
     public void shouldReturnFalseIfTestMatchesValue() {
         NotEqualsPredicate<String> p = new NotEqualsPredicate<>("Fig");
-        assertFalse(p.test("Fig"));
+        assertFalse(p.test("Fi"));
     }
 
     @Test
