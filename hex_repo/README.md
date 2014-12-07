@@ -1,7 +1,7 @@
 Hex Repo
 ======================
 
-ORM using the API declared in [hex/hexql](http://github.com/thejayvm/hex/hexql)
+ORM using the API declared in [hex/hexql](https://github.com/thejayvm/hex/tree/master/hexql)
 
 Use the `QueryLanguage` helpers by creating a static import for them.
 
