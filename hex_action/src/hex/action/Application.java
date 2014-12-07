@@ -1,6 +1,5 @@
-package hex;
+package hex.action;
 
-import hex.action.RouteManager;
 import hex.routing.RoutingConfig;
 import hex.routing.RoutingConfigBase;
 
@@ -16,7 +15,7 @@ public class Application {
     public static final String CONFIG = "hex.properties";
     public static final String ACTION_CONFIG = "hex_action.properties";
     public static final String ROUTES = "routes";
-    public static final String ROOT = "hex.Application.ROOT";
+    public static final String ROOT = "hex.action.Application.ROOT";
 
     public static RoutingConfig initializeRoutes(ClassLoader classLoader) throws ServletException {
         try {
@@ -29,6 +28,8 @@ public class Application {
             RoutingConfigBase routingConfig = new RoutingConfigBase();
             for (String className : routingConfigClasses) {
                 RouteManager routeManager = (RouteManager) Class.forName(className, false, classLoader).newInstance();
+                routeManager.setHexActionProperties(adapterProperties);
+                routeManager.defineRoutes();
                 routeManager.getDefinedRoutes().forEach(routingConfig::addRoute);
             }
             return routingConfig;

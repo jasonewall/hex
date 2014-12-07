@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.annotations.RouteParam;
+import hex.action.initialization.InitializationException;
 import hex.routing.Route;
 import hex.routing.RouteHandler;
 import hex.routing.RouteParams;
@@ -15,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,7 +31,13 @@ public class ControllerAction implements RouteHandler {
 
     private final Supplier<Controller> supplier;
 
+    private Properties hexActionConfig = new Properties();
+
     private Optional<Method> action;
+
+    public void setHexActionConfig(Properties hexActionConfig) {
+        this.hexActionConfig = hexActionConfig;
+    }
 
     public ControllerAction(Supplier<Controller> supplier, String actionName) {
         this.supplier = supplier;
@@ -38,12 +46,16 @@ public class ControllerAction implements RouteHandler {
 
     @Override
     public void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
+        checkException(servletRequest);
         Controller controller = supplier.get();
         prepareController(controller, servletRequest, servletResponse);
         try {
             if(getAction().isPresent()) {
                 servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
                 invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
+                if(!servletResponse.isCommitted()) {
+                    controller.renderAction(actionName);
+                }
             } else {
                 renderActionNotFound(servletResponse, String.format("Action method (%s) not found in controller (%s)", actionName, controller.getClass().getSimpleName()));
             }
@@ -63,6 +75,18 @@ public class ControllerAction implements RouteHandler {
     public void prepareController(Controller controller, ServletRequest servletRequest, ServletResponse servletResponse) {
         controller.request = (HttpServletRequest)servletRequest;
         controller.response = (HttpServletResponse)servletResponse;
+
+        if(hexActionConfig.containsKey("viewBase")) {
+            controller.setViewBase(hexActionConfig.getProperty("viewBase"));
+        }
+    }
+
+    private void checkException(ServletRequest request) throws ServletException {
+        InitializationException e = (InitializationException)
+                request.getServletContext().getAttribute(InitializationException.class.getName());
+        if(e == null) return;
+
+        throw new ServletException(Errors.INITIALIZATION_ERROR_OCCURRED, e);
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {

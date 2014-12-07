@@ -11,6 +11,15 @@ import java.util.Properties;
  * Created by jason on 14-10-29.
  */
 public class ConnectionManager {
+    public static Connection getConnection() throws SQLException {
+        return getInstance().createConnection();
+    }
+
+    public static void initialize(ClassLoader classLoader) throws SQLException {
+        instance = new ConnectionManager();
+        instance.loadConfig(classLoader);
+    }
+
     private static ConnectionManager instance;
 
     private static ConnectionManager getInstance() throws SQLException {
@@ -20,10 +29,6 @@ public class ConnectionManager {
         }
 
         return instance;
-    }
-
-    public static Connection getConnection() throws SQLException {
-        return getInstance().createConnection();
     }
 
     private Properties properties;
@@ -38,9 +43,13 @@ public class ConnectionManager {
     }
 
     private void loadConfig() throws SQLException {
+        loadConfig(getClass().getClassLoader());
+    }
+
+    private void loadConfig(ClassLoader classLoader) throws SQLException {
         try {
             this.properties = new Properties();
-            properties.load(getClass().getResourceAsStream("/hex_repo.properties"));
+            properties.load(classLoader.getResourceAsStream("hex_repo.properties"));
             Class.forName(properties.getProperty("driver"));
         } catch (IOException e) {
             throw new SQLException("Error loading database connection info.", e);

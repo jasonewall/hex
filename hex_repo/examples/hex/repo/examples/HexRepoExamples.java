@@ -1,8 +1,8 @@
 package hex.repo.examples;
 
 import hex.ql.Query;
-import hex.repo.Person;
-import hex.repo.PersonRepository;
+import hex.repo.test.Person;
+import hex.repo.test.PersonRepository;
 import hex.repo.Repository;
 import hex.repo.RepositoryBase;
 import hex.repo.sql.test.Book;

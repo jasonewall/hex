@@ -199,7 +199,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public ServletContext getServletContext() {
-        return null;
+        return MockServletContext.NULL;
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 
 import java.io.File;
+import java.net.URLClassLoader;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -31,10 +32,9 @@ public class Compiler {
         this.applicationRoot = applicationRoot;
     }
 
-    public void compile(Supplier<Stream<String>> sourcePaths, String outPath) {
+    public void compile(Supplier<Stream<String>> sourcePaths, File destDir) {
         Project project = new Project();
         project.setBasedir(applicationRoot);
-        File destDir = new File(project.getBaseDir(), outPath);
         Mkdir mkdir = new Mkdir();
         mkdir.setDir(destDir);
         mkdir.setProject(project);
@@ -45,6 +45,7 @@ public class Compiler {
         Path srcs = new Path(project);
         sourcePaths.get().map(s -> new Path(project, s)).forEach(srcs::add);
         javac.setSrcdir(srcs);
+        javac.setClasspath(getClasspath(project));
         javac.setDestdir(destDir);
         javac.execute();
         sourcePaths.get().forEach(s -> {
@@ -52,11 +53,19 @@ public class Compiler {
             copy.setTodir(destDir);
             copy.setProject(project);
             FileSet fileSet = new FileSet();
-            fileSet.createExclude().setName("**/*/java");
+            fileSet.createExclude().setName("**/*.java");
             fileSet.setDir(new File(project.getBaseDir(), s));
             fileSet.setProject(project);
             copy.addFileset(fileSet);
             copy.execute();
         });
+    }
+
+    private Path getClasspath(Project project) {
+        Path classpath = new Path(project);
+        // TODO relying on URLClassLoader being correct is sketchy. Find something betta.
+        Stream.of(((URLClassLoader) Compiler.class.getClassLoader()).getURLs())
+                .forEach(url -> classpath.add(new Path(project, url.toString())));
+        return classpath;
     }
 }

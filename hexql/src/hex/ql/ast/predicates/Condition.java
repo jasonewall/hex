@@ -25,6 +25,11 @@ public class Condition<T, R> extends BasePredicate<T> implements Predicate<T>, N
     }
 
     @Override
+    public Predicate<T> negate() {
+        return new Condition<>(field, operand.negate());
+    }
+
+    @Override
     public Node[] toTree() throws InvalidAstException {
         if(!(operand instanceof Node))
             throw new InvalidAstException("Predicate not castable to node.");

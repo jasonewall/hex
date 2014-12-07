@@ -12,7 +12,7 @@ import java.util.stream.*;
 /**
  * Created by jason on 14-11-17.
  */
-public interface Query<T> extends Stream<T> {
+public interface Query<T> extends Stream<T>, Iterable<T> {
 
     default <R> Query<T> where(Function<T, R> extractor, Predicate<R> operand) {
         return filter(new Condition<>(extractor, operand));

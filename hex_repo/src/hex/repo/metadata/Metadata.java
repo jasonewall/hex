@@ -1,6 +1,7 @@
 package hex.repo.metadata;
 
 import hex.ql.ast.Node;
+import hex.ql.ast.Variable;
 import hex.repo.RepositoryException;
 import hex.repo.ResultSetWrapper;
 import hex.repo.streams.RepositoryStream;
@@ -12,11 +13,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static hex.repo.utils.Inflection.*;
+import static hex.utils.Inflection.*;
 
 /**
  * Created by jason on 14-10-29.
@@ -86,6 +86,10 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
     protected Class<T> getKeyRecordClass() {
         T t = (T)super.getKeyRecord();
         return (Class<T>)t.getClass();
+    }
+
+    public Node[] getColumns() {
+        return fieldTypes.keySet().stream().map(Variable::new).toArray(Node[]::new);
     }
 
     private String tableName;

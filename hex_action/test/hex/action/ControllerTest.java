@@ -38,6 +38,13 @@ public class ControllerTest {
         assertRenderedPage("blogs_list.jsp");
     }
 
+    @Test
+    public void renderActionShouldObeyViewPathRules() {
+        controller.renderAction("homeBoy");
+        assertContentType("text/html");
+        assertRenderedPage("/posts/home_boy.html.jsp");
+    }
+
     private void assertContentType(String contentType) {
         assertEquals(contentType, controller.response.getContentType());
     }

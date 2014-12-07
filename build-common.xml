@@ -1,0 +1,77 @@
+<project name="hex-common-builds" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <presetdef name="javac">
+        <javac includeantruntime="false"/>
+    </presetdef>
+
+    <property name="out.dir" value="../out/production"/>
+    <property name="test.out.dir" value="../out/test"/>
+    <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
+    <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
+
+    <target name="clean" description="Delete all output created by build targets for this project">
+        <delete dir="${classes.dir}"/>
+        <delete dir="${test.classes.dir}"/>
+    </target>
+
+    <target name="hex_repo">
+        <ant dir="../hex_repo" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="hex_action">
+        <ant dir="../hex_action" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="hex_routing">
+        <ant dir="../hex_routing" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="hex_utils">
+        <ant dir="../hex_utils" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="hexql">
+        <ant dir="../hexql" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${classes.dir}"/>
+        <ivy:cachepath conf="development" pathid="ivy.cachepath"/>
+        <javac destdir="${classes.dir}" srcdir="${basedir}/src">
+            <classpath refid="classpath"/>
+            <classpath refid="ivy.cachepath"/>
+        </javac>
+        <copy todir="${classes.dir}">
+            <fileset dir="${basedir}/src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="compile-tests" depends="compile">
+        <mkdir dir="${test.classes.dir}"/>
+        <ivy:cachepath conf="test" pathid="test.ivy.cachepath"/>
+        <path id="test.classpath">
+            <path refid="test.ivy.cachepath"/>
+            <path refid="classpath"/>
+            <pathelement location="${classes.dir}"/>
+        </path>
+        <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
+            <classpath refid="test.classpath"/>
+        </javac>
+        <copy todir="${test.classes.dir}">
+            <fileset dir="${basedir}/test">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="run-tests">
+        <junit failureproperty="tests.failed">
+            <test name="${test.class.name}"/>
+            <formatter type="plain" usefile="false"/>
+            <classpath refid="test.classpath"/>
+            <classpath path="${test.classes.dir}"/>
+        </junit>
+        <fail if="tests.failed" message="${test.class.name} failed"/>
+    </target>
+</project>

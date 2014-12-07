@@ -5,7 +5,8 @@ package hex.ql.ast;
  */
 public class Comparator implements Node {
     public enum Type {
-        Equals
+        Equals,
+        NotEquals
     }
 
     private Type type;

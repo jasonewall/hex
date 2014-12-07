@@ -4,11 +4,16 @@ package hex.repo.sql;
  * Created by jason on 14-10-26.
  */
 public interface Dialect {
-    static final String SPACE = " ";
+    static final char SPACE = ' ';
 
     static final String SELECT = "SELECT ";
     default public StringBuilder select(StringBuilder sql) {
         return sql.append(SELECT);
+    }
+
+    static final String DISTINCT = "DISTINCT ";
+    default public StringBuilder distinct(StringBuilder sql) {
+        return sql.append(DISTINCT);
     }
 
     static final String FROM = "FROM ";
@@ -44,6 +49,11 @@ public interface Dialect {
         return sql.append(EQUALS);
     }
 
+    static final String NOT_EQUALS = " <> ";
+    default public StringBuilder notEqualsComparison(StringBuilder sql) {
+        return sql.append(NOT_EQUALS);
+    }
+
     static final char QUOTE = '\'';
     default public StringBuilder quote(StringBuilder sql, Object value) {
         return sql.append(QUOTE).append(value).append(QUOTE);
@@ -68,5 +78,20 @@ public interface Dialect {
     static final String OR = " OR ";
     default public StringBuilder or(StringBuilder sql) {
         return sql.append(OR);
+    }
+
+    static final String BOUND_PARAM = "?";
+    default public StringBuilder boundParam(StringBuilder sql) {
+        return sql.append(BOUND_PARAM);
+    }
+
+    static final String LIMIT = "LIMIT ";
+    default public StringBuilder limit(StringBuilder sql) {
+        return sql.append(LIMIT);
+    }
+
+    static final String OFFSET = "OFFSET ";
+    default public StringBuilder offset(StringBuilder sql) {
+        return sql.append(OFFSET);
     }
 }

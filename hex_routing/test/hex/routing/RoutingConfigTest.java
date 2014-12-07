@@ -117,6 +117,13 @@ public class RoutingConfigTest {
     }
 
     @Test
+    public void shouldAllowTrailingSlashesInIndexRoutes() {
+        config.addRoute("/people", CALLED);
+        GET("/people/", config.getRouteHandler("/people/")::handleRequest)
+                .andThen((q,r) -> assertTrue("Called", (boolean)q.getAttribute("Called")));
+    }
+
+    @Test
     public void shouldAllowTrailingSlashesInRoutePattern() {
         config.addRoute("/profiles/:username/", CALLED);
         assertTrue("Concrete without", config.hasRoute("/profiles/socrates"));
@@ -127,6 +134,7 @@ public class RoutingConfigTest {
     public void shouldDifferentiateBetweenMethods() {
         config.addRoute(HttpMethod.POST, "/articles", UNEXPECTED);
         assertTrue("Has POST route", config.hasRoute(HttpMethod.POST, "/articles"));
+        assertFalse("But not GET", config.hasRoute(HttpMethod.GET, "/articles"));
     }
 
     public static RouteParams getRouteParams(ServletRequest request) {

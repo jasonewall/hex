@@ -10,8 +10,4 @@ import java.util.function.Predicate;
  */
 public interface Queryable<T> extends Iterable<T> {
     public Query<T> stream();
-
-    default <R> Query<T> where(Function<T, R> extractor, Predicate<R> operand) {
-        return stream().where(extractor, operand);
-    }
 }
