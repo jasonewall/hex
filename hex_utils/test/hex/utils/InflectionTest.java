@@ -45,8 +45,10 @@ public class InflectionTest {
     }
 
     @Test
-    public void tableizeShouldLookLikeTableNames() {
-        fail("Implement this test.");
+    public void actuallyUnderscoreShouldNotUnderscoreUnlessNoWordGaps() {
+        assertEquals("apples,oranges", underscore("Apples,Oranges"));
+        assertEquals("apples.oranges", underscore("Apples.Oranges"));
+        assertEquals("apples_o_ranges", underscore("ApplesORanges"));
     }
 
     @Test

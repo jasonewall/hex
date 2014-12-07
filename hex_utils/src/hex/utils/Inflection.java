@@ -2,6 +2,7 @@ package hex.utils;
 
 import java.util.Arrays;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 /**
  * Created by jason on 14-11-01.
@@ -21,7 +22,8 @@ public class Inflection {
     }
 
     private static final char UNDERSCORE = '_';
-    private static final char SPACE = ' ';
+
+    private static final Pattern underscorePrequels = Pattern.compile("[a-zA-Z]");
 
     public static String underscore(String string) {
         if(string == null || string.length() == 0) return string;
@@ -30,7 +32,7 @@ public class Inflection {
         for(int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (Character.isUpperCase(c) ) {
-                if(result.length() > 0 && chars[i-1] != SPACE ) result.append(UNDERSCORE);
+                if(result.length() > 0 && underscorePrequels.matcher(String.valueOf(chars[i-1])).matches()) result.append(UNDERSCORE);
                 result.append(Character.toLowerCase(c));
                 continue;
             }
