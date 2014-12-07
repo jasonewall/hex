@@ -21,14 +21,16 @@ public class Inflection {
     }
 
     private static final char UNDERSCORE = '_';
+    private static final char SPACE = ' ';
 
     public static String underscore(String string) {
         if(string == null || string.length() == 0) return string;
         char[] chars = string.toCharArray();
         StringBuilder result = new StringBuilder();
-        for(char c : chars) {
-            if (Character.isUpperCase(c)) {
-                if(result.length() > 0) result.append(UNDERSCORE);
+        for(int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (Character.isUpperCase(c) ) {
+                if(result.length() > 0 && chars[i-1] != SPACE ) result.append(UNDERSCORE);
                 result.append(Character.toLowerCase(c));
                 continue;
             }

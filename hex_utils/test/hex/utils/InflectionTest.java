@@ -41,7 +41,7 @@ public class InflectionTest {
 
     @Test
     public void underscoreShouldNotUnderscoreAfterASpace() {
-        fail("Implement this test.");
+        assertEquals("johnny oranges", underscore("Johnny Oranges"));
     }
 
     @Test
