@@ -1,7 +1,7 @@
 <project name="hex_routing" default="test">
     <include as="common" file="../build-common.xml"/>
 
-    <target name="test" depends="common.compile,common.compile-tests">
+    <target name="test" description="Run the tests!" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.routing.RoutingTests"/>
         </ant>

@@ -9,7 +9,7 @@
         </path>
     </target>
 
-    <target name="test" description="Run tests for this project" depends="common.compile,common.compile-tests">
+    <target name="test" description="Run the tests!" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.action.ActionTests"/>
         </ant>
