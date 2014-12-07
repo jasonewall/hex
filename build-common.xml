@@ -13,6 +13,14 @@
         <delete dir="${test.classes.dir}"/>
     </target>
 
+    <target name="hex_repo">
+        <ant dir="../hex_repo" target="common.compile" inheritall="false"/>
+    </target>
+
+    <target name="hex_action">
+        <ant dir="../hex_action" target="common.compile" inheritall="false"/>
+    </target>
+
     <target name="hex_routing">
         <ant dir="../hex_routing" target="common.compile" inheritall="false"/>
     </target>
