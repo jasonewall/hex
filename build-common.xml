@@ -40,7 +40,7 @@
         <path id="classpath"/>
     </target>
 
-    <target name="compile">
+    <target name="compile" depends="classpath">
         <mkdir dir="${classes.dir}"/>
         <ivy:cachepath conf="development" pathid="ivy.cachepath"/>
         <javac destdir="${classes.dir}" srcdir="${basedir}/src">

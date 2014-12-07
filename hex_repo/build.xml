@@ -8,7 +8,7 @@
         <classpath refid="liquibase.cachepath"/>
     </taskdef>
 
-    <target name="classpath" depends="common.hex_utils,common.hexql">
+    <target name="common.classpath" depends="common.hex_utils,common.hexql">
         <path id="classpath">
             <pathelement location="${out.dir}/hex_utils"/>
             <pathelement location="${out.dir}/hexql"/>
@@ -23,7 +23,7 @@
         <liquibase:updateDatabase databaseref="hex_repo_test" changelogfile="test_data/people.xml"/>
     </target>
 
-    <target name="test" depends="classpath,common.compile,common.compile-tests">
+    <target name="test" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.repo.RepoTests"/>
         </ant>

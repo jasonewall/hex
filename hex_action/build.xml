@@ -1,7 +1,7 @@
 <project name="hex_action" default="test">
     <include as="common" file="../build-common.xml"/>
 
-    <target name="classpath" depends="common.hex_routing,common.hex_utils">
+    <target name="common.classpath" depends="common.hex_routing,common.hex_utils">
         <path id="classpath">
             <pathelement path="${out.dir}/hex_routing"/>
             <pathelement path="${out.dir}/hex_utils"/>
@@ -9,7 +9,7 @@
         </path>
     </target>
 
-    <target name="test" description="Run tests for this project" depends="classpath,common.compile,common.compile-tests">
+    <target name="test" description="Run tests for this project" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.action.ActionTests"/>
         </ant>
