@@ -1,0 +1,26 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.0.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet id="create_people_table" author="jwall">
+        <createTable tableName="people">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)"/>
+            <column name="last_name" type="varchar(50)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="populate_people" author="jwall">
+        <sql>
+            <![CDATA[
+                INSERT INTO people(first_name, last_name) VALUES('Isaac', 'Newton');
+                INSERT INTO people(first_name, last_name) VALUES('Wayne', 'Newton');
+                INSERT INTO people(first_name, last_name) VALUES('Fig', 'Newton');
+            ]]>
+        </sql>
+    </changeSet>
+</databaseChangeLog>

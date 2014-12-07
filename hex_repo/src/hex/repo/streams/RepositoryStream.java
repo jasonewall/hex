@@ -1,18 +1,24 @@
 package hex.repo.streams;
 
-import hex.repo.AbstractRepository;
-import hex.repo.QueryResult;
-import hex.ql.queries.AbstractQuery;
 import hex.ql.Query;
-import hex.ql.ast.*;
+import hex.ql.ast.InvalidAstException;
+import hex.ql.ast.Node;
+import hex.ql.ast.Variable;
 import hex.ql.ast.predicates.NullPredicate;
+import hex.ql.queries.AbstractQuery;
 import hex.ql.queries.StreamQuery;
-import hex.repo.RepositoryException;
+import hex.repo.AbstractRepository;
+import hex.repo.sql.PreparedSqlQuery;
 import hex.repo.sql.SqlQuery;
+import hex.repo.streams.iterators.RepositoryIterator;
+import hex.repo.streams.iterators.RepositorySpliterator;
+import hex.utils.Null;
 
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.*;
+import java.util.stream.Collector;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Created by jason on 14-11-16.
@@ -28,7 +34,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     private boolean parallel = false;
 
-    private Consumer<T> peeker = (t) -> {};
+    private Consumer<T> peeker = new Null.Consumer<>();
 
     private Predicate<T> predicate = new NullPredicate<>();
 
@@ -53,26 +59,55 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     private Stream<T> terminateRepositoryStream() {
-        Stream<T> stream = StreamSupport.stream(spliterator(), this.isParallel());
-        //TODO: maybe we should pass in the close handlers too?
-        stream = stream.peek(peeker);
-        return stream;
+        //TODO: maybe we should pass in the close handlers?
+        return StreamSupport.stream(spliterator(), this.isParallel());
     }
 
-    public String toSql() {
-        SqlQuery result = new SqlQuery(repository.get_metadata());
+    public String toSql() throws InvalidAstException {
+        return prepareQuery(new SqlQuery(repository.get_metadata())).toSql();
+    }
+
+    public RepositoryStream<T> peekSql(Consumer<String> consumer) throws InvalidAstException {
+        consumer.accept(toSql());
+        return this;
+    }
+
+    private PreparedSqlQuery getPreparedQuery() {
+        return prepareQuery(new PreparedSqlQuery(repository.get_metadata()));
+    }
+
+    private <Q extends SqlQuery> Q prepareQuery(Q result) {
         result.from(new Node[]{new Variable(repository.getTableName())});
+        result.select(repository.get_metadata().getColumns());
         result.where(where);
-        try {
-            return result.toSql();
-        } catch(InvalidAstException e) {
-            throw new RepositoryException(e);
-        }
+        result.distinct(distinct);
+        result.limit(limit);
+        result.offset(offset);
+        return result;
     }
 
     public RepositoryStream(AbstractRepository<T> repository) {
         this.repository = repository;
     }
+
+    /**
+     * Returns a {@code RepositoryIntStream} that is essentially a single column
+     * query that has an {@code int} for a single column. Once terminated the results
+     * are delegated to a traditional {@link java.util.stream.IntStream}. Destroys the
+     * existing {@code SELECT} clause if there was one.
+     * <p>
+     * <p>This is an <a href="package-summary.html#StreamOps">
+     * intermediate operation</a>.
+     *
+     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
+     *               <a href="package-summary.html#Statelessness">stateless</a>
+     *               function to apply to each element
+     * @return the new stream
+     */
+//    @Override
+//    public IntStream mapToInt(ToIntFunction<? super T> mapper) {
+//        return null;
+//    }
 
     /**
      * Returns a stream resulting from applying the predicate in the form of a
@@ -129,25 +164,6 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     public <R> Query<R> map(Function<? super T, ? extends R> mapper) {
         return super.map(mapper);
     }
-
-    /**
-     * Returns a {@code RepositoryIntStream} that is essentially a single column
-     * query that has an {@code int} for a single column. Once terminated the results
-     * are delegated to a traditional {@link java.util.stream.IntStream}. Destroys the
-     * existing {@code SELECT} clause if there was one.
-     * <p>
-     * <p>This is an <a href="package-summary.html#StreamOps">
-     * intermediate operation</a>.
-     *
-     * @param mapper a <a href="package-summary.html#NonInterference">non-interfering</a>,
-     *               <a href="package-summary.html#Statelessness">stateless</a>
-     *               function to apply to each element
-     * @return the new stream
-     */
-//    @Override
-//    public IntStream mapToInt(ToIntFunction<? super T> mapper) {
-//        return null;
-//    }
 
     /**
      * Returns a stream consisting of the results of replacing each element of
@@ -211,12 +227,9 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * Returns a stream consisting of the elements of this stream, sorted
      * according to natural order. As the natural order of database records
      * is always in affect, this does the same as {@link #unordered()}
-     * <p>
-     * <p>For ordered streams, the sort is stable.  For unordered streams, no
-     * stability guarantees are made.
-     * <p>
+     *
      * <p>This is a <a href="package-summary.html#StreamOps">stateful
-     * intermediate operation</a>.
+     * intermediate operation</a>.</p>
      *
      * @return the new stream
      */
@@ -264,9 +277,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public void forEach(Consumer<? super T> action) {
-        try(QueryResult<T> results = iterator()) {
-            results.forEachRemaining(action);
-        }
+        terminateRepositoryStream().forEach(action);
     }
 
     /**
@@ -289,7 +300,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
 
     @Override
     public Optional<T> findFirst() {
-        return repository.executeQuery(toSql(), (rs) -> {
+        return repository.executeQuery(getPreparedQuery(), (rs) -> {
             if(!rs.next())
                 return Optional.<T>empty();
 
@@ -366,57 +377,51 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
     }
 
     /**
-     * You probably shouldn't use this, it's actually kind of dangerous. If you do
-     * use this, use it in the form of:
-     * <pre><code>
-     *     try(QueryResult&lt;T> results = stream.iterator()) {
-     *         results.forEachRemaining(t -> t.myAction());
-     *     }
-     * </code></pre>
-     * @return {@link QueryResult} based on the contents of this stream, which implements {@link java.util.Iterator}
+     * @return an Iterator
      */
     @Override
-    public QueryResult<T> iterator() {
-        return new QueryResult<>(repository, toSql()).peek(peeker);
+    public Iterator<T> iterator() {
+        return new RepositoryIterator<>(repository, getPreparedQuery(), peeker);
     }
 
     @Override
     public Spliterator<T> spliterator() {
-        Iterator<T> it = iterator();
-        return new Spliterator<T>() {
-            @Override
-            public boolean tryAdvance(Consumer<? super T> action) {
-                if(it.hasNext()) {
-                    action.accept(it.next());
-                    return true;
-                }
-                return false;
-            }
-
-            @Override
-            public Spliterator<T> trySplit() {
-                return Spliterators.emptySpliterator();
-            }
-
-            @Override
-            public long estimateSize() {
-                return 0;
-            }
-
-            @Override
-            public int characteristics() {
-                return 0;
-            }
-        };
+        return new RepositorySpliterator<>(repository, getPreparedQuery(), peeker);
     }
 
     @Override
     public <R, A> R collect(Collector<? super T, A, R> collector) {
-        A a = collector.supplier().get();
-        try(QueryResult<T> results = iterator()) {
-            results.forEachRemaining(t -> collector.accumulator().accept(a, t));
-        }
-        return collector.finisher().apply(a);
+        return terminateRepositoryStream().collect(collector);
+    }
+
+    @Override
+    public <R> R collect(Supplier<R> supplier, BiConsumer<R, ? super T> accumulator, BiConsumer<R, R> combiner) {
+        return terminateRepositoryStream().collect(supplier, accumulator, combiner);
+    }
+
+    @Override
+    public Object[] toArray() {
+        return terminateRepositoryStream().toArray();
+    }
+
+    @Override
+    public <A> A[] toArray(IntFunction<A[]> generator) {
+        return terminateRepositoryStream().toArray(generator);
+    }
+
+    @Override
+    public T reduce(T identity, BinaryOperator<T> accumulator) {
+        return terminateRepositoryStream().reduce(identity, accumulator);
+    }
+
+    @Override
+    public Optional<T> reduce(BinaryOperator<T> accumulator) {
+        return terminateRepositoryStream().reduce(accumulator);
+    }
+
+    @Override
+    public <U> U reduce(U identity, BiFunction<U, ? super T, U> accumulator, BinaryOperator<U> combiner) {
+        return terminateRepositoryStream().reduce(identity, accumulator, combiner);
     }
 
     /**

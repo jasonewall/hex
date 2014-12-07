@@ -1,6 +1,8 @@
 package hex.dev;
 
 import hex.action.Application;
+import hex.action.initialization.InitializationException;
+import hex.action.initialization.InitializerRunner;
 import hex.routing.*;
 
 import javax.servlet.*;
@@ -48,8 +50,9 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         try(InputStream propStream = new FileInputStream(applicationConfigFile)) {
             applicationProperties.load(propStream);
             initCompiler(applicationRootPath);
-            sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
-            setOutPath();
+            initPaths();
+            applicationCompiler.compile(sourcePaths, outPath); // do this for initializers at first
+            runApplicationInitializers(filterConfig);
             filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
             filter.init(filterConfig);
         } catch (IOException e) {
@@ -57,11 +60,30 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         }
     }
 
-    private void setOutPath() {
+    private void initPaths() {
+        sourcePaths = () -> Stream.of(applicationProperties.getProperty("src").split(",")).map(String::trim);
         if (applicationProperties.containsKey(OUT_DIR_PROPERTY)) {
             outPath = new File(applicationRootPath, applicationProperties.getProperty(OUT_DIR_PROPERTY));
         } else {
             outPath = new File(System.getProperty("java.io.tmpdir"), "hex" + applicationRootPath.replaceAll("/", "_"));
+        }
+    }
+
+    private void initCompiler(String applicationRootPath) {
+        applicationCompiler = new Compiler(applicationRootPath);
+        if(applicationProperties.containsKey("build.compiler"))
+            applicationCompiler.setCompiler(applicationProperties.getProperty("build.compiler"));
+    }
+
+    private void runApplicationInitializers(FilterConfig filterConfig) throws IOException {
+        URLClassLoader classLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader());
+        InitializerRunner runner = new InitializerRunner(classLoader);
+        try {
+            runner.run();
+        } catch (InitializationException e) {
+            filterConfig.getServletContext().setAttribute(InitializationException.class.getName(), e);
+        } finally {
+            classLoader.close();
         }
     }
 
@@ -74,12 +96,6 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         }  finally {
             config = null;
         }
-    }
-
-    private void initCompiler(String applicationRootPath) {
-        applicationCompiler = new Compiler(applicationRootPath);
-        if(applicationProperties.containsKey("build.compiler"))
-            applicationCompiler.setCompiler(applicationProperties.getProperty("build.compiler"));
     }
 
     @Override

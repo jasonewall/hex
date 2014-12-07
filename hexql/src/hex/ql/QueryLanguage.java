@@ -2,6 +2,7 @@ package hex.ql;
 
 import hex.ql.ast.predicates.Condition;
 import hex.ql.ast.predicates.EqualityPredicate;
+import hex.ql.ast.predicates.NotEqualsPredicate;
 import hex.ql.queries.StreamQuery;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * Created by jason on 14-10-25.
  */
-public interface QueryLanguage {
+public class QueryLanguage {
     public static <T> Query<T> from(List<T> source) {
         return new StreamQuery<>(source.stream());
     }
@@ -25,11 +26,15 @@ public interface QueryLanguage {
         return from(source).filter(predicate).collect(Collectors.toList());
     }
 
-    public static <T, U> Predicate<T> where(Function<T, U> extractor, Predicate<U> predicate) {
+    public static <T, U> Condition<T,U> where(Function<T, U> extractor, Predicate<U> predicate) {
         return new Condition<>(extractor, predicate);
     }
 
     public static <U> Predicate<U> is(U value) {
         return new EqualityPredicate<>(value);
+    }
+
+    public static <U> Predicate<U> isNot(U value) {
+        return new NotEqualsPredicate<>(value);
     }
 }

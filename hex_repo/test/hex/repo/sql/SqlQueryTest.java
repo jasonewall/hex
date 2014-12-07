@@ -24,12 +24,7 @@ public class SqlQueryTest {
 
     @Test
     public void testSelectStarWithWhere() throws InvalidAstException {
-        SqlQuery q = new SqlQuery(Book.metadata());
-        q.from(new Node[]{ new Variable("books") });
-
-        @SuppressWarnings("unchecked") // TODO figure out if we can get around this
-        Condition<Book,String> condition = (Condition<Book,String>) where(Book::getTitle, is("1984"));
-        q.where(condition.toTree());
+        SqlQuery q = getSelectStarWithWhere();
 
         String expected = "SELECT * FROM books WHERE title = '1984'";
         assertEquals(expected, q.toSql());
@@ -39,7 +34,7 @@ public class SqlQueryTest {
     public void testSelectWithColumns() throws InvalidAstException {
         SqlQuery q = new SqlQuery(null);
 
-        q.select(new Node[] { new Variable("id"), new Variable("first_name"), new Variable("last_name") });
+        q.select(new Node[]{new Variable("id"), new Variable("first_name"), new Variable("last_name")});
         q.from(new Node[]{ new Variable("employees") });
 
         String expected = "SELECT id, first_name, last_name FROM employees";
@@ -48,11 +43,63 @@ public class SqlQueryTest {
 
     @Test
     public void testCompoundCondition() throws InvalidAstException {
-        Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
-        SqlQuery q = new SqlQuery(Book.metadata());
-        q.from(new Node[]{ new Variable("books") });
-        q.where(condition.toTree());
+        SqlQuery q = getCompoundWhere();
         String expected = "SELECT * FROM books WHERE (title = '1984') AND (published_year = 1984)";
         assertEquals(expected, q.toSql());
+    }
+
+    @Test
+    public void shouldUseDistinctKeywordWhenSet() throws InvalidAstException {
+        SqlQuery q = getSqlQuery();
+        q.select(new Node[] { new Variable("title") });
+        q.distinct(true);
+        q.from(new Node[]{ new Variable("books") });
+
+        String expected = "SELECT DISTINCT title FROM books";
+        assertEquals(expected, q.toSql());
+    }
+
+    @Test
+    public void shouldRespectLimit() throws InvalidAstException {
+        SqlQuery q = getBooksQuery();
+        q.limit(10);
+        String expected = "SELECT id, title, published_year FROM books LIMIT 10";
+        assertEquals(expected, q.toSql());
+    }
+
+    @Test
+    public void shouldRespectOffset() throws InvalidAstException {
+        SqlQuery q = getBooksQuery();
+        q.offset(3);
+        String expected = "SELECT id, title, published_year FROM books OFFSET 3";
+        assertEquals(expected, q.toSql());
+    }
+
+    protected SqlQuery getCompoundWhere() throws InvalidAstException {
+        Node condition = (Node) where(Book::getTitle, is("1984")).and(where(Book::getPublishedYear, is(1984)));
+        SqlQuery q = getSqlQuery();
+        q.from(new Node[]{ new Variable("books") });
+        q.where(condition.toTree());
+        return q;
+    }
+
+    protected SqlQuery getSelectStarWithWhere() throws InvalidAstException {
+        SqlQuery q = getSqlQuery();
+        q.from(new Node[]{ new Variable("books") });
+
+        Condition<Book,String> condition = where(Book::getTitle, is("1984"));
+        q.where(condition.toTree());
+        return q;
+    }
+
+    protected SqlQuery getBooksQuery() {
+        SqlQuery q = getSqlQuery();
+        q.select(new Node[]{ new Variable("id"), new Variable("title"), new Variable("published_year") });
+        q.from(new Node[]{ new Variable("books")});
+        return q;
+    }
+
+    protected SqlQuery getSqlQuery() {
+        return new SqlQuery(Book.metadata());
     }
 }

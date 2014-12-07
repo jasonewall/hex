@@ -12,15 +12,21 @@ import java.util.function.Function;
  * Created by jason on 14-10-26.
  */
 public class SqlQuery {
-    private final Dialect dialect;
+    protected final Dialect dialect;
 
     private final Metadata metadata;
 
     private Node[] select = new Node[] { new Variable("*") };
 
+    private boolean distinct;
+
     private Node[] from;
 
     private Node[] where;
+
+    private long limit = -1;
+
+    private long offset = -1;
 
     public SqlQuery(Metadata metadata) {
         this.metadata = metadata;
@@ -29,6 +35,11 @@ public class SqlQuery {
 
     public SqlQuery select(Node[] select) {
         this.select = select;
+        return this;
+    }
+
+    public SqlQuery distinct(boolean isDistinct) {
+        this.distinct = isDistinct;
         return this;
     }
 
@@ -42,6 +53,16 @@ public class SqlQuery {
         return this;
     }
 
+    public SqlQuery limit(long limit) {
+        this.limit = limit;
+        return this;
+    }
+
+    public SqlQuery offset(long offset) {
+        this.offset = offset;
+        return this;
+    }
+
     public String toSql() throws InvalidAstException {
         StringBuilder sql = new StringBuilder();
         renderSelect(sql);
@@ -51,11 +72,20 @@ public class SqlQuery {
             dialect.separateClause(sql);
             renderWhere(sql);
         }
+        if(limit > 0) {
+            dialect.separateClause(sql);
+            renderLimit(sql);
+        }
+        if(offset > 0) {
+            dialect.separateClause(sql);
+            renderOffset(sql);
+        }
         return sql.toString();
     }
 
     private StringBuilder renderSelect(StringBuilder sql) throws InvalidAstException {
         dialect.select(sql);
+        if(distinct) dialect.distinct(sql);
         return renderList(sql, select, (node) -> dialect.separateColumn(sql));
     }
 
@@ -67,6 +97,16 @@ public class SqlQuery {
     private StringBuilder renderWhere(StringBuilder sql) throws InvalidAstException {
         dialect.where(sql);
         return renderTree(sql, where, (node) -> dialect.startParens(sql), (node) -> dialect.endParens(sql));
+    }
+
+    private StringBuilder renderLimit(StringBuilder sql) throws InvalidAstException {
+        dialect.limit(sql);
+        return renderNode(sql, new Literal<>(limit));
+    }
+
+    private StringBuilder renderOffset(StringBuilder sql) throws InvalidAstException {
+        dialect.offset(sql);
+        return renderNode(sql, new Literal<>(offset));
     }
 
     private StringBuilder renderNode(StringBuilder sql, Node node) throws InvalidAstException {
@@ -95,11 +135,12 @@ public class SqlQuery {
     private StringBuilder renderComparator(StringBuilder sql, Comparator node) throws InvalidAstException {
         switch(node.getType()) {
             case Equals: return dialect.equalityComparison(sql);
+            case NotEquals: return dialect.notEqualsComparison(sql);
         }
         throw new InvalidAstException("Unhandled comparator type found while generating SQL.");
     }
 
-    private StringBuilder renderLiteral(StringBuilder sql, Literal node) {
+    protected StringBuilder renderLiteral(StringBuilder sql, Literal node) {
         Object value = node.getValue();
         if(value instanceof Number) {
             sql.append(value);
