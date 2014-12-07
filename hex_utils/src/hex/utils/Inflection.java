@@ -9,7 +9,8 @@ import java.util.function.Function;
 public class Inflection {
     @SafeVarargs
     public static String inflect(String string, Function<String,String>... inflectors) {
-        return Arrays.stream(inflectors).reduce(Function::andThen).get().apply(string);
+        for(Function<String,String> i : inflectors) string = i.apply(string);
+        return string;
     }
 
     public static String capitalize(String string) {
@@ -25,9 +26,10 @@ public class Inflection {
         if(string == null || string.length() == 0) return string;
         char[] chars = string.toCharArray();
         StringBuilder result = new StringBuilder();
-        for(char c : chars) {
-            if (Character.isUpperCase(c)) {
-                if(result.length() > 0) result.append(UNDERSCORE);
+        for(int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (Character.isUpperCase(c) ) {
+                if(result.length() > 0 && Character.isLetterOrDigit(chars[i-1])) result.append(UNDERSCORE);
                 result.append(Character.toLowerCase(c));
                 continue;
             }

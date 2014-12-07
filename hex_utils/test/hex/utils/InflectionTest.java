@@ -38,4 +38,22 @@ public class InflectionTest {
         assertEquals("Empty string should return empty string", "", underscore(""));
         assertEquals("White space should just work", "    ", underscore(("    ")));
     }
+
+    @Test
+    public void underscoreShouldNotUnderscoreAfterASpace() {
+        assertEquals("johnny oranges", underscore("Johnny Oranges"));
+    }
+
+    @Test
+    public void actuallyUnderscoreShouldNotUnderscoreUnlessNoWordGaps() {
+        assertEquals("apples,oranges", underscore("Apples,Oranges"));
+        assertEquals("apples.oranges", underscore("Apples.Oranges"));
+        assertEquals("apples_o_ranges", underscore("ApplesORanges"));
+        assertEquals("Numbers count too", "apples0_oranges", underscore("Apples0Oranges"));
+    }
+
+    @Test
+    public void inflectWorksWithMultiples() {
+        assertEquals("johnny_oranges", inflect("JohnnyOrange", Inflection::underscore, Inflection::pluralize));
+    }
 }
