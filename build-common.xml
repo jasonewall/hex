@@ -33,6 +33,10 @@
         <ant dir="../hexql" target="common.compile" inheritall="false"/>
     </target>
 
+    <target name="classpath">
+        <path id="classpath"/>
+    </target>
+
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
         <ivy:cachepath conf="development" pathid="ivy.cachepath"/>

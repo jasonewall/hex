@@ -1,11 +1,7 @@
 <project name="hex_utils" default="test">
     <include file="../build-common.xml" as="common"/>
 
-    <target name="classpath">
-        <path id="classpath"/>
-    </target>
-
-    <target name="test" description="Run the tests!" depends="classpath,common.compile,common.compile-tests">
+    <target name="test" description="Run the tests!" depends="common.classpath,common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.utils.InflectionTest"/>
         </ant>
