@@ -5,6 +5,6 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="example_application"/>
     <dependencies>
-        <dependency org="hex" name="hex_action" rev="latest.integration" changing="true" conf="compile->default"/>
+        <dependency org="org.postgresql" name="postgresql" rev="9.3-1102-jdbc41"/>
     </dependencies>
 </ivy-module>

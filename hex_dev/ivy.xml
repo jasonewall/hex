@@ -5,16 +5,13 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_dev"/>
     <configurations>
-        <conf name="dependencies" description="Aggregate of dependencies for dev mode"/>
+        <conf name="development" visibility="private"/>
     </configurations>
-    <publications>
-    </publications>
     <dependencies>
+        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="development->default"/>
         <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.0.M0"/>
         <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.3.0.M0"/>
         <dependency org="org.eclipse.jetty.toolchain" name="jetty-jsp-jdt" rev="2.3.2"/>
         <dependency org="ant" name="ant" rev="1.7.0"/>
-        <dependency org="hex" name="hex_action" rev="latest.integration" changing="true"/>
-        <dependency org="hex" name="hex_repo" rev="latest.integration" changing="true"/>
     </dependencies>
 </ivy-module>
