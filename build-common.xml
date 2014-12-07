@@ -8,9 +8,12 @@
     <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
     <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
 
+    <property name="artifacts.dir" value="../out/artifacts"/>
+
     <target name="clean" description="Delete all output created by build targets for this project">
         <delete dir="${classes.dir}"/>
         <delete dir="${test.classes.dir}"/>
+        <delete file="${artifacts.dir}/${ant.project.name}.jar"/>
     </target>
 
     <target name="hex_repo">
@@ -67,6 +70,10 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+    </target>
+
+    <target name="build" depends="classpath,compile">
+        <jar destfile="${artifacts.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
     </target>
 
     <target name="run-tests">
