@@ -3,7 +3,7 @@ Hex Repo
 
 ORM using the API declared in [hex/hexql](http://github.com/thejayvm/hex/hexql)
 
-Use the `QueryLanguage` defined in JILL.
+Use the `QueryLanguage` helpers by creating a static import for them.
 
     import static hex.ql.QueryLangauge.*
 
@@ -14,9 +14,8 @@ Instantiate your repo instance
 Start querying!
 
 ```java
-from(people).where(field(Person::getLastName, is("Newton")).forEach((p) -> {
-    System.out.println(p.getFirstName() + " " + p.getLastName());
-});
+from(people).where(field(Person::getLastName, is("Newton"))
+        .forEach(p -> System.out.println(p.getFirstName() + " " + p.getLastName()));
 ```
 
 Some things to keep in mind:
@@ -26,9 +25,12 @@ Some things to keep in mind:
    from(people).where(field(Person::getLastName, is("Newton"))
    ```
    ... will not execute the query on the database. It is only when you call a resolution expression that the database will
-   be queried. For example, it was not until  we called `forEach()` in the above sample (a method on the `java.util.Iterable`    interface) that the database was queried and we started retrieving results.
+   be queried. For example, it was not until  we called `forEach()` in the above sample that the database was queried and we started retrieving results.
 
-2. Unless you manually call `toList()` on a repo-based `Queryable`, records are loaded as needed.
+2. The `java.util.stream.Collectors` work well on `Query` instances too, since `Query` implements `java.util.Stream`. So to get a list of `Query` results.
+   ```java
+   List<Person> newtons = from(people).where(field(Person::getLatsName, is("Newton")).collect(Collectors.toList());
+   ```
 
 ## Configuring your database access
 
@@ -44,7 +46,7 @@ password:
 
 ## Contributing
 
-I'll welcome contributors but keep in mind the following:
+I would love some contributers but keep in mind the following:
 
 ### No byte code manipulation of "business classes"
 
@@ -61,11 +63,9 @@ All mapping metadata should be able to be declared outside of the "Model" classe
 
 ### All queries should implement the `Stream` interfaces from Java 8
 
-A new directive I'm enforcing in JILL. It's going to require a lot of re-working what is currently here. I'm thinking
-something like: `Queryable` -> `stream()` or `query()` that returns an object that implements the `Stream` interface
-as well as an additional `Query` interface.
+This is pretty much already done now. Checkout `hex.repo.streams.RepositoryStream`. As of this writing there ar still a number of methos that need implementing, but the groundwork is all there.
 
-e.g. Calling `Stream#filter` on a Repository Query will translate itself to an addition the where clause.
+e.g. Calling `Stream#filter` on a Repository Query will translate itself to an addition to the where clause.
 
 ### What to do?
 
