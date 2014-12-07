@@ -23,8 +23,6 @@ public class Inflection {
 
     private static final char UNDERSCORE = '_';
 
-    private static final Pattern underscorePrequels = Pattern.compile("[a-zA-Z]");
-
     public static String underscore(String string) {
         if(string == null || string.length() == 0) return string;
         char[] chars = string.toCharArray();
@@ -32,7 +30,7 @@ public class Inflection {
         for(int i = 0; i < chars.length; i++) {
             char c = chars[i];
             if (Character.isUpperCase(c) ) {
-                if(result.length() > 0 && underscorePrequels.matcher(String.valueOf(chars[i-1])).matches()) result.append(UNDERSCORE);
+                if(result.length() > 0 && Character.isLetterOrDigit(chars[i-1])) result.append(UNDERSCORE);
                 result.append(Character.toLowerCase(c));
                 continue;
             }

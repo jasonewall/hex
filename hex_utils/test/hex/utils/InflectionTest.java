@@ -49,6 +49,7 @@ public class InflectionTest {
         assertEquals("apples,oranges", underscore("Apples,Oranges"));
         assertEquals("apples.oranges", underscore("Apples.Oranges"));
         assertEquals("apples_o_ranges", underscore("ApplesORanges"));
+        assertEquals("Numbers count too", "apples0_oranges", underscore("Apples0Oranges"));
     }
 
     @Test
