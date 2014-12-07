@@ -2,7 +2,6 @@ package hex.utils;
 
 import java.util.Arrays;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
 /**
  * Created by jason on 14-11-01.
