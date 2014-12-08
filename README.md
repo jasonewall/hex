@@ -28,3 +28,7 @@ Put **hex** in your existing Java app to start living the dream.
     
 Yup! `/*`! That is the nice thing about using a filter. If **hex** doesn't know what to do with a route it just lets the rest
 of your application deal with it.
+
+# DISCLAIMER
+
+**hex** is very much in alpha stages. Don't use it yet. Seriously, there isn't a whole let here. In fact, I could use some help getting it going!
