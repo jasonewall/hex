@@ -61,6 +61,15 @@
         <property name="hexql.compiled" value="true"/>
     </target>
 
+    <target name="hex_dev" unless="hex_dev.compiled">
+        <ant dir="../hex_dev" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_dev.cachepath" conf="runtime" file="../hex_dev/ivy.xml" resolveid="hex_dev.runtime"/>
+        <path id="hex_dev.classpath">
+            <pathelement path="${out.dir}/hex_dev"/>
+        </path>
+        <property name="hex_dev.compiled" value="true"/>
+    </target>
+
     <target name="classpath">
         <path id="classpath"/>
     </target>
