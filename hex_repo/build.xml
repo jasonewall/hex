@@ -2,7 +2,7 @@
                                         xmlns:liquibase="antlib:liquibase.integration.ant">
     <include as="common" file="../build-common.xml"/>
 
-    <ivy:cachepath pathid="liquibase.cachepath" conf="development"/>
+    <ivy:cachepath pathid="liquibase.cachepath" conf="development" resolveid="liquibase"/>
 
     <taskdef resource="liquibase/integration/ant/antlib.xml" uri="antlib:liquibase.integration.ant">
         <classpath refid="liquibase.cachepath"/>
@@ -10,8 +10,10 @@
 
     <target name="common.classpath" depends="common.hex_utils,common.hexql">
         <path id="classpath">
-            <pathelement location="${out.dir}/hex_utils"/>
-            <pathelement location="${out.dir}/hexql"/>
+            <path refid="hex_utils.cachepath"/>
+            <path refid="hex_utils.classpath"/>
+            <path refid="hexql.cachepath"/>
+            <path refid="hexql.classpath"/>
         </path>
     </target>
 

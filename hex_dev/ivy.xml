@@ -5,13 +5,16 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_dev"/>
     <configurations>
-        <conf name="development" visibility="private"/>
+        <conf name="default" extends="runtime"/>
+        <conf name="runtime" extends="compile"/>
+        <conf name="compile"/>
+        <conf name="development" visibility="private" extends="runtime"/>
     </configurations>
     <dependencies>
-        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="development->default"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.0.M0"/>
-        <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.3.0.M0"/>
-        <dependency org="org.eclipse.jetty.toolchain" name="jetty-jsp-jdt" rev="2.3.2"/>
-        <dependency org="ant" name="ant" rev="1.7.0"/>
+        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.1.0" conf="compile->default"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.0.M0" conf="compile->default"/>
+        <dependency org="org.eclipse.jetty" name="jetty-webapp" rev="9.3.0.M0" conf="compile->default"/>
+        <dependency org="org.eclipse.jetty.toolchain" name="jetty-jsp-jdt" rev="2.3.2" conf="compile->default"/>
+        <dependency org="ant" name="ant" rev="1.7.0" conf="compile->default"/>
     </dependencies>
 </ivy-module>
