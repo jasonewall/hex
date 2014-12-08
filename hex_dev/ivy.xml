@@ -5,7 +5,6 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_dev"/>
     <configurations>
-        <conf name="default" extends="runtime"/>
         <conf name="runtime" extends="compile"/>
         <conf name="compile"/>
         <conf name="development" visibility="private" extends="runtime"/>
