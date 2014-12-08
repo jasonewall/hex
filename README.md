@@ -31,4 +31,4 @@ of your application deal with it.
 
 # DISCLAIMER
 
-**hex** is very much in alpha stages. Don't use it yet. Seriously. There isn't a whole let here. In fact, I could use some help getting it going!
+**hex** is very much in alpha stages. Don't use it yet. Seriously. There isn't a whole let here. In fact, I could use [some help](https://github.com/thejayvm/hex/wiki/Contribution-Guide) getting it going!
