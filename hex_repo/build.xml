@@ -26,7 +26,7 @@
     <target name="ensure-config-files" depends="ensure-liquibase-config,ensure-hex-repo-config"/>
 
     <target name="prepare-test-data" description="Run this to prepare the database for the unit tests" depends="ensure-config-files">
-        <property file="liquibase.properties" prefix="db"/>
+        <property file="test/hex_repo.properties" prefix="db"/>
         <liquibase:database id="hex_repo_test" driver="${db.driver}" url="${db.url}" user="${db.username}" password="${db.password}"/>
         <liquibase:updateDatabase databaseref="hex_repo_test" changelogfile="test_data/people.xml"/>
     </target>
