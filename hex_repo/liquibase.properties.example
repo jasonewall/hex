@@ -1,4 +1,0 @@
-driver: org.postgresql.Driver
-url: jdbc:postgresql:hex_repo_test
-username: postgres
-password:

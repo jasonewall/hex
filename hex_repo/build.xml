@@ -23,7 +23,7 @@
         </ant>
     </target>
 
-    <target name="ensure-config-files" depends="ensure-liquibase-config,ensure-hex-repo-config"/>
+    <target name="ensure-config-files" depends="ensure-hex-repo-config"/>
 
     <target name="prepare-test-data" description="Run this to prepare the database for the unit tests" depends="ensure-config-files">
         <property file="test/hex_repo.properties" prefix="db"/>
@@ -31,16 +31,8 @@
         <liquibase:updateDatabase databaseref="hex_repo_test" changelogfile="test_data/people.xml"/>
     </target>
 
-    <target name="ensure-liquibase-config" depends="needs-liquibase?" unless="has.liquibase">
-        <copy file="liquibase.properties.example" tofile="liquibase.properties"/>
-    </target>
-
     <target name="ensure-hex-repo-config" depends="needs-hex-repo?" unless="has.hex-repo">
         <copy file="test/hex_repo.properties.sample" tofile="test/hex_repo.properties"/>
-    </target>
-
-    <target name="needs-liquibase?">
-        <available file="liquibase.properties" property="has.liquibase"/>
     </target>
 
     <target name="needs-hex-repo?">
