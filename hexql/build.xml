@@ -3,7 +3,7 @@
 
     <target name="common.classpath" depends="common.hex_utils">
         <path id="classpath">
-            <pathelement location="${out.dir}/hex_utils"/>
+            <path refid="hex_utils.classpath"/>
         </path>
     </target>
 
