@@ -14,7 +14,6 @@ public class PeopleController extends Controller {
     public void index() {
         Repository<Person> repo = new RepositoryBase<>(Person.class);
         Query<Person> people = repo.stream();
-        // frell... F JSTL, custom tags it is!
         view.put("people", people.iterator());
     }
 
