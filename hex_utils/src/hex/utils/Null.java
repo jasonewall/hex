@@ -29,7 +29,7 @@ public class Null {
 
         @Override
         public java.util.function.Predicate<T> negate() {
-            throw new UnsupportedOperationException();
+            return t -> false;
         }
 
         @Override
