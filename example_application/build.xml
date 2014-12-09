@@ -3,6 +3,8 @@
 
     <property name="tools.jar" value="${java.home}/../lib/tools.jar"/>
 
+    <target name="ensure-config-files" depends="ensure-hex-repo-config"/>
+
     <target name="common.classpath" depends="common.hex_utils,common.hexql,common.hex_routing,common.hex_action,common.hex_repo,common.hex_dev">
         <ivy:cachepath pathid="application.cachepath" resolveid="application" conf="runtime"/>
         <path id="classpath">
@@ -25,5 +27,13 @@
 
     <target name="run" depends="common.classpath">
         <java fork="true" classpathref="classpath" classname="hex.dev.HexServer" failonerror="true"/>
+    </target>
+
+    <target name="needs-hex-repo?">
+        <available file="adapters/hex_repo.properties" property="has.hex-repo"/>
+    </target>
+
+    <target name="ensure-hex-repo-config" depends="needs-hex-repo?" unless="has.hex-repo">
+        <copy file="adapters/hex_repo.properties.example" tofile="adapters/hex_repo.properties"/>
     </target>
 </project>
