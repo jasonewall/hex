@@ -22,7 +22,7 @@ public class ParamBaseTest {
     private Params params;
 
     private List<String> allMonths;
-    private List<String> with31Days;
+    private List<String> monthsWith31Days;
 
     @Before
     public void initParamsObject() {
@@ -32,14 +32,14 @@ public class ParamBaseTest {
     @Before
     public void initMonths() {
         allMonths = Arrays.asList("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
-        with31Days = Arrays.asList("Jan", "Mar", "May", "Jul", "Aug", "Oct", "Dec");
+        monthsWith31Days = Arrays.asList("Jan", "Mar", "May", "Jul", "Aug", "Oct", "Dec");
     }
 
     @Test
     public void ifPresentShouldWorkInQueryChains() {
         params.put("startsWith", "J");
         Stream<String> months = Params.memoOf(allMonths.stream())
-                .andThen(q -> params.ifPresent("has31Days", v -> q.filter(with31Days::contains)))
+                .andThen(q -> params.ifPresent("has31Days", v -> q.filter(monthsWith31Days::contains)))
                 .andThen(q -> params.ifPresent("startsWith", v -> q.filter(m -> m.startsWith(v.toString()))))
                 .finish();
 
