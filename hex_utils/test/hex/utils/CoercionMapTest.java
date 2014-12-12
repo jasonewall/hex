@@ -7,8 +7,7 @@ import java.util.HashMap;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 
 /**
@@ -55,6 +54,26 @@ public class CoercionMapTest {
     @Test
     public void getStringShouldBeNullSafe() {
         assertThat(map.getString("one"), nullValue());
+    }
+
+    @Test
+    public void getBooleanShouldWorkWithTruthyThings() {
+        map.put("one", 1);
+        assertTrue("non-zero numerics should be true", map.getBool("one"));
+
+        map.put("one", 0);
+        assertFalse("But zero should be false", map.getBool("one"));
+
+        assertFalse("Nulls should be false", map.getBool("null")); // great for checkboxes?!
+
+        map.put("true string", "true");
+        assertTrue("Strings that are equal true should be true", map.getBool("true string"));
+
+        map.put("numberString", "1"); assertTrue("the string '1'", map.getBool("numberString"));
+        map.put("zeroString", "0");   assertFalse("the string '0'", map.getBool("zeroString"));
+        map.put("emptyString", "");   assertFalse("empty string", map.getBool("emptyString"));
+        map.put("numberString", "2423080234"); assertTrue("strings representing large numbers", map.getBool("numberString"));
+        map.put("yes", "yes");        assertTrue("the string 'yes'", map.getBool("yes"));
     }
 
     @Test

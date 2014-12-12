@@ -1,5 +1,6 @@
 package hex.utils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -30,11 +31,28 @@ public interface CoercionMap extends Map<String,Object> {
     }
 
     default double getDouble(String attribute) {
-        return coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
+        return coerceNumeric(attribute, Number::doubleValue, (v, radix) -> Double.valueOf(v));
     }
 
     default <T> T coerceNumeric(String attribute, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
         return getNumber(attribute).map(mapper).orElseGet(() -> coercer.apply(getString(attribute), 10));
+    }
+
+    default boolean getBool(String attribute) {
+        return getBoolean(attribute);
+    }
+
+    default boolean getBoolean(String attribute) {
+        return getNumber(attribute).map(x -> !x.equals(0))
+                .orElseGet(() -> {
+                    if (!containsKey(attribute)) return false;
+                    String value = getString(attribute);
+                    return value != null && value.length() != 0 && (
+                            (value.matches("[0-9]+") && !value.equals("0"))
+                                    || value.equals("true")
+                                    || value.equals("yes")
+                    );
+                });
     }
 
     default String getString(String attribute) {
