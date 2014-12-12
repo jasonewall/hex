@@ -77,6 +77,15 @@ public class CoercionMapTest {
     }
 
     @Test
+    public void getBooleanShouldWorkWithBooleanTypes() {
+        map.put("boolean", true);
+        assertTrue(map.getBool("boolean"));
+
+        map.put("boolean", false);
+        assertFalse(map.getBool("boolean"));
+    }
+
+    @Test
     public void getOptionalShouldWorkWithAVarietyOfTypes() {
         map.put("one", 1);
         assertThat(map.getOptional("one").get(), equalTo(1));
