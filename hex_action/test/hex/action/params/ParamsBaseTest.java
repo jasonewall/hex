@@ -1,5 +1,6 @@
 package hex.action.params;
 
+import hex.utils.CoercionMap;
 import org.junit.Before;
 import org.junit.Test;
 
