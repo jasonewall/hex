@@ -1,0 +1,58 @@
+package hex.utils;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+/**
+ * Created by jason on 14-12-11.
+ */
+public interface CoercionMap extends Map<String,Object> {
+    default byte getByte(String attribute) {
+        return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
+    }
+
+    default short getShort(String attribute) {
+        return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
+    }
+
+    default float getFloat(String attribute) {
+        return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
+    }
+
+    default int getInt(String attribute) {
+        return coerceNumeric(attribute, Number::intValue, Integer::valueOf);
+    }
+
+    default long getLong(String attribute) {
+        return this.<Long>coerceNumeric(attribute, Number::longValue, Long::valueOf);
+    }
+
+    default double getDouble(String attribute) {
+        return this.<Double>coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
+    }
+
+    default <T> T coerceNumeric(String attribute, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
+        return getNumber(attribute).map(mapper).orElseGet(() -> coercer.apply(getString(attribute), 10));
+    }
+
+    default String getString(String attribute) {
+        Object o = get(attribute);
+        if(o == null) return null;
+        return o.toString();
+    }
+
+    default Optional<Number> getNumber(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof Number) {
+            return Optional.of((Number)o);
+        }
+        return Optional.empty();
+    }
+
+    @SuppressWarnings("unchecked")
+    default <T> Optional<T> getOptional(String attribute) {
+        return Optional.ofNullable((T) get(attribute));
+    }
+}

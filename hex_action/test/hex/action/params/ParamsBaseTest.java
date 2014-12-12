@@ -16,7 +16,7 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by jason on 14-12-10.
  */
-public class ParamBaseTest {
+public class ParamsBaseTest {
     private static class DefaultParams extends HashMap<String,Object> implements Params {}
 
     private Params params;
