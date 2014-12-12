@@ -26,11 +26,11 @@ public interface CoercionMap extends Map<String,Object> {
     }
 
     default long getLong(String attribute) {
-        return this.<Long>coerceNumeric(attribute, Number::longValue, Long::valueOf);
+        return coerceNumeric(attribute, Number::longValue, Long::valueOf);
     }
 
     default double getDouble(String attribute) {
-        return this.<Double>coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
+        return coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
     }
 
     default <T> T coerceNumeric(String attribute, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
