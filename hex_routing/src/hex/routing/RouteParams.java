@@ -23,17 +23,40 @@
  */
 package hex.routing;
 
-import java.util.HashMap;
-import java.util.Map;
+import hex.utils.CoercionMap;
+import hex.utils.maps.AbstractImmutableMap;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jason on 14-11-13.
  */
-public class RouteParams {
+public class RouteParams extends AbstractImmutableMap<String,Object> implements CoercionMap {
     private Map<String,String> params = new HashMap<>();
 
     public RouteParams(Map<String,String> params) {
         this.params = params;
+    }
+
+    /**
+     * Build the {@code entrySet} that will be converted into an immutable implementation of the {@link java.util.Set}
+     * interface.
+     * <p>
+     * This pattern is meant to be a convenience for creating implementations of an immutable {@link java.util.Map}
+     * implementation.
+     *
+     * @return A {@link java.util.Set} of entries
+     */
+    @Override
+    protected Set<Entry<String, Object>> buildEntries() {
+        // The type erasure doesn't like auto converting Entry<String,String> to <String,Object>
+        // Using just SimpleImmutableEntry::new assumes we're returning Entry<String,String> so it barfs on the return type
+        // of #buildEntries() - go weak generics
+        //noinspection Convert2MethodRef,Convert2Diamond
+        return params.entrySet().stream()
+                .map(e -> new SimpleImmutableEntry<String,Object>(e))
+                .collect(HashSet::new, Set::add, Set::addAll);
     }
 
     public Object get(Class<?> type, String name) throws IllegalArgumentException {
@@ -50,9 +73,5 @@ public class RouteParams {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
         }
-    }
-
-    public String getString(String paramName) {
-        return params.get(paramName);
     }
 }
