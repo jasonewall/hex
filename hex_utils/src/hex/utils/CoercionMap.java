@@ -43,6 +43,9 @@ public interface CoercionMap extends Map<String,Object> {
     }
 
     default boolean getBoolean(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof Boolean) return (Boolean)o;
+
         return getNumber(attribute).map(x -> !x.equals(0))
                 .orElseGet(() -> {
                     if (!containsKey(attribute)) return false;
