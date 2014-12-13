@@ -1,5 +1,7 @@
 package hex.utils;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -35,6 +37,22 @@ public interface CoercionMap extends Map<String,Object> {
 
     default <T> T coerceNumeric(String attribute, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
         return getNumber(attribute).map(mapper).orElseGet(() -> coercer.apply(getString(attribute), 10));
+    }
+
+    default BigDecimal getBigDecimal(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof BigDecimal) return (BigDecimal)o;
+        String value = getString(attribute);
+        if(value == null) throw new NullPointerException("BigDecimal attribute not present or value is null.");
+        return new BigDecimal(value);
+    }
+
+    default BigInteger getBigInteger(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof BigInteger) return (BigInteger)o;
+        String value = getString(attribute);
+        if(value == null) throw new NullPointerException("BigInteger attribute not present or value is null.");
+        return new BigInteger(value);
     }
 
     default boolean getBool(String attribute) {

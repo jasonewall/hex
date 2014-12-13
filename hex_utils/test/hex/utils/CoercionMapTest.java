@@ -1,12 +1,15 @@
 package hex.utils;
 
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 
@@ -14,6 +17,9 @@ import static org.junit.Assert.*;
  * Created by jason on 14-12-11.
  */
 public class CoercionMapTest {
+    @Rule
+    public ExpectedException exception = ExpectedException.none();
+
     private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap {}
 
     private CoercionMap map = new CoercionMapImpl();
@@ -83,6 +89,40 @@ public class CoercionMapTest {
 
         map.put("boolean", false);
         assertFalse(map.getBool("boolean"));
+    }
+
+    @Test
+    public void getBigDecimalShouldWorkWithInstancesAndStrings() {
+        BigDecimal instance = BigDecimal.valueOf(3.2);
+        map.put("instance", instance);
+        map.put("string", "3.2");
+
+        assertThat("if instance should return same", map.getBigDecimal("instance"), sameInstance(instance));
+        assertThat("otherwise parse string", map.getBigDecimal("string"), equalTo(instance));
+    }
+
+    @Test
+    public void getBigDecimalShouldRaiseNullPointerExceptionWhenMissing() {
+        exception.expect(NullPointerException.class);
+        exception.expectMessage("BigDecimal");
+        map.getBigDecimal("null or missing attribute");
+    }
+
+    @Test
+    public void getBigIntegerShouldWorkWithInstancesAndString() {
+        BigInteger instance = BigInteger.valueOf(100);
+        map.put("instance", instance);
+        map.put("string", "100");
+
+        assertThat("if instance should return the same", map.getBigInteger("instance"), sameInstance(instance));
+        assertThat("otherwise parse string", map.getBigInteger("string"), equalTo(instance));
+    }
+
+    @Test
+    public void getBigIntegerShouldRaiseNullPointerExceptionWhenMissing() {
+        exception.expect(NullPointerException.class);
+        exception.expectMessage("BigInteger");
+        map.getBigInteger("null or missing attribute");
     }
 
     @Test
