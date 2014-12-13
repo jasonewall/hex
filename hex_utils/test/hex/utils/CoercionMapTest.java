@@ -75,11 +75,11 @@ public class CoercionMapTest {
         map.put("true string", "true");
         assertTrue("Strings that are equal true should be true", map.getBool("true string"));
 
-        map.put("numberString", "1"); assertTrue("the string '1'", map.getBool("numberString"));
-        map.put("zeroString", "0");   assertFalse("the string '0'", map.getBool("zeroString"));
-        map.put("emptyString", "");   assertFalse("empty string", map.getBool("emptyString"));
+        map.put("numberString", "1");          assertTrue("the string '1'", map.getBool("numberString"));
+        map.put("zeroString", "0");            assertFalse("the string '0'", map.getBool("zeroString"));
+        map.put("emptyString", "");            assertFalse("empty string", map.getBool("emptyString"));
         map.put("numberString", "2423080234"); assertTrue("strings representing large numbers", map.getBool("numberString"));
-        map.put("yes", "yes");        assertTrue("the string 'yes'", map.getBool("yes"));
+        map.put("yes", "yes");                 assertTrue("the string 'yes'", map.getBool("yes"));
     }
 
     @Test
