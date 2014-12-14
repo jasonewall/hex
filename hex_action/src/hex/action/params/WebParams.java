@@ -45,7 +45,11 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
                 Map<String,Object> subParams = new HashMap<>(reqParams.size());
                 subParams.put(m.group(2), v[0]);
                 entries.merge(m.group(1), subParams, (o,n) -> {
-                    ((Map<String,Object>)o).putAll((Map<String,Object>)n);
+                    @SuppressWarnings("unchecked")
+                    Map<String,Object> sub = (Map<String,Object>)o;
+                    @SuppressWarnings("unchecked")
+                    Map<String,Object> newVal = (Map<String,Object>)n;
+                    sub.putAll(newVal);
                     return o;
                 });
             } else {
