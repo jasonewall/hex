@@ -62,38 +62,107 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     public Object get(Class<?> type, String name) throws IllegalArgumentException {
-        try {
-            if(type == byte.class || type == Byte.class) {
-                return getByte(name);
-            } else if(type == short.class || type == Short.class) {
-                return getShort(name);
-            } else if(type == int.class || type == Integer.class) {
-                return getInt(name);
-            } else if(type == float.class || type == Float.class) {
-                return getFloat(name);
-            } else if(type == long.class || type == Long.class) {
-                return getLong(name);
-            } else if(type == double.class || type == Double.class) {
-                return getDouble(name);
-            } else if(type == BigDecimal.class) {
-                return getBigDecimal(name);
-            } else if(type == BigInteger.class) {
-                return getBigInteger(name);
-            } else if(type == String.class) {
-                return getString(name);
-            } else {
-                return type.cast(get(name));
-            }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
+        if(type == byte.class || type == Byte.class) {
+            return getByte(name);
+        } else if(type == short.class || type == Short.class) {
+            return getShort(name);
+        } else if(type == int.class || type == Integer.class) {
+            return getInt(name);
+        } else if(type == float.class || type == Float.class) {
+            return getFloat(name);
+        } else if(type == long.class || type == Long.class) {
+            return getLong(name);
+        } else if(type == double.class || type == Double.class) {
+            return getDouble(name);
+        } else if(type == BigDecimal.class) {
+            return getBigDecimal(name);
+        } else if(type == BigInteger.class) {
+            return getBigInteger(name);
+        } else if(type == String.class) {
+            return getString(name);
+        } else {
+            return type.cast(get(name));
         }
     }
 
     public int getInt(String paramName) throws IllegalArgumentException {
         try {
-            return Integer.parseInt(params.get(paramName), 10);
+            return coerceNumeric(paramName, Number::intValue, Integer::valueOf);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
+            throw new IllegalArgumentException(numberFormatErrorMessage(paramName, e), e);
         }
+    }
+
+    @Override
+    public byte getByte(String attribute) {
+        try {
+            return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public short getShort(String attribute) {
+        try {
+            return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public float getFloat(String attribute) {
+        try {
+            return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public long getLong(String attribute) {
+        try {
+            return coerceNumeric(attribute, Number::longValue, Long::valueOf);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public double getDouble(String attribute) {
+        try {
+            return coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof BigDecimal) return (BigDecimal)o;
+        try {
+            return Optional.ofNullable(getString(attribute)).map(BigDecimal::new)
+                    .orElseThrow(() -> new NullPointerException("BigDecimal attribute not present or is null."));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public BigInteger getBigInteger(String attribute) {
+        Object o = get(attribute);
+        if(o instanceof BigInteger) return (BigInteger)o;
+        try {
+            return Optional.ofNullable(getString(attribute)).map(BigInteger::new)
+                    .orElseThrow(() -> new NullPointerException("BigInteger attribute not present or is null."));
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    private String numberFormatErrorMessage(String paramName, NumberFormatException e) {
+        return String.format("NumberFormatException in route parameter(%s): %s", paramName, e.getMessage());
     }
 }
