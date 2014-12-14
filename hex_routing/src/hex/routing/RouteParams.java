@@ -62,7 +62,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
 
     public Integer getInt(String paramName) throws IllegalArgumentException {
         try {
-            return coerceNumeric(paramName, Number::intValue, Integer::valueOf);
+            return CoercionMap.super.getInt(paramName);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(paramName, e), e);
         }
@@ -71,7 +71,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     @Override
     public Byte getByte(String attribute) {
         try {
-            return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
+            return CoercionMap.super.getByte(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -80,7 +80,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     @Override
     public Short getShort(String attribute) {
         try {
-            return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
+            return CoercionMap.super.getShort(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -89,7 +89,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     @Override
     public Float getFloat(String attribute) {
         try {
-            return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
+            return CoercionMap.super.getFloat(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -98,7 +98,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     @Override
     public Long getLong(String attribute) {
         try {
-            return coerceNumeric(attribute, Number::longValue, Long::valueOf);
+            return CoercionMap.super.getLong(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -107,7 +107,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     @Override
     public Double getDouble(String attribute) {
         try {
-            return coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
+            return CoercionMap.super.getDouble(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -115,11 +115,8 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
 
     @Override
     public BigDecimal getBigDecimal(String attribute) {
-        Object o = get(attribute);
-        if(o instanceof BigDecimal) return (BigDecimal)o;
         try {
-            return Optional.ofNullable(getString(attribute)).map(BigDecimal::new)
-                    .orElseThrow(() -> new NullPointerException("BigDecimal attribute not present or is null."));
+            return CoercionMap.super.getBigDecimal(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
@@ -127,11 +124,8 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
 
     @Override
     public BigInteger getBigInteger(String attribute) {
-        Object o = get(attribute);
-        if(o instanceof BigInteger) return (BigInteger)o;
         try {
-            return Optional.ofNullable(getString(attribute)).map(BigInteger::new)
-                    .orElseThrow(() -> new NullPointerException("BigInteger attribute not present or is null."));
+            return CoercionMap.super.getBigInteger(attribute);
         } catch(NumberFormatException e) {
             throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
         }
