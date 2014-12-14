@@ -29,7 +29,6 @@ import hex.utils.maps.AbstractImmutableMap;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by jason on 14-11-13.
@@ -61,7 +60,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
                 .collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public int getInt(String paramName) throws IllegalArgumentException {
+    public Integer getInt(String paramName) throws IllegalArgumentException {
         try {
             return coerceNumeric(paramName, Number::intValue, Integer::valueOf);
         } catch (NumberFormatException e) {
@@ -70,7 +69,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     @Override
-    public byte getByte(String attribute) {
+    public Byte getByte(String attribute) {
         try {
             return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
         } catch(NumberFormatException e) {
@@ -79,7 +78,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     @Override
-    public short getShort(String attribute) {
+    public Short getShort(String attribute) {
         try {
             return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
         } catch(NumberFormatException e) {
@@ -88,7 +87,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     @Override
-    public float getFloat(String attribute) {
+    public Float getFloat(String attribute) {
         try {
             return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
         } catch(NumberFormatException e) {
@@ -97,7 +96,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     @Override
-    public long getLong(String attribute) {
+    public Long getLong(String attribute) {
         try {
             return coerceNumeric(attribute, Number::longValue, Long::valueOf);
         } catch(NumberFormatException e) {
@@ -106,7 +105,7 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     @Override
-    public double getDouble(String attribute) {
+    public Double getDouble(String attribute) {
         try {
             return coerceNumeric(attribute, Number::doubleValue, (v,radix) -> Double.valueOf(v));
         } catch(NumberFormatException e) {

@@ -11,18 +11,6 @@ import java.util.function.Function;
  * Created by jason on 14-12-11.
  */
 public interface CoercionMap extends Map<String,Object> {
-    default byte getByte(String attribute) {
-        return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
-    }
-
-    default short getShort(String attribute) {
-        return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
-    }
-
-    default float getFloat(String attribute) {
-        return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
-    }
-
     default Object get(Class<?> type, String name) throws IllegalArgumentException {
         if(type == byte.class || type == Byte.class) {
             return getByte(name);
@@ -47,15 +35,27 @@ public interface CoercionMap extends Map<String,Object> {
         }
     }
 
-    default int getInt(String attribute) {
+    default Byte getByte(String attribute) {
+        return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
+    }
+
+    default Short getShort(String attribute) {
+        return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
+    }
+
+    default Float getFloat(String attribute) {
+        return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
+    }
+
+    default Integer getInt(String attribute) {
         return coerceNumeric(attribute, Number::intValue, Integer::valueOf);
     }
 
-    default long getLong(String attribute) {
+    default Long getLong(String attribute) {
         return coerceNumeric(attribute, Number::longValue, Long::valueOf);
     }
 
-    default double getDouble(String attribute) {
+    default Double getDouble(String attribute) {
         return coerceNumeric(attribute, Number::doubleValue, (v, radix) -> Double.valueOf(v));
     }
 

@@ -104,7 +104,7 @@ public class ControllerActionTest {
         initAction("withRouteParams");
         initRouteParams(p -> p.put("id", "8"));
         GET("/theRequestPath", this::handleRequest)
-                .andThen((q,r) -> assertEquals(8, getViewContext().getInt("id")))
+                .andThen((q,r) -> assertEquals(8, getViewContext().getInt("id").intValue()))
                 ;
     }
 
