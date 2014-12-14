@@ -60,6 +60,16 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
                 .collect(HashSet::new, Set::add, Set::addAll);
     }
 
+    @Override
+    public Object get(Object key) {
+        return params.get(key);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return params.containsKey(key);
+    }
+
     public Integer getInt(String paramName) throws IllegalArgumentException {
         try {
             return CoercionMap.super.getInt(paramName);
