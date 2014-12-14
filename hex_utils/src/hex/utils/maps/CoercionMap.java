@@ -43,7 +43,9 @@ public interface CoercionMap extends Map<String,Object> {
             value = get(name);
         }
 
-        return type.cast(value);
+        @SuppressWarnings("unchecked")
+        T t = (T)value;
+        return t;
     }
 
     default Byte getByte(String attribute) {
