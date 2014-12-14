@@ -19,28 +19,31 @@ public interface CoercionMap extends Map<String,Object> {
      * @param name The key of which to find the value to return
      * @return The value found at {@code name} coerced into {@code type}
      */
-    default Object get(Class<?> type, String name) {
+    default <T> T get(Class<T> type, String name) {
+        Object value;
         if(type == byte.class || type == Byte.class) {
-            return getByte(name);
+            value = getByte(name);
         } else if(type == short.class || type == Short.class) {
-            return getShort(name);
+            value = getShort(name);
         } else if(type == int.class || type == Integer.class) {
-            return getInt(name);
+            value = getInt(name);
         } else if(type == float.class || type == Float.class) {
-            return getFloat(name);
+            value = getFloat(name);
         } else if(type == long.class || type == Long.class) {
-            return getLong(name);
+            value = getLong(name);
         } else if(type == double.class || type == Double.class) {
-            return getDouble(name);
+            value = getDouble(name);
         } else if(type == BigDecimal.class) {
-            return getBigDecimal(name);
+            value = getBigDecimal(name);
         } else if(type == BigInteger.class) {
-            return getBigInteger(name);
+            value = getBigInteger(name);
         } else if(type == String.class) {
-            return getString(name);
+            value = getString(name);
         } else {
-            return type.cast(get(name));
+            value = get(name);
         }
+
+        return type.cast(value);
     }
 
     default Byte getByte(String attribute) {
