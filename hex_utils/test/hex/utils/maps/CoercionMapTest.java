@@ -1,4 +1,4 @@
-package hex.utils;
+package hex.utils.maps;
 
 import org.junit.Rule;
 import org.junit.Test;

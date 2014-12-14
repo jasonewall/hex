@@ -1,6 +1,6 @@
 package hex.action;
 
-import hex.utils.CoercionMap;
+import hex.utils.maps.CoercionMap;
 
 import java.util.HashMap;
 

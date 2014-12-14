@@ -1,4 +1,4 @@
-package hex.utils;
+package hex.utils.maps;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

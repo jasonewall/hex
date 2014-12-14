@@ -23,7 +23,7 @@
  */
 package hex.routing;
 
-import hex.utils.CoercionMap;
+import hex.utils.maps.CoercionMap;
 import hex.utils.maps.AbstractImmutableMap;
 
 import java.math.BigDecimal;
