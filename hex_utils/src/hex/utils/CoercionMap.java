@@ -11,7 +11,15 @@ import java.util.function.Function;
  * Created by jason on 14-12-11.
  */
 public interface CoercionMap extends Map<String,Object> {
-    default Object get(Class<?> type, String name) throws IllegalArgumentException {
+    /**
+     * Formally known as get with coercion
+     * Gets the value of the attribute found at {@code name} and returns it coerced into
+     * {@code type}
+     * @param type The type to coerce the value into
+     * @param name The key of which to find the value to return
+     * @return The value found at {@code name} coerced into {@code type}
+     */
+    default Object get(Class<?> type, String name) {
         if(type == byte.class || type == Byte.class) {
             return getByte(name);
         } else if(type == short.class || type == Short.class) {
