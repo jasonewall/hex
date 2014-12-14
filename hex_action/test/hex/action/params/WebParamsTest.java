@@ -39,4 +39,15 @@ public class WebParamsTest {
         assertThat(params.getInt("id"), equalTo(13));
         assertThat(params.getString("message"), equalTo("Bond, James Bond"));
     }
+
+    @Test
+    public void itShouldBeAwareOfSubProperties() {
+        request.putParam("person[firstName]", "James");
+        request.putParam("person[lastName]", "Bond");
+        buildWebParams();
+        Object o = params.get("person");
+        Map person = (Map)o;
+        assertThat(person.get("firstName"), equalTo("James"));
+        assertThat(person.get("lastName"), equalTo("Bond"));
+    }
 }

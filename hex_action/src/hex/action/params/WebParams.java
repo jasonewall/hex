@@ -4,8 +4,12 @@ import hex.routing.RouteParams;
 import hex.utils.maps.AbstractImmutableMap;
 
 import javax.servlet.ServletRequest;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by jason on 14-12-12.
@@ -31,15 +35,28 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
      */
     @Override
     protected Set<Entry<String, Object>> buildEntries() {
-        Set<Entry<String,Object>> entries = new HashSet<>();
-        entries.addAll(routeParams.entrySet());
+        Map<String,String[]> reqParams = request.getParameterMap();
+        Map<String,Object> entries = new HashMap<>(reqParams.size() + (routeParams.size() * 5)); // making sure we don't have to rebuild the internal hashtable, hopefully
+        entries.putAll(routeParams);
         request.getParameterMap().forEach((k,v) -> {
-            if(v.length == 1) entries.add(new SimpleImmutableEntry<>(k,v[0]));
-            else {
-                entries.add(new SimpleImmutableEntry<>(k,v));
+            Pattern p = Pattern.compile("(\\w+)\\[(\\w+)\\]"); // (\w+)\[(\w+\)]
+            Matcher m = p.matcher(k);
+            if(m.matches()) {
+                Map<String,Object> subParams = new HashMap<>(reqParams.size());
+                subParams.put(m.group(2), v[0]);
+                entries.merge(m.group(1), subParams, (o,n) -> {
+                    ((Map<String,Object>)o).putAll((Map<String,Object>)n);
+                    return o;
+                });
+            } else {
+                if(v.length == 1) entries.put(k, v[0]);
+                else {
+                    entries.put(k, v);
+                }
+
             }
         });
-        return entries;
+        return entries.entrySet();
     }
 
     /**
