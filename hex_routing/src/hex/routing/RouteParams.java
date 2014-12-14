@@ -61,30 +61,6 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
                 .collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public Object get(Class<?> type, String name) throws IllegalArgumentException {
-        if(type == byte.class || type == Byte.class) {
-            return getByte(name);
-        } else if(type == short.class || type == Short.class) {
-            return getShort(name);
-        } else if(type == int.class || type == Integer.class) {
-            return getInt(name);
-        } else if(type == float.class || type == Float.class) {
-            return getFloat(name);
-        } else if(type == long.class || type == Long.class) {
-            return getLong(name);
-        } else if(type == double.class || type == Double.class) {
-            return getDouble(name);
-        } else if(type == BigDecimal.class) {
-            return getBigDecimal(name);
-        } else if(type == BigInteger.class) {
-            return getBigInteger(name);
-        } else if(type == String.class) {
-            return getString(name);
-        } else {
-            return type.cast(get(name));
-        }
-    }
-
     public int getInt(String paramName) throws IllegalArgumentException {
         try {
             return coerceNumeric(paramName, Number::intValue, Integer::valueOf);
