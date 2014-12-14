@@ -1,5 +1,8 @@
 package hex.utils.maps;
 
+import hex.utils.coercion.Coercible;
+import hex.utils.coercion.CoercionException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
@@ -19,7 +22,7 @@ public interface CoercionMap extends Map<String,Object> {
      * @param name The key of which to find the value to return
      * @return The value found at {@code name} coerced into {@code type}
      */
-    default <T> T get(Class<T> type, String name) {
+    default <T> T get(Class<T> type, String name) throws CoercionException {
         Object value;
         if(type == byte.class || type == Byte.class) {
             value = getByte(name);
@@ -43,6 +46,10 @@ public interface CoercionMap extends Map<String,Object> {
             value = get(name);
         }
 
+        if(value instanceof Coercible) {
+            Coercible c = (Coercible)value;
+            return c.coerce(type);
+        }
         @SuppressWarnings("unchecked")
         T t = (T)value;
         return t;

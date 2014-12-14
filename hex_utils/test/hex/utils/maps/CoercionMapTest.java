@@ -1,5 +1,7 @@
 package hex.utils.maps;
 
+import hex.utils.coercion.Coercible;
+import hex.utils.coercion.CoercionException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -140,13 +142,13 @@ public class CoercionMapTest {
 
     @Test
     public void getOptionalShouldWorkWithNulls() {
-        map.getOptional("None-existant").ifPresent(
+        map.getOptional("None-existent").ifPresent(
                 (o) -> fail("It doesn't exist!")
         );
     }
 
     @Test
-    public void getWithCoercionShouldWorkWithNumerics() {
+    public void getWithCoercionShouldWorkWithNumericEntries() {
         map.put("number", 90);
         Stream.of(
                 byte.class,
@@ -164,8 +166,19 @@ public class CoercionMapTest {
                 BigInteger.class,
                 BigDecimal.class
         ).forEach(c -> {
-            Object n = map.get(c, "number");
+            Object n = null;
+            try {
+                n = map.get(c, "number");
+            } catch (CoercionException e) {
+                fail(e.getMessage());
+            }
             assertThat(n, instanceOf(c));
         });
+    }
+
+    @Test
+    public void getWithCoercionShouldHandleCoercibleEntries() throws CoercionException {
+        map.put("aThing", (Coercible) Coercible::newInstance);
+        assertThat(map.get(ArrayList.class, "aThing"), isA(ArrayList.class));
     }
 }

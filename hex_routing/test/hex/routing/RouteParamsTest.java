@@ -1,6 +1,7 @@
 package hex.routing;
 
 import hex.utils.Memo;
+import hex.utils.coercion.CoercionException;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -42,7 +43,13 @@ public class RouteParamsTest {
                 Double.class,
                 BigDecimal.class,
                 BigInteger.class
-        ).forEach(c -> assertCall(c.getSimpleName(), () -> params.get(c, paramName)));
+        ).forEach(c -> assertCall(c.getSimpleName(), () -> {
+            try {
+                params.get(c, paramName);
+            } catch (CoercionException e) {
+                fail(e.getMessage());
+            }
+        }));
     }
 
     @Test

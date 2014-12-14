@@ -5,6 +5,7 @@ import hex.action.initialization.InitializationException;
 import hex.routing.Route;
 import hex.routing.RouteHandler;
 import hex.routing.RouteParams;
+import hex.utils.coercion.CoercionException;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -15,6 +16,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Supplier;
@@ -59,7 +62,7 @@ public class ControllerAction implements RouteHandler {
             } else {
                 renderActionNotFound(servletResponse, String.format("Action method (%s) not found in controller (%s)", actionName, controller.getClass().getSimpleName()));
             }
-        } catch (InvocationTargetException e) {
+        } catch (InvocationTargetException | CoercionException e) {
             throw new ServletException(e.getCause());
         } catch (IllegalAccessException | IllegalArgumentException e) {
             renderActionNotFound(servletResponse, e.getMessage());
@@ -89,7 +92,7 @@ public class ControllerAction implements RouteHandler {
         throw new ServletException(Errors.INITIALIZATION_ERROR_OCCURRED, e);
     }
 
-    private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException {
+    private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException, CoercionException {
         if(Stream.of(method.getParameters()).anyMatch(p -> !p.isAnnotationPresent(RouteParam.class))) {
             throw new IllegalAccessException(String.format("Missing route parameter annotation in %s#%s for arguments: %s",
                     controller.getClass().getSimpleName(),
@@ -98,10 +101,11 @@ public class ControllerAction implements RouteHandler {
                     .collect(Collectors.joining(", "))
                     ));
         }
-        Object[] params = Stream.of(method.getParameters())
-                .map(p -> routeParams.get(p.getType(), p.getAnnotation(RouteParam.class).value()))
-                .toArray();
-        method.invoke(controller, params);
+        List<Object> paramValues = new ArrayList<>();
+        for(Parameter param : method.getParameters()) {
+            paramValues.add(routeParams.get(param.getType(), param.getAnnotation(RouteParam.class).value()));
+        }
+        method.invoke(controller, paramValues.toArray());
     }
 
     private void renderActionNotFound(ServletResponse servletResponse, String message) throws IOException {
