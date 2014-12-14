@@ -7,6 +7,8 @@ import hex.repo.Repository;
 import hex.repo.RepositoryBase;
 import people.Person;
 
+import java.util.Optional;
+
 /**
  * Created by jason on 14-11-15.
  */
@@ -29,7 +31,10 @@ public class PeopleController extends Controller {
     }
 
     public void home() {
-        view.put("message", "Hello World!");
+        Optional<String> message = Optional.ofNullable(request.getParameter("message"));
+        view.put("message", message.orElse("Hello World!"));
+        String[] wat = request.getParameterMap().get("message");
+        view.put("wat", wat);
         renderPage("layout.jsp");
     }
 }
