@@ -30,6 +30,11 @@ import org.junit.runners.Suite;
  * Created by jason on 14-11-12.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({RoutingConfigTest.class, RoutingFilterTest.class, RouteTest.class})
+@Suite.SuiteClasses({
+        RoutingConfigTest.class,
+        RoutingFilterTest.class,
+        RouteTest.class,
+        RouteParamsTest.class
+})
 public class RoutingTests {
 }

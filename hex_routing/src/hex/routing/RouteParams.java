@@ -26,6 +26,8 @@ package hex.routing;
 import hex.utils.CoercionMap;
 import hex.utils.maps.AbstractImmutableMap;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -60,10 +62,30 @@ public class RouteParams extends AbstractImmutableMap<String,Object> implements 
     }
 
     public Object get(Class<?> type, String name) throws IllegalArgumentException {
-        if(type == int.class || type == Integer.class) {
-            return getInt(name);
-        } else {
-            return getString(name);
+        try {
+            if(type == byte.class || type == Byte.class) {
+                return getByte(name);
+            } else if(type == short.class || type == Short.class) {
+                return getShort(name);
+            } else if(type == int.class || type == Integer.class) {
+                return getInt(name);
+            } else if(type == float.class || type == Float.class) {
+                return getFloat(name);
+            } else if(type == long.class || type == Long.class) {
+                return getLong(name);
+            } else if(type == double.class || type == Double.class) {
+                return getDouble(name);
+            } else if(type == BigDecimal.class) {
+                return getBigDecimal(name);
+            } else if(type == BigInteger.class) {
+                return getBigInteger(name);
+            } else if(type == String.class) {
+                return getString(name);
+            } else {
+                return type.cast(get(name));
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
         }
     }
 
