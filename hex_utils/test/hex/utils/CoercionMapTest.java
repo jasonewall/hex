@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -142,5 +143,29 @@ public class CoercionMapTest {
         map.getOptional("None-existant").ifPresent(
                 (o) -> fail("It doesn't exist!")
         );
+    }
+
+    @Test
+    public void getWithCoercionShouldWorkWithNumerics() {
+        map.put("number", 90);
+        Stream.of(
+                byte.class,
+                short.class,
+                int.class,
+                long.class,
+                float.class,
+                double.class,
+                Byte.class,
+                Short.class,
+                Integer.class,
+                Long.class,
+                Float.class,
+                Double.class,
+                BigInteger.class,
+                BigDecimal.class
+        ).forEach(c -> {
+            Object n = map.get(c, "number");
+            assertThat(n, instanceOf(c));
+        });
     }
 }
