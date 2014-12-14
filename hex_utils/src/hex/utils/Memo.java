@@ -1,5 +1,6 @@
 package hex.utils;
 
+import java.util.function.Consumer;
 import java.util.function.UnaryOperator;
 
 /**
@@ -20,6 +21,11 @@ public class Memo<T> {
         T t = op.apply(this.t);
         if(t == null) return this;
         return new Memo<>(t);
+    }
+
+    public Memo<T> tap(Consumer<T> op) {
+        op.accept(this.t);
+        return this;
     }
 
     public T finish() {
