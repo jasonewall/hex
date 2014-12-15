@@ -1,6 +1,8 @@
 package hex.action.params;
 
+import hex.action.examples.Address;
 import hex.action.examples.Movie;
+import hex.action.examples.Person;
 import hex.routing.RouteParams;
 import hex.utils.coercion.CoercionException;
 import hex.utils.maps.CoercionMap;
@@ -72,22 +74,39 @@ public class WebParamsTest {
         assertThat(movie.getTitle(), equalTo("Dr. No"));
     }
 
-    @Test
-    public void subPropertiesShouldGoAnyLevelsDeep() {
+    private void buildBruceWayneParams() {
         request.putParam("person[firstName]", "Bruce");
         request.putParam("person[lastName]", "Wayne");
         request.putParam("person[address][city]", "Gotham");
         request.putParam("person[address][address1]", "1007 Mountain Drive");
-        request.putParam("person[address][zipcode]", "94514");
+        request.putParam("person[address][zipCode]", "94514");
         request.putParam("person[address][state]", "NJ");
 
         buildWebParams();
+    }
+
+    @Test
+    public void subPropertiesShouldGoAnyLevelsDeep() {
+        buildBruceWayneParams();
 
         CoercionMap person = (CoercionMap) params.get("person");
         CoercionMap address = (CoercionMap) person.get("address");
         assertThat(address.get("city"), equalTo("Gotham"));
         assertThat(address.get("address1"), equalTo("1007 Mountain Drive"));
-        assertThat(address.get("zipcode"), equalTo("94514"));
+        assertThat(address.get("zipCode"), equalTo("94514"));
         assertThat(address.get("state"), equalTo("NJ"));
+    }
+
+    @Test
+    public void nestedSubPropertiesShouldBeCoercible() throws CoercionException {
+        buildBruceWayneParams();
+        Person person = params.get(Person.class, "person");
+        assertThat(person.getFirstName(), equalTo("Bruce"));
+        assertThat(person.getLastName(), equalTo("Wayne"));
+        Address address = person.getAddress();
+        assertThat(address.getAddress1(), equalTo("1007 Mountain Drive"));
+        assertThat(address.getCity(), equalTo("Gotham"));
+        assertThat(address.getState(), equalTo("NJ"));
+        assertThat(address.getZipCode(), equalTo("94514"));
     }
 }
