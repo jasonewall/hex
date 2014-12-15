@@ -70,6 +70,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private Map<String,List<String>> parameters = new HashMap<>();
 
     @Override

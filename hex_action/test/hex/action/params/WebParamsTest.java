@@ -46,14 +46,6 @@ public class WebParamsTest {
     }
 
     @Test
-    public void itShouldBeSmartAboutArrays() {
-        request.putParam("message", "Hello Moto");
-        request.putParam("message", "Domo Aragato, Mr. Roboto");
-        buildWebParams();
-        assertThat(params.<String>getArray("message"), arrayContaining("Hello Moto", "Domo Aragato, Mr. Roboto"));
-    }
-
-    @Test
     public void itShouldBeAwareOfSubProperties() {
         request.putParam("person[firstName]", "James");
         request.putParam("person[lastName]", "Bond");
@@ -78,5 +70,24 @@ public class WebParamsTest {
         assertThat(movie.getRefid(), equalTo("tt0055928"));
         assertThat(movie.getReleaseYear(), equalTo(1962));
         assertThat(movie.getTitle(), equalTo("Dr. No"));
+    }
+
+    @Test
+    public void subPropertiesShouldGoAnyLevelsDeep() {
+        request.putParam("person[firstName]", "Bruce");
+        request.putParam("person[lastName]", "Wayne");
+        request.putParam("person[address][city]", "Gotham");
+        request.putParam("person[address][address1]", "1007 Mountain Drive");
+        request.putParam("person[address][zipcode]", "94514");
+        request.putParam("person[address][state]", "NJ");
+
+        buildWebParams();
+
+        CoercionMap person = (CoercionMap) params.get("person");
+        CoercionMap address = (CoercionMap) person.get("address");
+        assertThat(address.get("city"), equalTo("Gotham"));
+        assertThat(address.get("address1"), equalTo("1007 Mountain Drive"));
+        assertThat(address.get("zipcode"), equalTo("94514"));
+        assertThat(address.get("state"), equalTo("NJ"));
     }
 }

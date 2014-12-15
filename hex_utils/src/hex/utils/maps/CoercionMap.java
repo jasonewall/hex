@@ -8,8 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -151,11 +150,6 @@ public interface CoercionMap extends Map<String,Object>, Coercible {
             return Optional.of((Number)o);
         }
         return Optional.empty();
-    }
-
-    @SuppressWarnings("unchecked")
-    default <T> T[] getArray(String attribute) {
-        return (T[]) get(attribute);
     }
 
     @SuppressWarnings("unchecked")
