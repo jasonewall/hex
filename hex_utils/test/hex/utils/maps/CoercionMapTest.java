@@ -3,6 +3,7 @@ package hex.utils.maps;
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
 import hex.utils.test.Book;
+import hex.utils.test.Person;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -194,10 +195,8 @@ public class CoercionMapTest {
         map.put("id", 133);
         map.put("title", "Jurassic Park");
         map.put("publishYear", 1990);
-        map.put("author", "Michael Crichton");
 
         Book book = map.coerce(Book.class);
-        assertThat(book.getAuthor(), equalTo("Michael Crichton"));
         assertThat(book.getId(), equalTo(133));
         assertThat(book.getPublishYear(), equalTo(1990));
         assertThat(book.getTitle(), equalTo("Jurassic Park"));
@@ -208,5 +207,23 @@ public class CoercionMapTest {
         map.put("id", "432");
         Book book = map.coerce(Book.class);
         assertThat(book.getId(), equalTo(432));
+    }
+
+    @Test
+    public void coerceShouldWorkForNestedProperties() throws CoercionException {
+        CoercionMap authorProps = new CoercionMapImpl();
+        authorProps.put("id", "1");
+        authorProps.put("firstName", "J.");
+        authorProps.put("lastName", "Salinger");
+        map.put("id", "1800");
+        map.put("publishYear", "1951");
+        map.put("title", "The Catcher in the Rye");
+        map.put("author", authorProps);
+
+        Book book = map.coerce(Book.class);
+        Person author = book.getAuthor();
+        assertThat(author.getFirstName(), equalTo("J."));
+        assertThat(author.getLastName(), equalTo("Salinger"));
+        assertThat(author.getId(), equalTo(1));
     }
 }

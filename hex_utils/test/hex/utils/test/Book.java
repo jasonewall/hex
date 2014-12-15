@@ -10,7 +10,7 @@ public class Book {
 
     private int publishYear;
 
-    private String author;
+    private Person author;
 
     public int getId() {
         return id;
@@ -36,11 +36,11 @@ public class Book {
         this.publishYear = publishYear;
     }
 
-    public String getAuthor() {
+    public Person getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(Person author) {
         this.author = author;
     }
 }
