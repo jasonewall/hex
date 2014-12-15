@@ -3,6 +3,9 @@ package hex.utils.maps;
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Map;
@@ -10,10 +13,27 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import static hex.utils.Inflection.*;
+
 /**
  * Created by jason on 14-12-11.
  */
-public interface CoercionMap extends Map<String,Object> {
+public interface CoercionMap extends Map<String,Object>, Coercible {
+
+    default <T> T coerce(Class<T> intoType) throws CoercionException {
+        try {
+            T instance = newInstance(intoType);
+            for(Entry<String,Object> e : entrySet()) {
+                Field field = intoType.getDeclaredField(e.getKey());
+                Method setter = intoType.getDeclaredMethod(toSetter(e.getKey()), field.getType());
+                setter.invoke(instance, get(field.getType(), e.getKey()));
+            }
+            return instance;
+        } catch (NoSuchMethodException | NoSuchFieldException | InvocationTargetException | IllegalAccessException e) {
+            throw new CoercionException(e);
+        }
+    }
+
     /**
      * Formally known as get with coercion
      * Gets the value of the attribute found at {@code name} and returns it coerced into

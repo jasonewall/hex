@@ -2,6 +2,7 @@ package hex.utils.maps;
 
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
+import hex.utils.test.Book;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -178,7 +179,27 @@ public class CoercionMapTest {
 
     @Test
     public void getWithCoercionShouldHandleCoercibleEntries() throws CoercionException {
-        map.put("aThing", (Coercible) Coercible::newInstance);
+        Coercible c = new Coercible() {
+            @Override
+            public <T> T coerce(Class<T> intoType) throws CoercionException {
+                return null;
+            }
+        };
+        map.put("aThing", ((Coercible) c::newInstance));
         assertThat(map.get(ArrayList.class, "aThing"), isA(ArrayList.class));
+    }
+
+    @Test
+    public void coerceShouldCopyPropertiesToAnObject() throws CoercionException {
+        map.put("id", 133);
+        map.put("title", "Jurassic Park");
+        map.put("publishYear", 1990);
+        map.put("author", "Michael Crichton");
+
+        Book book = map.coerce(Book.class);
+        assertThat(book.getAuthor(), equalTo("Michael Crichton"));
+        assertThat(book.getId(), equalTo(133));
+        assertThat(book.getPublishYear(), equalTo(1990));
+        assertThat(book.getTitle(), equalTo("Jurassic Park"));
     }
 }
