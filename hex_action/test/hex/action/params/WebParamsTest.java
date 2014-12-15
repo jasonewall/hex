@@ -3,6 +3,7 @@ package hex.action.params;
 import hex.action.examples.Movie;
 import hex.routing.RouteParams;
 import hex.utils.coercion.CoercionException;
+import hex.utils.maps.CoercionMap;
 import org.junit.Test;
 import servlet_mock.MockHttpServletRequest;
 
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -40,6 +43,14 @@ public class WebParamsTest {
         buildWebParams();
         assertThat(params.getInt("id"), equalTo(13));
         assertThat(params.getString("message"), equalTo("Bond, James Bond"));
+    }
+
+    @Test
+    public void itShouldBeSmartAboutArrays() {
+        request.putParam("message", "Hello Moto");
+        request.putParam("message", "Domo Aragato, Mr. Roboto");
+        buildWebParams();
+        assertThat(params.<String>getArray("message"), arrayContaining("Hello Moto", "Domo Aragato, Mr. Roboto"));
     }
 
     @Test

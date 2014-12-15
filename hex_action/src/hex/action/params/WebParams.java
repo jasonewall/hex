@@ -41,11 +41,11 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
         Map<String,Object> entries = new HashMap<>(reqParams.size() + (routeParams.size() * 5)); // making sure we don't have to rebuild the internal hashtable, hopefully
         entries.putAll(routeParams);
         request.getParameterMap().forEach((k,v) -> {
-            Pattern p = Pattern.compile("(\\w+)\\[(\\w+)\\]"); // (\w+)\[(\w+\)]
+            Pattern p = Pattern.compile("(\\w+)\\[(\\w+)\\](.*)"); // (\w+)\[(\w+\)](.*)
             Matcher m = p.matcher(k);
             if(m.matches()) {
                 Map<String,Object> subParams = new CoercionHashMap();
-                subParams.put(m.group(2), v[0]);
+                subParams.put(m.group(2) + m.group(3), v[0]);
                 entries.merge(m.group(1), subParams, (o,n) -> {
                     @SuppressWarnings("unchecked")
                     Map<String,Object> sub = (Map<String,Object>)o;
@@ -59,7 +59,6 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
                 else {
                     entries.put(k, v);
                 }
-
             }
         });
         return entries.entrySet();

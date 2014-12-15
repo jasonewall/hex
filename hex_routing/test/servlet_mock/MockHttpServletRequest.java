@@ -97,8 +97,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     public void putParam(String name, String value) {
-        parameters.merge(name, Arrays.asList(value), (o,n) -> {
-            if(o == null) return new ArrayList<>(n);
+        parameters.merge(name, new ArrayList<>(Arrays.asList(value)), (o,n) -> {
             o.addAll(n);
             return o;
         });

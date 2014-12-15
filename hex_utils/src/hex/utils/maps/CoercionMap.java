@@ -154,6 +154,11 @@ public interface CoercionMap extends Map<String,Object>, Coercible {
     }
 
     @SuppressWarnings("unchecked")
+    default <T> T[] getArray(String attribute) {
+        return (T[]) get(attribute);
+    }
+
+    @SuppressWarnings("unchecked")
     default <T> Optional<T> getOptional(String attribute) {
         return Optional.ofNullable((T) get(attribute));
     }
