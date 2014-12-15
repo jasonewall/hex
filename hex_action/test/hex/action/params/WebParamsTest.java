@@ -1,6 +1,8 @@
 package hex.action.params;
 
+import hex.action.examples.Movie;
 import hex.routing.RouteParams;
+import hex.utils.coercion.CoercionException;
 import org.junit.Test;
 import servlet_mock.MockHttpServletRequest;
 
@@ -49,5 +51,21 @@ public class WebParamsTest {
         Map person = (Map)o;
         assertThat(person.get("firstName"), equalTo("James"));
         assertThat(person.get("lastName"), equalTo("Bond"));
+    }
+
+    @Test
+    public void subPropertiesShouldBeCoercible() throws CoercionException {
+        request.putParam("movie[refid]", "tt0055928");
+        request.putParam("movie[title]", "Dr. No");
+        request.putParam("movie[releaseYear]", "1962");
+        request.putParam("movie[director]", "Terence Young");
+
+        buildWebParams();
+
+        Movie movie = params.get(Movie.class, "movie");
+        assertThat(movie.getDirector(), equalTo("Terence Young"));
+        assertThat(movie.getRefid(), equalTo("tt0055928"));
+        assertThat(movie.getReleaseYear(), equalTo(1962));
+        assertThat(movie.getTitle(), equalTo("Dr. No"));
     }
 }

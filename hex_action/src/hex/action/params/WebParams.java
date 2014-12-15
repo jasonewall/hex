@@ -2,6 +2,7 @@ package hex.action.params;
 
 import hex.routing.RouteParams;
 import hex.utils.maps.AbstractImmutableMap;
+import hex.utils.maps.CoercionMap;
 
 import javax.servlet.ServletRequest;
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
      */
     @Override
     protected Set<Entry<String, Object>> buildEntries() {
+        class CoercionHashMap extends HashMap<String,Object> implements CoercionMap {}
         Map<String,String[]> reqParams = request.getParameterMap();
         Map<String,Object> entries = new HashMap<>(reqParams.size() + (routeParams.size() * 5)); // making sure we don't have to rebuild the internal hashtable, hopefully
         entries.putAll(routeParams);
@@ -42,7 +44,7 @@ public class WebParams extends AbstractImmutableMap<String,Object> implements Pa
             Pattern p = Pattern.compile("(\\w+)\\[(\\w+)\\]"); // (\w+)\[(\w+\)]
             Matcher m = p.matcher(k);
             if(m.matches()) {
-                Map<String,Object> subParams = new HashMap<>(reqParams.size());
+                Map<String,Object> subParams = new CoercionHashMap();
                 subParams.put(m.group(2), v[0]);
                 entries.merge(m.group(1), subParams, (o,n) -> {
                     @SuppressWarnings("unchecked")
