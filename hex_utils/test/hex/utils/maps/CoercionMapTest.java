@@ -202,4 +202,11 @@ public class CoercionMapTest {
         assertThat(book.getPublishYear(), equalTo(1990));
         assertThat(book.getTitle(), equalTo("Jurassic Park"));
     }
+
+    @Test
+    public void coerceShouldCoercePropertiesAsWell() throws CoercionException {
+        map.put("id", "432");
+        Book book = map.coerce(Book.class);
+        assertThat(book.getId(), equalTo(432));
+    }
 }
