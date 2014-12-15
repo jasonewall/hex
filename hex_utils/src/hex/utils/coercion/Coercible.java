@@ -6,11 +6,11 @@ package hex.utils.coercion;
 public interface Coercible {
     public <T> T coerce(Class<T> intoType) throws CoercionException;
 
-    static public <T> T newInstance(Class<T> type) throws CoercionException {
+    default public <T> T newInstance(Class<T> type) throws CoercionException {
         try {
             return type.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new CoercionException();
+            throw new CoercionException(e);
         }
     }
 }
