@@ -6,6 +6,9 @@ import java.util.function.Function;
  * Created by jason on 14-11-01.
  */
 public class Inflection {
+    private static final String GETTER_PREFIX = "get";
+    private static final String SETTER_PREFIX = "set";
+
     @SafeVarargs
     public static String inflect(String string, Function<String,String>... inflectors) {
         for(Function<String,String> i : inflectors) string = i.apply(string);
@@ -45,5 +48,13 @@ public class Inflection {
         if("Person".equals(string) || "PERSON".equals(string)) return "People";
         if("person".equals(string.toLowerCase())) return "people";
         return string.concat("s");
+    }
+
+    public static String toGetter(String fieldName) {
+        return GETTER_PREFIX + capitalize(fieldName);
+    }
+
+    public static String toSetter(String fieldName) {
+        return SETTER_PREFIX + capitalize(fieldName);
     }
 }

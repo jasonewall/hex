@@ -127,16 +127,6 @@ public class Metadata<T> extends hex.repo.sql.Metadata {
         return keyValue;
     }
 
-    private static final String GETTER_PREFIX = "get";
-    public static String toGetter(String fieldName) {
-        return GETTER_PREFIX + capitalize(fieldName);
-    }
-
-    private static final String SETTER_PREFIX = "set";
-    public static String toSetter(String fieldName) {
-        return SETTER_PREFIX + capitalize(fieldName);
-    }
-
     public static String toColumn(String fieldName) {
         return underscore(fieldName);
     }
