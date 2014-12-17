@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 public class ParameterMap extends AbstractImmutableMap<String,Object> implements Params {
     protected Map<String,Object> params;
 
-    public ParameterMap(Map<String,Object> params) {
-        this.params = params;
+    public ParameterMap(int initialCapacity) {
+        this.params = new HashMap<>(initialCapacity);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class ParameterMap extends AbstractImmutableMap<String,Object> implements
             Matcher m = p.matcher(k);
             if(m.matches()) {
                 if(!entries.containsKey(m.group(1))) {
-                    entries.put(m.group(1), new ParameterMap(new HashMap<>(params.size())));
+                    entries.put(m.group(1), new ParameterMap(params.size()));
                 }
                 ParameterMap subParams = (ParameterMap) entries.get(m.group(1));
                 subParams.params.put(m.group(2) + m.group(3), v);

@@ -18,7 +18,7 @@ public class WebParams extends ParameterMap {
     private RouteParams routeParams;
 
     public WebParams(ServletRequest request, RouteParams routeParams) {
-        super(new HashMap<>(request.getParameterMap().size() + (routeParams.size() * 5)));
+        super(request.getParameterMap().size() + (routeParams.size() * 5));
         this.request = request;
         this.routeParams = routeParams;
     }
