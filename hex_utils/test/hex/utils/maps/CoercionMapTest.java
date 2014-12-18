@@ -97,6 +97,13 @@ public class CoercionMapTest {
     }
 
     @Test
+    public void getBooleanShouldNotConfuseNumericTypes() {
+        map.put("number", 0f);
+
+        assertFalse(map.getBool("number"));
+    }
+
+    @Test
     public void getBigDecimalShouldWorkWithInstancesAndStrings() {
         BigDecimal instance = BigDecimal.valueOf(3.2);
         map.put("instance", instance);

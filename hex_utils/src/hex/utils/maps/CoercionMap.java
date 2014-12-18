@@ -126,7 +126,7 @@ public interface CoercionMap extends Map<String,Object>, Coercible {
         Object o = get(attribute);
         if(o instanceof Boolean) return (Boolean)o;
 
-        return getNumber(attribute).map(x -> !x.equals(0))
+        return getNumber(attribute).map(x -> !(x.doubleValue() == 0d))
                 .orElseGet(() -> {
                     if (!containsKey(attribute)) return false;
                     String value = getString(attribute);
