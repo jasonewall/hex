@@ -2,9 +2,6 @@ package hex.action.params;
 
 import hex.utils.coercion.CoercionException;
 import hex.utils.maps.AbstractImmutableMap;
-import hex.utils.maps.CoercionMap;
-import hex.utils.maps.PropertyMap;
-import sun.jvm.hotspot.tools.PMap;
 
 import java.lang.reflect.Array;
 import java.util.*;
