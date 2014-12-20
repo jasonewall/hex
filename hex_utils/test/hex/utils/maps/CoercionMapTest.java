@@ -1,5 +1,6 @@
 package hex.utils.maps;
 
+import hex.utils.Memo;
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
 import hex.utils.test.Book;
@@ -214,5 +215,25 @@ public class CoercionMapTest {
         int[] ids = map.get(int[].class, "ids");
         assertThat(ids.length, equalTo(2));
         assertThat(ids, new IntArrayMatcher(new int[]{ 23, 89 }));
+    }
+
+    @Test
+    public void getWithCoercionShouldCoerceComplexArrayElements() throws CoercionException {
+        Object[] bookAttributes = {
+                Memo.of(new PropertyMapTest.PropertyMapImpl()).tap(m -> {
+                    m.put("id", 38);
+                    m.put("title", "To Kill A Mocking Bird");
+                }).finish(),
+                Memo.of(new PropertyMapTest.PropertyMapImpl()).tap(m -> {
+                    m.put("id", 19);
+                    m.put("title", "Fiddler on the Roof");
+                }).finish()
+        };
+        map.put("books", bookAttributes);
+        Book[] books = map.get(Book[].class, "books");
+        assertThat(books[0].getId(), equalTo(38));
+        assertThat(books[0].getTitle(), equalTo("To Kill A Mocking Bird"));
+        assertThat(books[1].getTitle(), equalTo("Fiddler on the Roof"));
+        assertThat(books[1].getId(), equalTo(19));
     }
 }

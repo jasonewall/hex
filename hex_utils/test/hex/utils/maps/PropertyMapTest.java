@@ -15,7 +15,7 @@ import static org.junit.Assert.assertThat;
  * Created by jason on 14-12-19.
  */
 public class PropertyMapTest {
-    class PropertyMapImpl extends HashMap<String,Object> implements PropertyMap {}
+    static class PropertyMapImpl extends HashMap<String,Object> implements PropertyMap {}
     private PropertyMap map;
 
     @Before
