@@ -2,8 +2,9 @@ package hex.utils.maps;
 
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
-import hex.utils.coercion.CoercionUtils;
+import hex.utils.collections.CoercionArray;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public interface CoercionMap<I> {
         } else if(type == String.class) {
             value = getString(index);
         } else if(type.isArray()) {
-            value = CoercionUtils.coerceArray(get(index), type.getComponentType());
+            value = coerceArray(get(index), type.getComponentType());
         } else if((value = useTypeHandlers(type, index)) == null) {
             value = get(index);
         }
@@ -89,6 +90,17 @@ public interface CoercionMap<I> {
 
     default <T> T coerceNumeric(I index, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
         return getNumber(index).map(mapper).orElseGet(() -> coercer.apply(getString(index), 10));
+    }
+
+    default Object coerceArray(Object array, Class<?> intoType) throws CoercionException {
+        CoercionArray coercer = new CoercionArray(array);
+        int length = Array.getLength(array);
+
+        Object result = Array.newInstance(intoType, length);
+        for(int i = 0; i < length; i++) {
+            Array.set(result, i, coercer.get(intoType, i));
+        }
+        return result;
     }
 
     default BigDecimal getBigDecimal(I index) {
