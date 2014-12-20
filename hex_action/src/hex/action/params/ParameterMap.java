@@ -1,10 +1,13 @@
 package hex.action.params;
 
+import hex.utils.coercion.CoercionException;
 import hex.utils.maps.AbstractImmutableMap;
+import hex.utils.maps.CoercionMap;
+import hex.utils.maps.PropertyMap;
+import sun.jvm.hotspot.tools.PMap;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,5 +38,36 @@ public class ParameterMap extends AbstractImmutableMap<String,Object> implements
             }
         });
         return entries.entrySet();
+    }
+
+    @Override
+    public Object coerceArray(Object array, Class<?> intoType) throws CoercionException {
+        if(array.getClass().isArray())
+            return Params.super.coerceArray(array, intoType);
+
+        // assuming parameter map for now
+        ParameterMap params = (ParameterMap)array;
+        return Params.super.coerceArray(params.rotate(), intoType);
+    }
+
+    private ParameterMap[] rotate() {
+        List<ParameterMap> results = new ArrayList<>();
+        entrySet().stream().findFirst().ifPresent(e -> {
+            int length = Array.getLength(e.getValue());
+            for(int i = 0; i < length; i++) {
+                //noinspection MismatchedQueryAndUpdateOfCollection
+                ParameterMap params = new ParameterMap(size() + 10);
+                params.params.put(e.getKey(), Array.get(e.getValue(), i));
+                results.add(params);
+            }
+        });
+
+        entrySet().stream().skip(1).forEach(e -> {
+            int length = Array.getLength(e.getValue());
+            for(int i = 0; i < length; i++) {
+                results.get(i).params.put(e.getKey(), Array.get(e.getValue(), i));
+            }
+        });
+        return results.stream().toArray(ParameterMap[]::new);
     }
 }

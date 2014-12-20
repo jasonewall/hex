@@ -4,25 +4,30 @@ import hex.action.examples.Address;
 import hex.action.examples.Movie;
 import hex.action.examples.Person;
 import hex.routing.RouteParams;
+import hex.utils.Memo;
 import hex.utils.coercion.CoercionException;
 import hex.utils.maps.CoercionMap;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 import servlet_mock.MockHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static org.hamcrest.Matchers.arrayContaining;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 /**
  * Created by jason on 14-12-13.
  */
 public class WebParamsTest {
+    @SuppressWarnings({"UnusedDeclaration", "FieldCanBeLocal"})
     private HttpServletRequest webRequest;
 
     private MockHttpServletRequest request = new MockHttpServletRequest();
@@ -108,5 +113,74 @@ public class WebParamsTest {
         assertThat(address.getCity(), equalTo("Gotham"));
         assertThat(address.getState(), equalTo("NJ"));
         assertThat(address.getZipCode(), equalTo("94514"));
+    }
+
+    @Test
+    public void arrayedPropertiesNeedToWork() throws CoercionException {
+        request.putParam("movie[starIds]", "14");
+        request.putParam("movie[starIds]", "16");
+        request.putParam("movie[starIds]", "36");
+        buildWebParams();
+
+        Movie movie = params.get(Movie.class, "movie");
+        int[] starIds = movie.getStarIds();
+        assertThat(starIds.length, equalTo(3));
+        assertThat(starIds, new BaseMatcher<int[]>() {
+            int[] expected = { 14, 16, 36 };
+
+            int[] actual;
+            @Override
+            public boolean matches(Object o) {
+                actual = (int[])o;
+                toNextActual: for(int i : actual) {
+                    for(int e : expected) {
+                        if(i == e) continue toNextActual;
+                    }
+                    // it wasn't in this.expected
+                    return false;
+                }
+
+                return true;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(String.format("Expected all of %s to be in %s", Arrays.toString(actual), Arrays.toString(expected)));
+            }
+        });
+    }
+
+    @Test
+    public void arrayPropertiesShouldWorkWithSubObjects() throws CoercionException {
+        request.putParam("movie[title]", "The Dark Knight Rises");
+        request.putParam("movie[stars][id]", "18");
+        request.putParam("movie[stars][firstName]", "Anne");
+        request.putParam("movie[stars][lastName]", "Hathaway");
+        Person star1 = Memo.of(new Person()).tap(p -> {
+            p.setId(18);
+            p.setFirstName("Anne");
+            p.setLastName("Hathaway");
+        }).finish();
+        request.putParam("movie[stars][id]", "33");
+        request.putParam("movie[stars][firstName]", "Christian");
+        request.putParam("movie[stars][lastName]", "Bale");
+        Person star2 = Memo.of(new Person()).tap(p -> {
+            p.setId(33);
+            p.setFirstName("Christian");
+            p.setLastName("Bale");
+        }).finish();
+        request.putParam("movie[stars][id]", "46");
+        request.putParam("movie[stars][firstName]", "Gary");
+        request.putParam("movie[stars][lastName]", "Oldman");
+        Person star3 = Memo.of(new Person()).tap(p -> {
+            p.setId(46);
+            p.setFirstName("Gary");
+            p.setLastName("Oldman");
+        }).finish();
+        buildWebParams();
+
+        Movie movie = params.get(Movie.class, "movie");
+        Person[] movieStars = movie.getStars();
+        assertThat(movieStars, arrayContaining(star1, star2, star3));
     }
 }

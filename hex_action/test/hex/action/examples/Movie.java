@@ -14,6 +14,10 @@ public class Movie {
 
     private String refid;
 
+    private Person[] stars;
+
+    private int[] starIds;
+
     public int getId() {
         return id;
     }
@@ -52,5 +56,21 @@ public class Movie {
 
     public void setRefid(String refid) {
         this.refid = refid;
+    }
+
+    public Person[] getStars() {
+        return stars;
+    }
+
+    public void setStars(Person[] stars) {
+        this.stars = stars;
+    }
+
+    public int[] getStarIds() {
+        return starIds;
+    }
+
+    public void setStarIds(int[] starIds) {
+        this.starIds = starIds;
     }
 }
