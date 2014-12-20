@@ -2,14 +2,13 @@ package hex.utils.maps;
 
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
+import hex.utils.coercion.CoercionUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import static hex.utils.Inflection.*;
 
 /**
  * Created by jason on 14-12-11.
@@ -45,6 +44,8 @@ public interface CoercionMap<I> {
             value = getBigInteger(index);
         } else if(type == String.class) {
             value = getString(index);
+        } else if(type.isArray()) {
+            value = CoercionUtils.coerceArray(get(index), type.getComponentType());
         } else {
             value = get(index);
         }

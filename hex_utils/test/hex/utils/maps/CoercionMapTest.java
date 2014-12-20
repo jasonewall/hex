@@ -4,6 +4,9 @@ import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
 import hex.utils.test.Book;
 import hex.utils.test.Person;
+import hex.utils.test.matchers.IntArrayMatcher;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -197,4 +200,19 @@ public class CoercionMapTest {
         assertThat(map.get(ArrayList.class, "aThing"), isA(ArrayList.class));
     }
 
+    @Test
+    public void getWithCoercionShouldWorkWithArrays() throws CoercionException {
+        map.put("ids", new int[]{ 44, 21, 83, 98 });
+        int[] ids = map.get(int[].class, "ids");
+        assertThat(ids.length, equalTo(4));
+        assertThat(ids, new IntArrayMatcher(new int[]{ 44, 21, 83, 98 }));
+    }
+
+    @Test
+    public void getWithCoercionShouldCoerceArrayElements() throws CoercionException {
+        map.put("ids", new String[]{ "23", "89" });
+        int[] ids = map.get(int[].class, "ids");
+        assertThat(ids.length, equalTo(2));
+        assertThat(ids, new IntArrayMatcher(new int[]{ 23, 89 }));
+    }
 }
