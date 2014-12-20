@@ -59,61 +59,61 @@ public interface CoercionMap<I> {
         return t;
     }
 
-    default Byte getByte(I attribute) {
-        return coerceNumeric(attribute, Number::byteValue, Byte::valueOf);
+    default Byte getByte(I index) {
+        return coerceNumeric(index, Number::byteValue, Byte::valueOf);
     }
 
-    default Short getShort(I attribute) {
-        return coerceNumeric(attribute, Number::shortValue, Short::valueOf);
+    default Short getShort(I index) {
+        return coerceNumeric(index, Number::shortValue, Short::valueOf);
     }
 
-    default Float getFloat(I attribute) {
-        return coerceNumeric(attribute, Number::floatValue, (v,radix) -> Float.valueOf(v));
+    default Float getFloat(I index) {
+        return coerceNumeric(index, Number::floatValue, (v,radix) -> Float.valueOf(v));
     }
 
-    default Integer getInt(I attribute) {
-        return coerceNumeric(attribute, Number::intValue, Integer::valueOf);
+    default Integer getInt(I index) {
+        return coerceNumeric(index, Number::intValue, Integer::valueOf);
     }
 
-    default Long getLong(I attribute) {
-        return coerceNumeric(attribute, Number::longValue, Long::valueOf);
+    default Long getLong(I index) {
+        return coerceNumeric(index, Number::longValue, Long::valueOf);
     }
 
-    default Double getDouble(I attribute) {
-        return coerceNumeric(attribute, Number::doubleValue, (v, radix) -> Double.valueOf(v));
+    default Double getDouble(I index) {
+        return coerceNumeric(index, Number::doubleValue, (v, radix) -> Double.valueOf(v));
     }
 
-    default <T> T coerceNumeric(I attribute, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
-        return getNumber(attribute).map(mapper).orElseGet(() -> coercer.apply(getString(attribute), 10));
+    default <T> T coerceNumeric(I index, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
+        return getNumber(index).map(mapper).orElseGet(() -> coercer.apply(getString(index), 10));
     }
 
-    default BigDecimal getBigDecimal(I attribute) {
-        Object o = get(attribute);
+    default BigDecimal getBigDecimal(I index) {
+        Object o = get(index);
         if(o instanceof BigDecimal) return (BigDecimal)o;
-        String value = getString(attribute);
+        String value = getString(index);
         if(value == null) throw new NullPointerException("BigDecimal attribute not present or value is null.");
         return new BigDecimal(value);
     }
 
-    default BigInteger getBigInteger(I attribute) {
-        Object o = get(attribute);
+    default BigInteger getBigInteger(I index) {
+        Object o = get(index);
         if(o instanceof BigInteger) return (BigInteger)o;
-        String value = getString(attribute);
+        String value = getString(index);
         if(value == null) throw new NullPointerException("BigInteger attribute not present or value is null.");
         return new BigInteger(value);
     }
 
-    default boolean getBool(I attribute) {
-        return getBoolean(attribute);
+    default boolean getBool(I index) {
+        return getBoolean(index);
     }
 
-    default boolean getBoolean(I attribute) {
-        Object o = get(attribute);
+    default boolean getBoolean(I index) {
+        Object o = get(index);
         if(o instanceof Boolean) return (Boolean)o;
 
-        return getNumber(attribute).map(x -> !(x.doubleValue() == 0d))
+        return getNumber(index).map(x -> !(x.doubleValue() == 0d))
                 .orElseGet(() -> {
-                    String value = getString(attribute);
+                    String value = getString(index);
                     return value != null && value.length() != 0 && (
                             (value.matches("[0-9]+") && !value.equals("0"))
                                     || value.equals("true")
@@ -122,14 +122,14 @@ public interface CoercionMap<I> {
                 });
     }
 
-    default String getString(I attribute) {
-        Object o = get(attribute);
+    default String getString(I index) {
+        Object o = get(index);
         if(o == null) return null;
         return o.toString();
     }
 
-    default Optional<Number> getNumber(I attribute) {
-        Object o = get(attribute);
+    default Optional<Number> getNumber(I index) {
+        Object o = get(index);
         if(o instanceof Number) {
             return Optional.of((Number)o);
         }
@@ -137,7 +137,7 @@ public interface CoercionMap<I> {
     }
 
     @SuppressWarnings("unchecked")
-    default <T> Optional<T> getOptional(String attribute) {
-        return Optional.ofNullable((T) get(attribute));
+    default <T> Optional<T> getOptional(I index) {
+        return Optional.ofNullable((T) get(index));
     }
 }
