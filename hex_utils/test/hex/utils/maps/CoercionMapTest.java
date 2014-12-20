@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.*;
@@ -26,7 +27,13 @@ public class CoercionMapTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap<String> {}
+    private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap<String> {
+        @Override
+        public Object useTypeHandlers(Class<?> type, String index) {
+            if(type == Exception.class) return "useTypeHandlers";
+            return null;
+        }
+    }
 
     private CoercionMapImpl map = new CoercionMapImpl();
 
@@ -214,8 +221,7 @@ public class CoercionMapTest {
         assertThat(ids, new IntArrayMatcher(new int[]{ 23, 89 }));
     }
 
-    @Test
-    public void getWithCoercionShouldCoerceComplexArrayElements() throws CoercionException {
+    private void initBookAttributes() {
         Object[] bookAttributes = {
                 Memo.of(new PropertyMapTest.PropertyMapImpl()).tap(m -> {
                     m.put("id", 38);
@@ -227,10 +233,20 @@ public class CoercionMapTest {
                 }).finish()
         };
         map.put("books", bookAttributes);
+    }
+
+    @Test
+    public void getWithCoercionShouldCoerceComplexArrayElements() throws CoercionException {
+        initBookAttributes();
         Book[] books = map.get(Book[].class, "books");
         assertThat(books[0].getId(), equalTo(38));
         assertThat(books[0].getTitle(), equalTo("To Kill A Mocking Bird"));
         assertThat(books[1].getId(), equalTo(19));
         assertThat(books[1].getTitle(), equalTo("Fiddler on the Roof"));
+    }
+
+    @Test
+    public void getWithCoercionShouldCheckTypeHandlers() throws CoercionException {
+        assertThat(map.get(Exception.class, "blah"), equalTo("useTypeHandlers"));
     }
 }

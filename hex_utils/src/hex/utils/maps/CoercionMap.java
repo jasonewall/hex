@@ -46,7 +46,7 @@ public interface CoercionMap<I> {
             value = getString(index);
         } else if(type.isArray()) {
             value = CoercionUtils.coerceArray(get(index), type.getComponentType());
-        } else {
+        } else if((value = useTypeHandlers(type, index)) == null) {
             value = get(index);
         }
 
@@ -57,6 +57,10 @@ public interface CoercionMap<I> {
         @SuppressWarnings("unchecked")
         T t = (T)value;
         return t;
+    }
+
+    default Object useTypeHandlers(Class<?> type, I index) {
+        return null;
     }
 
     default Byte getByte(I index) {
