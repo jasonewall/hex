@@ -25,9 +25,9 @@ public class CoercionMapTest {
     @Rule
     public ExpectedException exception = ExpectedException.none();
 
-    private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap {}
+    private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap<String> {}
 
-    private CoercionMap map = new CoercionMapImpl();
+    private CoercionMapImpl map = new CoercionMapImpl();
 
     @Test
     public void getIntShouldReturnInts() {
@@ -197,40 +197,4 @@ public class CoercionMapTest {
         assertThat(map.get(ArrayList.class, "aThing"), isA(ArrayList.class));
     }
 
-    @Test
-    public void coerceShouldCopyPropertiesToAnObject() throws CoercionException {
-        map.put("id", 133);
-        map.put("title", "Jurassic Park");
-        map.put("publishYear", 1990);
-
-        Book book = map.coerce(Book.class);
-        assertThat(book.getId(), equalTo(133));
-        assertThat(book.getPublishYear(), equalTo(1990));
-        assertThat(book.getTitle(), equalTo("Jurassic Park"));
-    }
-
-    @Test
-    public void coerceShouldCoercePropertiesAsWell() throws CoercionException {
-        map.put("id", "432");
-        Book book = map.coerce(Book.class);
-        assertThat(book.getId(), equalTo(432));
-    }
-
-    @Test
-    public void coerceShouldWorkForNestedProperties() throws CoercionException {
-        CoercionMap authorProps = new CoercionMapImpl();
-        authorProps.put("id", "1");
-        authorProps.put("firstName", "J.");
-        authorProps.put("lastName", "Salinger");
-        map.put("id", "1800");
-        map.put("publishYear", "1951");
-        map.put("title", "The Catcher in the Rye");
-        map.put("author", authorProps);
-
-        Book book = map.coerce(Book.class);
-        Person author = book.getAuthor();
-        assertThat(author.getFirstName(), equalTo("J."));
-        assertThat(author.getLastName(), equalTo("Salinger"));
-        assertThat(author.getId(), equalTo(1));
-    }
 }

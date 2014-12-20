@@ -33,7 +33,7 @@ import java.util.*;
 /**
  * Created by jason on 14-11-13.
  */
-public class RouteParams extends AbstractImmutableMap<String,Object> implements CoercionMap {
+public class RouteParams extends AbstractImmutableMap<String,Object> implements CoercionMap<String> {
     private Map<String,String> params = new HashMap<>();
 
     public RouteParams(Map<String,String> params) {
