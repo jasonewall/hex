@@ -233,7 +233,7 @@ public class CoercionMapTest {
         Book[] books = map.get(Book[].class, "books");
         assertThat(books[0].getId(), equalTo(38));
         assertThat(books[0].getTitle(), equalTo("To Kill A Mocking Bird"));
-        assertThat(books[1].getTitle(), equalTo("Fiddler on the Roof"));
         assertThat(books[1].getId(), equalTo(19));
+        assertThat(books[1].getTitle(), equalTo("Fiddler on the Roof"));
     }
 }
