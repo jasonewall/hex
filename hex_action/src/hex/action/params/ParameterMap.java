@@ -1,5 +1,6 @@
 package hex.action.params;
 
+import com.sun.javafx.tools.packager.Param;
 import hex.utils.coercion.CoercionException;
 import hex.utils.maps.AbstractImmutableMap;
 
@@ -38,13 +39,11 @@ public class ParameterMap extends AbstractImmutableMap<String,Object> implements
     }
 
     @Override
-    public Object coerceArray(Object array, Class<?> intoType) throws CoercionException {
-        if(array.getClass().isArray())
-            return Params.super.coerceArray(array, intoType);
-
-        // assuming parameter map for now
-        ParameterMap params = (ParameterMap)array;
-        return Params.super.coerceArray(params.rotate(), intoType);
+    public Object getArray(String index) {
+        Object o = get(index);
+        if(o instanceof ParameterMap)
+            return ((ParameterMap)o).rotate();
+        return Params.super.getArray(index);
     }
 
     private ParameterMap[] rotate() {
