@@ -1,11 +1,13 @@
 package hex.utils.maps;
 
+import hex.utils.Memo;
 import hex.utils.coercion.CoercionException;
 import hex.utils.test.Book;
 import hex.utils.test.Person;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -58,5 +60,47 @@ public class PropertyMapTest {
         assertThat(author.getFirstName(), equalTo("J."));
         assertThat(author.getLastName(), equalTo("Salinger"));
         assertThat(author.getId(), equalTo(1));
+    }
+
+    @Test
+    public void coerceShouldWorkWithNestedLists() throws CoercionException {
+        map.put("title", "Dracula");
+        map.put("author", Memo.of(new Person()).tap(p -> p.setName("Stoker", "Bram")).finish());
+        map.put("characters", Arrays.asList(
+                Memo.of(new Person()).tap(p -> p.setName("Harker", "Mina")).finish(),
+                Memo.of(new Person()).tap(p -> p.setName("Van Helsing", "Abraham")).finish(),
+                Memo.of(new Person()).tap(p -> p.setName("Dracula", "Count")).finish()
+        ));
+        Book book = map.coerce(Book.class);
+        assertThat(book.getTitle(), equalTo("Dracula"));
+        Memo.of(book.getCharacters().get(1)).tap(p -> {
+            assertThat(p.getFirstName(), equalTo("Abraham"));
+            assertThat(p.getLastName(), equalTo("Van Helsing"));
+        });
+    }
+
+    @Test
+    public void coerceShouldCoerceNestedLists() throws CoercionException {
+        map.put("title", "Dracula");
+        map.put("characters", new PropertyMap[] {
+                Memo.of(new PropertyMapImpl()).tap(m -> {
+                    m.put("firstName", "Mina");
+                    m.put("lastName", "Harker");
+                }).finish(),
+                Memo.of(new PropertyMapImpl()).tap(m -> {
+                    m.put("firstName", "Abraham");
+                    m.put("lastName", "Van Helsing");
+                }).finish()
+        });
+        Book book = map.coerce(Book.class);
+        assertThat(book.getCharacters().size(), equalTo(2));
+        Memo.of(book.getCharacters().get(0)).tap(p -> {
+            assertThat(p.getFirstName(), equalTo("Mina"));
+            assertThat(p.getLastName(), equalTo("Harker"));
+        });
+        Memo.of(book.getCharacters().get(1)).tap(p -> {
+            assertThat(p.getFirstName(), equalTo("Abraham"));
+            assertThat(p.getLastName(), equalTo("Van Helsing"));
+        });
     }
 }

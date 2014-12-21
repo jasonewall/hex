@@ -97,6 +97,12 @@ public interface CoercionMap<I> {
     default Object getArray(I index) {
         Object o = get(index);
         if(o.getClass().isArray()) return o;
+        if(List.class.isAssignableFrom(o.getClass())) {
+            List list = (List)o;
+            Object array = Array.newInstance(Object.class, list.size());
+            for(int i = 0; i < list.size(); i++) Array.set(array, i, list.get(i));
+            return array;
+        }
         Object array = Array.newInstance(Object.class, 1);
         Array.set(array, 0, o);
         return array;

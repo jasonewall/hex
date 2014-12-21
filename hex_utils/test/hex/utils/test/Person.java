@@ -33,4 +33,9 @@ public class Person {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public void setName(String lastName, String firstName) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+    }
 }
