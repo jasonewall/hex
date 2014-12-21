@@ -170,7 +170,7 @@ public class RepositoryStream<T> extends AbstractQuery<T> implements Stream<T> {
      * this stream with the contents of a mapped stream produced by applying
      * the provided mapping function to each element.
      *
-     * This is effectively this is an inner join to a one-to-many relationship in a
+     * This is effectively an inner join to a one-to-many relationship in a
      * relational database.
      * <p>
      * <p>This is an <a href="package-summary.html#StreamOps">intermediate
