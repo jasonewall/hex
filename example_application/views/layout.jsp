@@ -10,6 +10,10 @@
     </head>
     <body>
         <h1>People App</h1>
+        <h2>Menu</h2>
+        <ul>
+            <li><a href="/people">List of People</a></li>
+        </ul>
         <p>${message}</p>
         <p>${java_home}</p>
         <p>
@@ -20,7 +24,7 @@
                 <li>${i}</li>
             </c:forEach>
         </ul>
-        <form action="${pageContext.request.contextPath}" method="POST">
+        <form action="${pageContext.request.contextPath}/" method="POST">
             <input type="text" name="message" value="${message}"/>
             <button>Say Hello</button>
         </form>

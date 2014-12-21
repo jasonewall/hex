@@ -1,6 +1,7 @@
 package controllers;
 
 import hex.action.Controller;
+import hex.action.params.Param;
 import hex.action.params.RouteParam;
 import hex.ql.Query;
 import hex.repo.Repository;
@@ -23,6 +24,15 @@ public class PeopleController extends Controller {
         Person person = new Person();
         person.setId(id);
         view.put("person", person);
+    }
+
+    public void newForm() {
+
+    }
+
+    public void create(@Param("person") Person person) {
+        view.put("message", String.format("Created %s", person.getFullName()));
+        renderPage("layout.jsp");
     }
 
     public void readme() {
