@@ -1,7 +1,7 @@
 package hex.action;
 
-import hex.action.annotations.Param;
-import hex.action.annotations.RouteParam;
+import hex.action.params.Param;
+import hex.action.params.RouteParam;
 import hex.action.initialization.InitializationException;
 import hex.action.params.WebParams;
 import hex.routing.Route;

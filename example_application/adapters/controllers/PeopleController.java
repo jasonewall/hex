@@ -1,7 +1,7 @@
 package controllers;
 
 import hex.action.Controller;
-import hex.action.annotations.RouteParam;
+import hex.action.params.RouteParam;
 import hex.ql.Query;
 import hex.repo.Repository;
 import hex.repo.RepositoryBase;

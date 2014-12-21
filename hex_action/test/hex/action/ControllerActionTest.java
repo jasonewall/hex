@@ -1,7 +1,7 @@
 package hex.action;
 
-import hex.action.annotations.Param;
-import hex.action.annotations.RouteParam;
+import hex.action.params.Param;
+import hex.action.params.RouteParam;
 import hex.action.examples.Movie;
 import hex.routing.Route;
 import hex.routing.RouteParams;
@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
 
