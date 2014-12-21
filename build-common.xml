@@ -8,34 +8,75 @@
     <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
     <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
 
+    <property name="artifacts.dir" value="../out/artifacts"/>
+
     <target name="clean" description="Delete all output created by build targets for this project">
         <delete dir="${classes.dir}"/>
         <delete dir="${test.classes.dir}"/>
+        <delete file="${artifacts.dir}/${ant.project.name}.jar"/>
     </target>
 
-    <target name="hex_repo">
+    <target name="hex_repo" unless="hex_repo.compiled">
         <ant dir="../hex_repo" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_repo.cachepath" conf="runtime" file="../hex_repo/ivy.xml" resolveid="hex_repo.runtime"/>
+        <path id="hex_repo.classpath">
+            <pathelement path="${out.dir}/hex_repo"/>
+        </path>
+        <property name="hex_repo.compiled" value="true"/>
     </target>
 
-    <target name="hex_action">
+    <target name="hex_action" unless="hex_action.compiled">
         <ant dir="../hex_action" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_action.cachepath" conf="runtime" file="../hex_action/ivy.xml" resolveid="hex_action.runtime"/>
+        <path id="hex_action.classpath">
+            <pathelement path="${out.dir}/hex_action"/>
+        </path>
+        <property name="hex_action.compiled" value="true"/>
     </target>
 
-    <target name="hex_routing">
+    <target name="hex_routing" unless="hex_routing.compiled">
         <ant dir="../hex_routing" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_routing.cachepath" conf="runtime" file="../hex_routing/ivy.xml" resolveid="hex_routing.runtime"/>
+        <path id="hex_routing.classpath">
+            <pathelement path="${out.dir}/hex_routing"/>
+        </path>
+        <property name="hex_routing.compiled" value="true"/>
     </target>
 
-    <target name="hex_utils">
+    <target name="hex_utils" unless="hex_utils.compiled">
         <ant dir="../hex_utils" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_utils.cachepath" conf="runtime" file="../hex_utils/ivy.xml" resolveid="hex_utils.runtime"/>
+        <path id="hex_utils.classpath">
+            <pathelement path="${out.dir}/hex_utils"/>
+        </path>
+        <property name="hex_utils.compiled" value="true"/>
     </target>
 
-    <target name="hexql">
+    <target name="hexql" unless="hexql.compiled">
         <ant dir="../hexql" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hexql.cachepath" conf="runtime" file="../hexql/ivy.xml" resolveid="hexql.runtime"/>
+        <path id="hexql.classpath">
+            <pathelement path="${out.dir}/hexql"/>
+        </path>
+        <property name="hexql.compiled" value="true"/>
     </target>
 
-    <target name="compile">
+    <target name="hex_dev" unless="hex_dev.compiled">
+        <ant dir="../hex_dev" target="common.compile" inheritall="false"/>
+        <ivy:cachepath pathid="hex_dev.cachepath" conf="runtime" file="../hex_dev/ivy.xml" resolveid="hex_dev.runtime"/>
+        <path id="hex_dev.classpath">
+            <pathelement path="${out.dir}/hex_dev"/>
+        </path>
+        <property name="hex_dev.compiled" value="true"/>
+    </target>
+
+    <target name="classpath">
+        <path id="classpath"/>
+    </target>
+
+    <target name="compile" depends="classpath">
         <mkdir dir="${classes.dir}"/>
-        <ivy:cachepath conf="development" pathid="ivy.cachepath"/>
+        <ivy:cachepath conf="development" pathid="ivy.cachepath" resolveid="${ant.project.name}.development"/>
         <javac destdir="${classes.dir}" srcdir="${basedir}/src">
             <classpath refid="classpath"/>
             <classpath refid="ivy.cachepath"/>
@@ -49,7 +90,7 @@
 
     <target name="compile-tests" depends="compile">
         <mkdir dir="${test.classes.dir}"/>
-        <ivy:cachepath conf="test" pathid="test.ivy.cachepath"/>
+        <ivy:cachepath conf="test" pathid="test.ivy.cachepath" resolveid="${ant.project.name}.test"/>
         <path id="test.classpath">
             <path refid="test.ivy.cachepath"/>
             <path refid="classpath"/>
@@ -63,6 +104,10 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
+    </target>
+
+    <target name="build" depends="classpath,compile">
+        <jar destfile="${artifacts.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
     </target>
 
     <target name="run-tests">

@@ -2,43 +2,37 @@
                                         xmlns:liquibase="antlib:liquibase.integration.ant">
     <include as="common" file="../build-common.xml"/>
 
-    <ivy:cachepath pathid="liquibase.cachepath" conf="development"/>
+    <ivy:cachepath pathid="liquibase.cachepath" conf="development" resolveid="liquibase"/>
 
     <taskdef resource="liquibase/integration/ant/antlib.xml" uri="antlib:liquibase.integration.ant">
         <classpath refid="liquibase.cachepath"/>
     </taskdef>
 
-    <target name="classpath" depends="common.hex_utils,common.hexql">
+    <target name="common.classpath" depends="common.hex_utils,common.hexql">
         <path id="classpath">
-            <pathelement location="${out.dir}/hex_utils"/>
-            <pathelement location="${out.dir}/hexql"/>
+            <path refid="hex_utils.cachepath"/>
+            <path refid="hex_utils.classpath"/>
+            <path refid="hexql.cachepath"/>
+            <path refid="hexql.classpath"/>
         </path>
     </target>
 
-    <target name="ensure-config-files" depends="ensure-liquibase-config,ensure-hex-repo-config"/>
-
-    <target name="prepare-test-data" description="Run this to prepare the database for the unit tests" depends="ensure-config-files">
-        <property file="liquibase.properties" prefix="db"/>
-        <liquibase:database id="hex_repo_test" driver="${db.driver}" url="${db.url}" user="${db.username}" password="${db.password}"/>
-        <liquibase:updateDatabase databaseref="hex_repo_test" changelogfile="test_data/people.xml"/>
-    </target>
-
-    <target name="test" depends="classpath,common.compile,common.compile-tests">
+    <target name="test" description="Run the tests!" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
             <property name="test.class.name" value="hex.repo.RepoTests"/>
         </ant>
     </target>
 
-    <target name="ensure-liquibase-config" depends="needs-liquibase?" unless="has.liquibase">
-        <copy file="liquibase.properties.example" tofile="liquibase.properties"/>
+    <target name="ensure-config-files" depends="ensure-hex-repo-config"/>
+
+    <target name="prepare-test-data" description="Run this to prepare the database for the unit tests" depends="ensure-config-files">
+        <property file="test/hex_repo.properties" prefix="db"/>
+        <liquibase:database id="hex_repo_test" driver="${db.driver}" url="${db.url}" user="${db.username}" password="${db.password}"/>
+        <liquibase:updateDatabase databaseref="hex_repo_test" changelogfile="test_data/people.xml"/>
     </target>
 
     <target name="ensure-hex-repo-config" depends="needs-hex-repo?" unless="has.hex-repo">
         <copy file="test/hex_repo.properties.sample" tofile="test/hex_repo.properties"/>
-    </target>
-
-    <target name="needs-liquibase?">
-        <available file="liquibase.properties" property="has.liquibase"/>
     </target>
 
     <target name="needs-hex-repo?">

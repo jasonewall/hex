@@ -1,5 +1,7 @@
 package hex.action;
 
+import hex.action.params.Params;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,8 @@ public class Controller {
     protected HttpServletRequest request;
 
     protected HttpServletResponse response;
+
+    protected Params params;
 
     private String viewBase = "";
 

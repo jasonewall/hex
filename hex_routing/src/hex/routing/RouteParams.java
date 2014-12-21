@@ -23,36 +23,125 @@
  */
 package hex.routing;
 
-import java.util.HashMap;
-import java.util.Map;
+import hex.utils.maps.CoercionMap;
+import hex.utils.maps.AbstractImmutableMap;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
 
 /**
  * Created by jason on 14-11-13.
  */
-public class RouteParams {
+public class RouteParams extends AbstractImmutableMap<String,Object> implements CoercionMap<String> {
     private Map<String,String> params = new HashMap<>();
 
     public RouteParams(Map<String,String> params) {
         this.params = params;
     }
 
-    public Object get(Class<?> type, String name) throws IllegalArgumentException {
-        if(type == int.class || type == Integer.class) {
-            return getInt(name);
-        } else {
-            return getString(name);
-        }
+    /**
+     * Build the {@code entrySet} that will be converted into an immutable implementation of the {@link java.util.Set}
+     * interface.
+     * <p>
+     * This pattern is meant to be a convenience for creating implementations of an immutable {@link java.util.Map}
+     * implementation.
+     *
+     * @return A {@link java.util.Set} of entries
+     */
+    @Override
+    protected Set<Entry<String, Object>> buildEntries() {
+        // The type erasure doesn't like auto converting Entry<String,String> to <String,Object>
+        // Using just SimpleImmutableEntry::new assumes we're returning Entry<String,String> so it barfs on the return type
+        // of #buildEntries() - go weak generics
+        //noinspection Convert2MethodRef,Convert2Diamond
+        return params.entrySet().stream()
+                .map(e -> new SimpleImmutableEntry<String,Object>(e))
+                .collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public int getInt(String paramName) throws IllegalArgumentException {
+    @Override
+    public Object get(Object key) {
+        return params.get(key);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        return params.containsKey(key);
+    }
+
+    public Integer getInt(String paramName) throws IllegalArgumentException {
         try {
-            return Integer.parseInt(params.get(paramName), 10);
+            return CoercionMap.super.getInt(paramName);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(String.format("NumberFormatException in route parameter: %s", e.getMessage()), e);
+            throw new IllegalArgumentException(numberFormatErrorMessage(paramName, e), e);
         }
     }
 
-    public String getString(String paramName) {
-        return params.get(paramName);
+    @Override
+    public Byte getByte(String attribute) {
+        try {
+            return CoercionMap.super.getByte(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public Short getShort(String attribute) {
+        try {
+            return CoercionMap.super.getShort(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public Float getFloat(String attribute) {
+        try {
+            return CoercionMap.super.getFloat(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public Long getLong(String attribute) {
+        try {
+            return CoercionMap.super.getLong(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public Double getDouble(String attribute) {
+        try {
+            return CoercionMap.super.getDouble(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public BigDecimal getBigDecimal(String attribute) {
+        try {
+            return CoercionMap.super.getBigDecimal(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    @Override
+    public BigInteger getBigInteger(String attribute) {
+        try {
+            return CoercionMap.super.getBigInteger(attribute);
+        } catch(NumberFormatException e) {
+            throw new IllegalArgumentException(numberFormatErrorMessage(attribute, e), e);
+        }
+    }
+
+    private String numberFormatErrorMessage(String paramName, NumberFormatException e) {
+        return String.format("NumberFormatException in route parameter(%s): %s", paramName, e.getMessage());
     }
 }

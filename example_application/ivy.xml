@@ -4,7 +4,10 @@
             xsi:noNamespaceSchemaLocation=
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="example_application"/>
+    <configurations>
+        <conf name="runtime"/>
+    </configurations>
     <dependencies>
-        <dependency org="org.postgresql" name="postgresql" rev="9.3-1102-jdbc41"/>
+        <dependency org="org.postgresql" name="postgresql" rev="9.3-1102-jdbc41" conf="runtime->default"/>
     </dependencies>
 </ivy-module>

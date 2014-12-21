@@ -4,7 +4,8 @@
                     "http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info organisation="hex" module="hex_repo"/>
     <configurations>
-        <conf name="development" visibility="private"/>
+        <conf name="runtime"/>
+        <conf name="development" visibility="private" extends="runtime"/>
         <conf name="test" visibility="private" extends="development"/>
     </configurations>
     <dependencies>

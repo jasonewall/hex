@@ -1,3 +1,4 @@
+example_application/adapters/hex_repo.properties
 hex_repo/test/hex_repo.properties
 .ivy_classpath
 liquibase.properties

@@ -1,0 +1,39 @@
+<project name="example_application" default="run" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <include as="common" file="../build-common.xml"/>
+
+    <property name="tools.jar" value="${java.home}/../lib/tools.jar"/>
+
+    <target name="ensure-config-files" depends="ensure-hex-repo-config"/>
+
+    <target name="common.classpath" depends="common.hex_utils,common.hexql,common.hex_routing,common.hex_action,common.hex_repo,common.hex_dev">
+        <ivy:cachepath pathid="application.cachepath" resolveid="application" conf="runtime"/>
+        <path id="classpath">
+            <file file="${tools.jar}"/>
+            <path refid="hex_utils.classpath"/>
+            <path refid="hex_utils.cachepath"/>
+            <path refid="hexql.classpath"/>
+            <path refid="hexql.cachepath"/>
+            <path refid="hex_routing.classpath"/>
+            <path refid="hex_routing.cachepath"/>
+            <path refid="hex_action.classpath"/>
+            <path refid="hex_action.cachepath"/>
+            <path refid="hex_repo.classpath"/>
+            <path refid="hex_repo.cachepath"/>
+            <path refid="hex_dev.classpath"/>
+            <path refid="hex_dev.cachepath"/>
+            <path refid="application.cachepath"/>
+        </path>
+    </target>
+
+    <target name="run" depends="common.classpath">
+        <java fork="true" classpathref="classpath" classname="hex.dev.HexServer" failonerror="true"/>
+    </target>
+
+    <target name="needs-hex-repo?">
+        <available file="adapters/hex_repo.properties" property="has.hex-repo"/>
+    </target>
+
+    <target name="ensure-hex-repo-config" depends="needs-hex-repo?" unless="has.hex-repo">
+        <copy file="adapters/hex_repo.properties.example" tofile="adapters/hex_repo.properties"/>
+    </target>
+</project>

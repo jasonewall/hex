@@ -23,3 +23,5 @@
         </c:forEach>
     </tbody
 </table>
+
+<a href="/people/new">Create New Person</a>

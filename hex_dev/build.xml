@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="hex_dev">
+<project name="hex_dev" default="common.compile">
+    <include as="common" file="../build-common.xml"/>
+
+    <target name="common.classpath" depends="common.hex_routing,common.hex_action">
+        <path id="classpath">
+            <path refid="hex_routing.classpath"/>
+            <path refid="hex_action.classpath"/>
+        </path>
+    </target>
 </project>
