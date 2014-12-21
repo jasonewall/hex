@@ -157,7 +157,7 @@ public class ControllerActionTest {
         } catch (ServletException e) {
             this.servletException = e;
         } catch (IOException e) {
-            e.printStackTrace(); // basically shouldn't happen in test world
+            fail(e.getMessage()); // basically shouldn't happen in test world
         }
     }
 
