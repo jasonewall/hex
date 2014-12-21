@@ -229,7 +229,7 @@ public class CoercionMapTest {
                 }).finish(),
                 Memo.of(new PropertyMapTest.PropertyMapImpl()).tap(m -> {
                     m.put("id", 19);
-                    m.put("title", "Fiddler on the Roof");
+                    m.put("title", "Dracula");
                 }).finish()
         };
         map.put("books", bookAttributes);
@@ -242,7 +242,7 @@ public class CoercionMapTest {
         assertThat(books[0].getId(), equalTo(38));
         assertThat(books[0].getTitle(), equalTo("To Kill A Mocking Bird"));
         assertThat(books[1].getId(), equalTo(19));
-        assertThat(books[1].getTitle(), equalTo("Fiddler on the Roof"));
+        assertThat(books[1].getTitle(), equalTo("Dracula"));
     }
 
     @Test
