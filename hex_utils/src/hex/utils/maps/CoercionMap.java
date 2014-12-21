@@ -48,7 +48,7 @@ public interface CoercionMap<I> {
         } else if(type == String.class) {
             value = getString(index);
         } else if(type.isArray()) {
-            value = coerceArray(get(index), type.getComponentType());
+            value = coerceArray(getArray(index), type.getComponentType());
         } else if((value = useTypeHandlers(type, index)) == null) {
             value = get(index);
         }
@@ -92,6 +92,14 @@ public interface CoercionMap<I> {
 
     default <T> T coerceNumeric(I index, Function<Number,T> mapper, BiFunction<String,Integer,T> coercer) {
         return getNumber(index).map(mapper).orElseGet(() -> coercer.apply(getString(index), 10));
+    }
+
+    default Object getArray(I index) {
+        Object o = get(index);
+        if(o.getClass().isArray()) return o;
+        Object array = Array.newInstance(Object.class, 1);
+        Array.set(array, 0, o);
+        return array;
     }
 
     default Object coerceArray(Object array, Class<?> intoType) throws CoercionException {
@@ -155,7 +163,7 @@ public interface CoercionMap<I> {
     }
 
     default <T> List<T> getListOf(Class<T> elementType, I index) throws CoercionException {
-        CoercionArray coercer = new CoercionArray(get(index));
+        CoercionArray coercer = new CoercionArray(getArray(index));
         @SuppressWarnings("unchecked")
         T[] results = (T[]) Array.newInstance(elementType, coercer.length());
         for(int i = 0; i < coercer.length(); i++) {

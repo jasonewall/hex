@@ -251,9 +251,23 @@ public class CoercionMapTest {
     }
 
     @Test
+    public void gettingArraysShouldWorkWithSingleValues() throws CoercionException {
+        map.put("names", "Bob");
+        String[] names = map.get(String[].class, "names");
+        assertThat(names, arrayContaining("Bob"));
+    }
+
+    @Test
     public void getListOfShouldReturnAList() throws CoercionException {
         map.put("names", new String[]{ "Darla", "Dawn", "David", "Donald" });
         List<String> names = map.getListOf(String.class, "names");
         assertThat(names, contains("Darla", "Dawn", "David", "Donald"));
+    }
+
+    @Test
+    public void getListOfShouldWorkWithSingleValues() throws CoercionException {
+        map.put("names", "Dylan");
+        List<String> names = map.getListOf(String.class, "names");
+        assertThat(names, contains("Dylan"));
     }
 }
