@@ -3,11 +3,7 @@ package hex.action.params;
 import hex.routing.RouteParams;
 
 import javax.servlet.ServletRequest;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by jason on 14-12-12.

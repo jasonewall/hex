@@ -7,7 +7,7 @@ import servlet_mock.HttpMock;
 import servlet_mock.MockHttpServletRequest;
 import servlet_mock.MockHttpServletResponse;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by jason on 14-11-16.
