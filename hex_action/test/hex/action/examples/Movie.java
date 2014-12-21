@@ -1,5 +1,9 @@
 package hex.action.examples;
 
+import hex.utils.generics.CollectionType;
+
+import java.util.List;
+
 /**
  * Created by jason on 14-12-14.
  */
@@ -15,6 +19,9 @@ public class Movie {
     private String refid;
 
     private Person[] stars;
+
+    @CollectionType(Person.class)
+    private List<Person> starsList;
 
     private int[] starIds;
 
@@ -72,5 +79,13 @@ public class Movie {
 
     public void setStarIds(int[] starIds) {
         this.starIds = starIds;
+    }
+
+    public List<Person> getStarsList() {
+        return starsList;
+    }
+
+    public void setStarsList(List<Person> starsList) {
+        this.starsList = starsList;
     }
 }

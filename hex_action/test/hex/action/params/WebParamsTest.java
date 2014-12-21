@@ -16,9 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 
@@ -181,5 +183,38 @@ public class WebParamsTest {
         Movie movie = params.get(Movie.class, "movie");
         Person[] movieStars = movie.getStars();
         assertThat(movieStars, arrayContaining(star1, star2, star3));
+    }
+
+    @Test
+    public void listPropertiesShouldWorkWithSubObjects() throws CoercionException {
+        request.putParam("movie[title]", "The Dark Knight Rises");
+        request.putParam("movie[starsList][id]", "18");
+        request.putParam("movie[starsList][firstName]", "Anne");
+        request.putParam("movie[starsList][lastName]", "Hathaway");
+        Person star1 = Memo.of(new Person()).tap(p -> {
+            p.setId(18);
+            p.setFirstName("Anne");
+            p.setLastName("Hathaway");
+        }).finish();
+        request.putParam("movie[starsList][id]", "33");
+        request.putParam("movie[starsList][firstName]", "Christian");
+        request.putParam("movie[starsList][lastName]", "Bale");
+        Person star2 = Memo.of(new Person()).tap(p -> {
+            p.setId(33);
+            p.setFirstName("Christian");
+            p.setLastName("Bale");
+        }).finish();
+        request.putParam("movie[starsList][id]", "46");
+        request.putParam("movie[starsList][firstName]", "Gary");
+        request.putParam("movie[starsList][lastName]", "Oldman");
+        Person star3 = Memo.of(new Person()).tap(p -> {
+            p.setId(46);
+            p.setFirstName("Gary");
+            p.setLastName("Oldman");
+        }).finish();
+        buildWebParams();
+        Movie movie = params.get(Movie.class, "movie");
+        List<Person> movieStars = movie.getStarsList();
+        assertThat(movieStars, contains(star1, star2, star3));
     }
 }
