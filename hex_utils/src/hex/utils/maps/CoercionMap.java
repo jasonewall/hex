@@ -7,6 +7,8 @@ import hex.utils.collections.CoercionArray;
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -150,6 +152,16 @@ public interface CoercionMap<I> {
             return Optional.of((Number)o);
         }
         return Optional.empty();
+    }
+
+    default <T> List<T> getListOf(Class<T> elementType, I index) throws CoercionException {
+        CoercionArray coercer = new CoercionArray(get(index));
+        @SuppressWarnings("unchecked")
+        T[] results = (T[]) Array.newInstance(elementType, coercer.length());
+        for(int i = 0; i < coercer.length(); i++) {
+            results[i] = coercer.get(elementType, i);
+        }
+        return Arrays.asList(results);
     }
 
     @SuppressWarnings("unchecked")

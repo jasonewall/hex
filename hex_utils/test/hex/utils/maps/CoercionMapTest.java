@@ -249,4 +249,11 @@ public class CoercionMapTest {
     public void getWithCoercionShouldCheckTypeHandlers() throws CoercionException {
         assertThat(map.get(Exception.class, "blah"), equalTo("useTypeHandlers"));
     }
+
+    @Test
+    public void getListOfShouldReturnAList() throws CoercionException {
+        map.put("names", new String[]{ "Darla", "Dawn", "David", "Donald" });
+        List<String> names = map.getListOf(String.class, "names");
+        assertThat(names, contains("Darla", "Dawn", "David", "Donald"));
+    }
 }
