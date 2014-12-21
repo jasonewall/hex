@@ -270,4 +270,18 @@ public class CoercionMapTest {
         List<String> names = map.getListOf(String.class, "names");
         assertThat(names, contains("Dylan"));
     }
+
+    @Test
+    public void getListOfShouldWorkWithComplexTypes() throws CoercionException {
+        initBookAttributes();
+        List<Book> books = map.getListOf(Book.class, "books");
+        Memo.of(books.get(0)).tap(b -> {
+            assertThat(b.getId(), equalTo(38));
+            assertThat(b.getTitle(), equalTo("To Kill A Mocking Bird"));
+        });
+        Memo.of(books.get(1)).tap(b -> {
+            assertThat(b.getId(), equalTo(19));
+            assertThat(b.getTitle(), equalTo("Dracula"));
+        });
+    }
 }
