@@ -1,7 +1,9 @@
 package hex.action;
 
+import hex.action.annotations.Param;
 import hex.action.annotations.RouteParam;
 import hex.action.initialization.InitializationException;
+import hex.action.params.WebParams;
 import hex.routing.Route;
 import hex.routing.RouteHandler;
 import hex.routing.RouteParams;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,7 +81,7 @@ public class ControllerAction implements RouteHandler {
     public void prepareController(Controller controller, ServletRequest servletRequest, ServletResponse servletResponse) {
         controller.request = (HttpServletRequest)servletRequest;
         controller.response = (HttpServletResponse)servletResponse;
-
+        controller.params = new WebParams(servletRequest, (RouteParams)servletRequest.getAttribute(Route.ROUTE_PARAMS));
         if(hexActionConfig.containsKey("viewBase")) {
             controller.setViewBase(hexActionConfig.getProperty("viewBase"));
         }
@@ -93,17 +96,22 @@ public class ControllerAction implements RouteHandler {
     }
 
     private void invokeAction(Method method, Controller controller, RouteParams routeParams) throws InvocationTargetException, IllegalAccessException, CoercionException {
-        if(Stream.of(method.getParameters()).anyMatch(p -> !p.isAnnotationPresent(RouteParam.class))) {
+        Predicate<Parameter> missingParamAnnotations = p -> !p.isAnnotationPresent(RouteParam.class) && !p.isAnnotationPresent(Param.class);
+        if(Stream.of(method.getParameters()).anyMatch(missingParamAnnotations)) {
             throw new IllegalAccessException(String.format("Missing route parameter annotation in %s#%s for arguments: %s",
                     controller.getClass().getSimpleName(),
                     actionName,
-                    Stream.of(method.getParameters()).filter(p -> !p.isAnnotationPresent(RouteParam.class)).map(Parameter::getName)
-                    .collect(Collectors.joining(", "))
-                    ));
+                    Stream.of(method.getParameters()).filter(missingParamAnnotations).map(Parameter::getName)
+                            .collect(Collectors.joining(", "))
+            ));
         }
         List<Object> paramValues = new ArrayList<>();
         for(Parameter param : method.getParameters()) {
-            paramValues.add(routeParams.get(param.getType(), param.getAnnotation(RouteParam.class).value()));
+            if(param.isAnnotationPresent(RouteParam.class)) {
+                paramValues.add(routeParams.get(param.getType(), param.getAnnotation(RouteParam.class).value()));
+            } else {
+                paramValues.add(controller.params.get(param.getType(), param.getAnnotation(Param.class).value()));
+            }
         }
         method.invoke(controller, paramValues.toArray());
     }
