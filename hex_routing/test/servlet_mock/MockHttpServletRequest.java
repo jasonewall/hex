@@ -70,24 +70,38 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return null;
     }
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private Map<String,List<String>> parameters = new HashMap<>();
+
     @Override
-    public String getParameter(String s) {
-        return null;
+    public String getParameter(String name) {
+        if(!parameters.containsKey(name)) return null;
+        return parameters.get(name).stream().findFirst().orElse(null);
     }
 
     @Override
     public Enumeration<String> getParameterNames() {
-        return null;
+        return new IterableEnumeration<>(parameters.keySet());
     }
 
     @Override
-    public String[] getParameterValues(String s) {
-        return new String[0];
+    public String[] getParameterValues(String name) {
+        if(!parameters.containsKey(name)) return null;
+        return parameters.get(name).stream().toArray(String[]::new);
     }
 
     @Override
     public Map<String, String[]> getParameterMap() {
-        return null;
+        Map<String,String[]> results = new HashMap<>();
+        parameters.forEach((k,v) -> results.put(k, v.stream().toArray(String[]::new)));
+        return results;
+    }
+
+    public void putParam(String name, String value) {
+        parameters.merge(name, new ArrayList<>(Arrays.asList(value)), (o,n) -> {
+            o.addAll(n);
+            return o;
+        });
     }
 
     @Override

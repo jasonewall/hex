@@ -1,6 +1,8 @@
 package hex.action;
 
-import hex.action.annotations.RouteParam;
+import hex.action.params.Param;
+import hex.action.params.RouteParam;
+import hex.action.examples.Movie;
 import hex.routing.Route;
 import hex.routing.RouteParams;
 import org.junit.After;
@@ -11,16 +13,15 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Properties;
 import java.util.function.Consumer;
 
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;
+import static servlet_mock.HttpMock.POST;
 
 /**
  * Created by jason on 14-11-15.
@@ -35,6 +36,8 @@ public class ControllerActionTest {
     private ServletException servletException;
 
     private RouteParams routeParams;
+
+    private Map<String,String> requestParams = new HashMap<>();
 
     @SuppressWarnings("UnusedDeclaration")
     class ControllerActionTestsController extends Controller {
@@ -61,6 +64,10 @@ public class ControllerActionTest {
         public void missingRouteParamAnnotation(String username) {
             fail("Expected the invocation to fail because we don't know what route param to use.");
         }
+
+        public void complexParameterType(@Param("movie") Movie movie) {
+            view.put("movie", movie);
+        }
     }
 
     @After
@@ -72,10 +79,19 @@ public class ControllerActionTest {
         action = new ControllerAction(ControllerActionTestsController::new, actionName);
     }
 
+    private RouteParams getRouteParams() {
+        if(routeParams == null) routeParams = new RouteParams(new HashMap<>());
+        return routeParams;
+    }
+
     private void initRouteParams(Consumer<Map<String,String>> paramsConsumer) {
         Map<String,String> params = new HashMap<>();
         paramsConsumer.accept(params);
         routeParams = new RouteParams(params);
+    }
+
+    private void initFormParams(Consumer<Map<String,String>> paramsConsumer) {
+        paramsConsumer.accept(requestParams);
     }
 
     @Test
@@ -104,7 +120,7 @@ public class ControllerActionTest {
         initAction("withRouteParams");
         initRouteParams(p -> p.put("id", "8"));
         GET("/theRequestPath", this::handleRequest)
-                .andThen((q,r) -> assertEquals(8, getViewContext().getInt("id")))
+                .andThen((q,r) -> assertEquals(8, getViewContext().getInt("id").intValue()))
                 ;
     }
 
@@ -117,7 +133,25 @@ public class ControllerActionTest {
     }
 
     @Test
-    public void shouldBeNotFoundWhenParamAnnoationMissing() {
+    public void callingControllerActionsShouldRespectComplexParameters() {
+        initAction("complexParameterType");
+        initFormParams(p -> {
+            p.put("movie[title]", "Batman Begins");
+            p.put("movie[releaseYear]", "2005");
+        });
+        POST("/people", this::handleRequest)
+                .andThen((q, r) -> {
+                    Movie movie = (Movie) getViewContext().get("movie");
+                    assertEquals(200, r.getStatus());
+                    assertNotNull("Movie is null!", movie);
+                    assertEquals("Batman Begins", movie.getTitle());
+                    assertEquals(2005, movie.getReleaseYear());
+                })
+                ;
+    }
+
+    @Test
+    public void shouldBeNotFoundWhenParamAnnotationMissing() {
         initAction("missingRouteParamAnnotation");
         initRouteParams(p -> p.put("username", "a.einstein"));
         GET("/profile/a.einstein", this::handleRequest);
@@ -150,15 +184,17 @@ public class ControllerActionTest {
     }
 
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {
+        MockHttpServletRequest mockRequest = (MockHttpServletRequest) servletRequest;
+        requestParams.forEach(mockRequest::putParam);
         this.servletRequest = servletRequest;
         this.servletResponse = servletResponse;
-        Optional.ofNullable(routeParams).ifPresent(p -> servletRequest.setAttribute(Route.ROUTE_PARAMS, p));
+        servletRequest.setAttribute(Route.ROUTE_PARAMS, getRouteParams());
         try {
             action.handleRequest(servletRequest, servletResponse);
         } catch (ServletException e) {
             this.servletException = e;
         } catch (IOException e) {
-            e.printStackTrace(); // basically shouldn't happen in test world
+            fail(e.getMessage()); // basically shouldn't happen in test world
         }
     }
 

@@ -1,6 +1,5 @@
 package hex.repo;
 
-import hex.ql.QueryLanguage;
 import hex.ql.Queryable;
 import hex.repo.streams.RepositoryStream;
 

@@ -11,5 +11,6 @@
     </configurations>
     <dependencies>
         <dependency org="junit" name="junit" rev="4.11" conf="test->default"/>
+        <dependency org="org.hamcrest" name="hamcrest-library" rev="1.2.1" conf="test->default"/>
     </dependencies>
 </ivy-module>

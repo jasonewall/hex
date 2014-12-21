@@ -12,5 +12,6 @@
     <dependencies>
         <dependency name="javax.servlet-api" rev="3.1.0" org="javax.servlet" conf="development->default"/>
         <dependency name="junit" rev="4.11" org="junit" conf="test->default"/>
+        <dependency name="hamcrest-library" rev="1.2.1" org="org.hamcrest" conf="test->default"/>
     </dependencies>
 </ivy-module>

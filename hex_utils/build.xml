@@ -3,7 +3,7 @@
 
     <target name="test" description="Run the tests!" depends="common.compile,common.compile-tests">
         <ant target="common.run-tests" inheritrefs="true">
-            <property name="test.class.name" value="hex.utils.InflectionTest"/>
+            <property name="test.class.name" value="hex.utils.UtilsTests"/>
         </ant>
     </target>
 </project>
