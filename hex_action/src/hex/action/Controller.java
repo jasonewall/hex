@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.params.Params;
+import hex.action.views.TemplateCapturingResponse;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -26,7 +27,9 @@ public class Controller {
 
     protected Params params;
 
-    private String viewBase = "";
+    protected String viewBase = "";
+
+    protected boolean responseCommitted;
 
     private String templateDirectory() {
         Matcher m = CONTROLLER_NAMES.matcher(getClass().getSimpleName());
@@ -74,7 +77,10 @@ public class Controller {
         //noinspection TryWithIdenticalCatches
         try {
             RequestDispatcher dispatcher = request.getRequestDispatcher(pagePath);
-            dispatcher.forward(request, response);
+            TemplateCapturingResponse response = new TemplateCapturingResponse(this.response);
+            dispatcher.include(this.request, response);
+            view.setContent(response.getContent());
+            responseCommitted = true;
         } catch (ServletException e) {
             throw new ActionAbortedException(e);
         } catch (IOException io) {

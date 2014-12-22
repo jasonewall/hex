@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;
 import static servlet_mock.HttpMock.POST;
@@ -67,6 +69,10 @@ public class ControllerActionTest {
 
         public void complexParameterType(@Param("movie") Movie movie) {
             view.put("movie", movie);
+        }
+
+        public void manuallyRenderedPage() {
+            renderAction("someOtherAction");
         }
     }
 
@@ -163,14 +169,21 @@ public class ControllerActionTest {
         initAction("withRouteParams");
         initRouteParams(p -> p.put("id", "17"));
         GET("/controller_action_tests/17", this::handleRequest);
-        assertRendered("/controller_action_tests/with_route_params.html.jsp");
+        assertIncluded("/controller_action_tests/with_route_params.html.jsp");
     }
 
     @Test
     public void shouldBeSmartAboutGoingToIndexRoutes() {
         initAction("setCalled");
         GET("/does_this_really_matter", this::handleRequest);
-        assertRendered("/controller_action_tests/set_called.html.jsp");
+        assertIncluded("/controller_action_tests/set_called.html.jsp");
+    }
+
+    @Test
+    public void renderingAPageManuallyShouldAbortDefaultBehaviour() {
+        initAction("manuallyRenderedPage");
+        GET("/controller_tests/manually", this::handleRequest);
+        assertIncluded("/controller_action_tests/some_other_action.html.jsp");
     }
 
     @Test
@@ -180,7 +193,7 @@ public class ControllerActionTest {
         initAction("setCalled");
         action.setHexActionConfig(props);
         GET("/people/13", this::handleRequest);
-        assertRendered("/resources/controller_action_tests/set_called.html.jsp");
+        assertIncluded("/resources/controller_action_tests/set_called.html.jsp");
     }
 
     private void handleRequest(ServletRequest servletRequest, ServletResponse servletResponse) {
@@ -211,9 +224,10 @@ public class ControllerActionTest {
         servletException = null;
     }
 
-    private void assertRendered(String jspFilePath) {
+    private void assertIncluded(String jspFilePath) {
         MockHttpServletRequest request = (MockHttpServletRequest) servletRequest;
-        assertEquals(jspFilePath, request.getRenderedPage());
+        assertThat(request.getIncludedPages().size(), equalTo(1));
+        assertThat(request.getIncludedPages(), contains(jspFilePath));
     }
 
     private ViewContext getViewContext() {

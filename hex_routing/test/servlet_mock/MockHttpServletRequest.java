@@ -170,6 +170,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return renderedPage;
     }
 
+    private List<String> includedPages = new ArrayList<>();
+
+    public List<String> getIncludedPages() {
+        return includedPages;
+    }
+
     @Override
     public RequestDispatcher getRequestDispatcher(String path) {
         return new RequestDispatcher() {
@@ -181,7 +187,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
             @Override
             public void include(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-                throw new UnsupportedOperationException("RequestDispatcher#include not implemented for servlet_mock");
+                includedPages.add(path);
+                servletResponse.setContentType("text/html");
             }
         };
     }
