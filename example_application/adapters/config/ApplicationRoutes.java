@@ -9,8 +9,7 @@ import hex.action.RouteManager;
 public class ApplicationRoutes extends RouteManager {
     @Override
     public void defineRoutes() {
-        get("/", PeopleController::new, "home");
-        post("/", PeopleController::new, "home");
+        matches("/", PeopleController::new, "home");
         get("/readme", PeopleController::new, "readme");
         get("/people", PeopleController::new, "index");
         post("/people", PeopleController::new, "create");
