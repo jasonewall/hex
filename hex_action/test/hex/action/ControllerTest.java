@@ -47,6 +47,13 @@ public class ControllerTest {
         assertRenderedPage("/posts/home_boy.html.jsp");
     }
 
+    @Test
+    public void renderPathShouldGoWhereItIsTold() {
+        controller.renderPath("comments/index");
+        assertContentType("text/html");
+        assertRenderedPage("/comments/index.html.jsp");
+    }
+
     private void assertContentType(String contentType) {
         assertEquals(contentType, controller.response.getContentType());
     }

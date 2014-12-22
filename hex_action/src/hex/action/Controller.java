@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -95,7 +96,15 @@ public class Controller {
      * @param path The path to resolve into a view
      */
     protected void renderPath(String path) {
-
+        Objects.requireNonNull(path);
+        String[] parts = path.split("/");
+        renderPage(new ViewPath(viewBase)
+                .set(parts[0])
+                .set(parts[1])
+                .set("html")
+                .set("jsp")
+                .toString())
+                ;
     }
 
     /**
