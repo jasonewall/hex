@@ -8,7 +8,6 @@
 <table>
     <thead>
         <tr>
-            <th>ID</th>
             <th>First Name</th>
             <th>Last Name</th>
         </tr>
@@ -16,9 +15,9 @@
     <tbody>
         <c:forEach items="${people}" var="p">
             <tr>
-                <td><a href="${request.contextPath}/people/${p.id}">${p.id}</a></td>
                 <td>${p.firstName}</td>
                 <td>${p.lastName}</td>
+                <td><a href="${request.contextPath}/people/${p.id}">View</a></td>
             </tr>
         </c:forEach>
     </tbody
