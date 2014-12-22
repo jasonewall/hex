@@ -4,4 +4,4 @@
     }
 %>
 
-${person.id}
+<h1>${person.fullName}</h1>

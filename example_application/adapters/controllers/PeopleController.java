@@ -21,9 +21,8 @@ public class PeopleController extends Controller {
     }
 
     public void show(@RouteParam("id") int id) {
-        Person person = new Person();
-        person.setId(id);
-        view.put("person", person);
+        Repository<Person> repo = new RepositoryBase<>(Person.class);
+        repo.find(id).ifPresent(p -> view.put("person", p));
     }
 
     public void newForm() {
