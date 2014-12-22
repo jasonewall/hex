@@ -16,7 +16,7 @@
     <tbody>
         <c:forEach items="${people}" var="p">
             <tr>
-                <td>${p.id}</td>
+                <td><a href="${request.contextPath}/people/${p.id}">${p.id}</a></td>
                 <td>${p.firstName}</td>
                 <td>${p.lastName}</td>
             </tr>

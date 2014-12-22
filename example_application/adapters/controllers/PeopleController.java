@@ -32,7 +32,7 @@ public class PeopleController extends Controller {
 
     public void create(@Param("person") Person person) {
         view.put("message", String.format("Created %s", person.getFullName()));
-        renderPage("layout.jsp");
+        renderPage("main.jsp");
     }
 
     public void readme() {
@@ -45,6 +45,6 @@ public class PeopleController extends Controller {
         view.put("message", message.orElse("Hello World!"));
         String[] wat = request.getParameterMap().get("message");
         view.put("wat", wat);
-        renderPage("layout.jsp");
+        renderPage("main.jsp");
     }
 }
