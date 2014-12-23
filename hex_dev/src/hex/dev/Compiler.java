@@ -64,8 +64,17 @@ public class Compiler {
     private Path getClasspath(Project project) {
         Path classpath = new Path(project);
         // TODO relying on URLClassLoader being correct is sketchy. Find something betta.
-        Stream.of(((URLClassLoader) Compiler.class.getClassLoader()).getURLs())
-                .forEach(url -> classpath.add(new Path(project, url.toString())));
+        addClassLoaderToClasspath((URLClassLoader)Compiler.class.getClassLoader(), classpath, project);
         return classpath;
+    }
+
+    private void addClassLoaderToClasspath(URLClassLoader classLoader, Path classpath, Project project) {
+        if(classLoader == null) return;
+        Stream.of(classLoader.getURLs()).forEach(url ->
+                classpath.add(new Path(project, url.toString()))
+        );
+        if(!classLoader.getClass().getName().startsWith("sun.misc.Launcher")) { // early escape if we're into the app classloader domain
+            addClassLoaderToClasspath((URLClassLoader) classLoader.getParent(), classpath, project);
+        }
     }
 }
