@@ -1,3 +1,4 @@
+<%@ taglib uri="http://hex.org/tags" prefix="hex" %>
 <html>
     <head>
         <title>Hex Example Application</title>
@@ -9,6 +10,6 @@
             <li><a href="${pageContext.request.contextPath}/">Home</a>
             <li><a href="${pageContext.request.contextPath}/people">List of People</a></li>
         </ul>
-        <%= ((hex.action.ViewContext)request.getAttribute("hex.action.ControllerAction.VIEW_CONTEXT")).getContent() %>
+        <hex:viewContent/>
     </body>
 </html>
