@@ -1,10 +1,10 @@
 <project name="hex_action" default="test">
     <include as="common" file="../build-common.xml"/>
 
-    <target name="common.classpath" depends="common.hex_routing,common.hex_utils">
+    <target name="common.classpath" depends="common.hex_routing.jar,common.hex_utils.jar">
         <path id="classpath">
-            <path refid="hex_routing.classpath"/>
-            <path refid="hex_utils.classpath"/>
+            <path refid="hex_routing.jar"/>
+            <path refid="hex_utils.jar"/>
             <pathelement path="${test.out.dir}/hex_routing"/><!-- GROSS but it'll have to do until servlet mock is it's own thing
                                                                   because then it will just be a test dependency and will get automatically
                                                                   included as part of the compile-tests target-->
