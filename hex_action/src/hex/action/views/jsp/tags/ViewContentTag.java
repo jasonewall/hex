@@ -11,11 +11,22 @@ import java.io.IOException;
 /**
  * Created by jason on 14-12-21.
  */
-public class ViewContent extends SimpleTagSupport {
+public class ViewContentTag extends SimpleTagSupport {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public void doTag() throws JspException, IOException {
-        ViewContext view = getViewContext();
-        getJspContext().getOut().print(view.getContent());
+        if(name == null) {
+            getJspContext().getOut().print(getViewContext().getContent());
+        }
     }
 
     private ViewContext getViewContext() {

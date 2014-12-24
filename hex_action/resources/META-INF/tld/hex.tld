@@ -6,8 +6,12 @@
     <short-name>hex</short-name>
     <uri>http://hex.org/tags</uri>
     <tag>
-        <name>viewContent</name>
-        <tag-class>hex.action.views.jsp.tags.ViewContent</tag-class>
+        <name>view-content</name>
+        <tag-class>hex.action.views.jsp.tags.ViewContentTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>false</required>
+        </attribute>
     </tag>
 </taglib>
