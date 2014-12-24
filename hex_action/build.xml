@@ -2,6 +2,7 @@
     <include as="common" file="../build-common.xml"/>
 
     <target name="common.classpath" depends="common.hex_routing.jar,common.hex_utils.jar">
+        <ant dir="../hex_routing" target="common.compile-tests" inheritall="false"/>
         <path id="classpath">
             <path refid="hex_routing.jar"/>
             <path refid="hex_utils.jar"/>

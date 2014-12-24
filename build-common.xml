@@ -46,7 +46,7 @@
     </target>
 
     <target name="hex_action.jar" unless="hex_action.packaged" depends="hex_action">
-        <ant dir="../hex_repo" target="common.build" inheritall="false"/>
+        <ant dir="../hex_action" target="common.build" inheritall="false"/>
         <path id="hex_action.jar">
             <pathelement path="${artifacts.dir}/hex_action/hex_action.jar"/>
         </path>
