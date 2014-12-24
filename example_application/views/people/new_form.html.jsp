@@ -1,4 +1,4 @@
-<form action="/people" method="POST">
+<form action="${pageContext.request.contextPath}/people" method="POST">
     <p>
         <label for="person_firstName">First Name:</label>
         <input id="person_firstName" type="text" name="person[firstName]"/>

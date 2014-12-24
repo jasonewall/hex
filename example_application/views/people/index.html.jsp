@@ -17,10 +17,10 @@
             <tr>
                 <td>${p.firstName}</td>
                 <td>${p.lastName}</td>
-                <td><a href="${request.contextPath}/people/${p.id}">View</a></td>
+                <td><a href="${pageContext.request.contextPath}/people/${p.id}">View</a></td>
             </tr>
         </c:forEach>
     </tbody
 </table>
 
-<a href="/people/new">Create New Person</a>
+<a href="${pageContext.request.contextPath}/people/new">Create New Person</a>
