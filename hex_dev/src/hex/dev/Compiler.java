@@ -73,8 +73,5 @@ public class Compiler {
         Stream.of(classLoader.getURLs()).forEach(url ->
                 classpath.add(new Path(project, url.toString()))
         );
-        if(!classLoader.getClass().getName().startsWith("sun.misc.Launcher")) { // early escape if we're into the app classloader domain
-            addClassLoaderToClasspath((URLClassLoader) classLoader.getParent(), classpath, project);
-        }
     }
 }
