@@ -18,7 +18,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return attributes.get(attributeName);
     }
 
-    private static class IterableEnumeration<T> implements Enumeration<T> {
+    public static class IterableEnumeration<T> implements Enumeration<T> {
         private Iterator<T> iterator;
 
         public IterableEnumeration(Iterable<T> iterable) {

@@ -7,10 +7,13 @@
     <configurations>
         <conf name="runtime"/>
         <conf name="development" visibility="private" extends="runtime"/>
-        <conf name="test" visibility="private" extends="development"/>
+        <conf name="test" visibility="private" extends="servlet_mock"/>
+        <conf name="servlet_mock" visibility="private" extends="development"/>
     </configurations>
     <dependencies>
         <dependency name="javax.servlet-api" rev="3.1.0" org="javax.servlet" conf="development->default"/>
+        <dependency name="javax.servlet.jsp-api" rev="2.3.1" org="javax.servlet.jsp" conf="servlet_mock->default"/>
+        <dependency name="javax.el" rev="3.0.0" org="org.glassfish" conf="servlet_mock->default"/>
         <dependency name="junit" rev="4.11" org="junit" conf="test->default"/>
         <dependency name="hamcrest-library" rev="1.2.1" org="org.hamcrest" conf="test->default"/>
     </dependencies>
