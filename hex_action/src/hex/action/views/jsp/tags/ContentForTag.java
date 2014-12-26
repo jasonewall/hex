@@ -2,6 +2,7 @@ package hex.action.views.jsp.tags;
 
 import hex.action.ControllerAction;
 import hex.action.ViewContext;
+import hex.action.views.ViewSupport;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -20,6 +21,18 @@ public class ContentForTag extends BodyTagSupport {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * Default processing of the start tag returning EVAL_BODY_BUFFERED.
+     *
+     * @return EVAL_BODY_BUFFERED
+     * @throws javax.servlet.jsp.JspException if an error occurred while processing this tag
+     */
+    @Override
+    public int doStartTag() throws JspException {
+        ViewSupport.ensureViewContext(pageContext);
+        return EVAL_BODY_BUFFERED;
     }
 
     /**

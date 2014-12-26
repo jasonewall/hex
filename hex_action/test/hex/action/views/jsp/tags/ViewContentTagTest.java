@@ -53,8 +53,16 @@ public class ViewContentTagTest {
         tag.setName("footer");
         view.setSectionContent("footer", "This is the footer section content");
         GET("/awesome_index", this::setUpRequest)
-                .andThen((q, r) ->
+                .andThen((q,r) ->
                         assertThat(jspContext.getOut().toString(), equalTo("This is the footer section content")));
+    }
+
+    @Test
+    public void shouldNotDumpNullIntoAPage() {
+        view.setContent(null);
+        GET("/welcome", this::setUpRequest)
+                .andThen((q,r) ->
+                        assertThat(jspContext.getOut().toString(), equalTo("")));
     }
 
     private void setUpRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

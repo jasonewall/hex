@@ -2,6 +2,7 @@ package hex.action.views.jsp.tags;
 
 import hex.action.ControllerAction;
 import hex.action.ViewContext;
+import hex.action.views.ViewSupport;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -24,8 +25,10 @@ public class ViewContentTag extends SimpleTagSupport {
 
     @Override
     public void doTag() throws JspException, IOException {
+        ViewSupport.ensureViewContext(getJspContext());
         if(name == null) {
-            getJspContext().getOut().print(getViewContext().getContent());
+            if(getViewContext().getContent() != null)
+                getJspContext().getOut().print(getViewContext().getContent());
             return;
         }
         getJspContext().getOut().print(getViewContext().getSectionContent(name));
