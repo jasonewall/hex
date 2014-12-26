@@ -23,4 +23,9 @@
             <required>true</required>
         </attribute>
     </tag>
+    <tag>
+        <name>view-init</name>
+        <tag-class>hex.action.views.jsp.tags.ViewTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
 </taglib>

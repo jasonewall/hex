@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="hex" uri="http://hex.org/tags" %>
 
-<hex:view-content/>
+<hex:view-init/>
 
 <p>${message}</p>
 <p>${java_home}</p>
