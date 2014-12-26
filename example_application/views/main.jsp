@@ -13,7 +13,9 @@
         <li>${i}</li>
     </c:forEach>
 </ul>
-<form action="${pageContext.request.contextPath}/" method="POST">
+
+<c:url var="sayHelloPath" value="/"/>
+<form action="${sayHelloPath}" method="POST">
     <input type="text" name="message" value="${message}"/>
     <button>Say Hello</button>
 </form>

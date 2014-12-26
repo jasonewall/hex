@@ -22,10 +22,12 @@
             <tr>
                 <td>${p.firstName}</td>
                 <td>${p.lastName}</td>
-                <td><a href="${pageContext.request.contextPath}/people/${p.id}">View</a></td>
+                <c:url value="/people/${p.id}" var="showPersonPath"/>
+                <td><a href="${showPersonPath}">View</a></td>
             </tr>
         </c:forEach>
     </tbody>
 </table>
 
-<a href="${pageContext.request.contextPath}/people/new">Create New Person</a>
+<c:url var="newPersonPath" value="/people/new"/>
+<a href="${newPersonPath}">Create New Person</a>
