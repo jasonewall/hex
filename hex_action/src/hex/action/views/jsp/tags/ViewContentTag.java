@@ -26,7 +26,9 @@ public class ViewContentTag extends SimpleTagSupport {
     public void doTag() throws JspException, IOException {
         if(name == null) {
             getJspContext().getOut().print(getViewContext().getContent());
+            return;
         }
+        getJspContext().getOut().print(getViewContext().getSectionContent(name));
     }
 
     private ViewContext getViewContext() {

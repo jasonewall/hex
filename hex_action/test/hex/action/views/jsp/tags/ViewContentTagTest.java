@@ -6,12 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 import servlet_mock.jsp.MockJspContext;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
-
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -32,11 +30,11 @@ public class ViewContentTagTest {
     public void setUp() {
         view = new ViewContext();
         tag = new ViewContentTag();
+        view.setContent("This is action view template content");
     }
 
     @Test
     public void itShouldRenderTheViewContent() {
-        view.setContent("This is action view template content");
         GET("/some_page", this::setUpRequest)
                 .andThen((q,r) ->
                         assertThat(jspContext.getOut().toString(), equalTo("This is action view template content")));
@@ -44,11 +42,19 @@ public class ViewContentTagTest {
 
     @Test
     public void itShouldNotRenderTemplateContentIfSectionNameProvided() {
-        view.setContent("This is action view template content");
         tag.setName("styles");
         GET("/home_page", this::setUpRequest)
                 .andThen((q,r) ->
                         assertThat(jspContext.getOut().toString(), equalTo("")));
+    }
+
+    @Test
+    public void itShouldRenderSectionContent() {
+        tag.setName("footer");
+        view.setSectionContent("footer", "This is the footer section content");
+        GET("/awesome_index", this::setUpRequest)
+                .andThen((q, r) ->
+                        assertThat(jspContext.getOut().toString(), equalTo("This is the footer section content")));
     }
 
     private void setUpRequest(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
