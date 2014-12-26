@@ -14,4 +14,13 @@
             <required>false</required>
         </attribute>
     </tag>
+    <tag>
+        <name>content-for</name>
+        <tag-class>hex.action.views.jsp.tags.ContentForTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+        </attribute>
+    </tag>
 </taglib>

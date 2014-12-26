@@ -1,11 +1,21 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="hex" uri="http://hex.org/tags" %>
 <%
     for(java.util.Map.Entry<String,Object> e : ((java.util.Map<String,Object>)request.getAttribute("hex.action.ControllerAction.VIEW_CONTEXT")).entrySet()) {
         pageContext.setAttribute(e.getKey(), e.getValue());
     }
 %>
 
-<table>
+<hex:content-for name="styles">
+    <style type="text/css">
+        table.people {
+            margin: 0 auto;
+            width: 600px;
+        }
+    </style>
+</hex:content-for>
+
+<table class="people">
     <thead>
         <tr>
             <th>First Name</th>
