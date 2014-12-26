@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.params.Params;
+import hex.action.views.TemplateCapturingResponse;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -8,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,7 +28,9 @@ public class Controller {
 
     protected Params params;
 
-    private String viewBase = "";
+    protected String viewBase = "";
+
+    protected boolean responseCommitted;
 
     private String templateDirectory() {
         Matcher m = CONTROLLER_NAMES.matcher(getClass().getSimpleName());
@@ -74,7 +78,10 @@ public class Controller {
         //noinspection TryWithIdenticalCatches
         try {
             RequestDispatcher dispatcher = request.getRequestDispatcher(pagePath);
-            dispatcher.forward(request, response);
+            TemplateCapturingResponse response = new TemplateCapturingResponse(this.response);
+            dispatcher.include(this.request, response);
+            view.setContent(response.getContent());
+            responseCommitted = true;
         } catch (ServletException e) {
             throw new ActionAbortedException(e);
         } catch (IOException io) {
@@ -89,7 +96,15 @@ public class Controller {
      * @param path The path to resolve into a view
      */
     protected void renderPath(String path) {
-
+        Objects.requireNonNull(path);
+        String[] parts = path.split("/");
+        renderPage(new ViewPath(viewBase)
+                .set(parts[0])
+                .set(parts[1])
+                .set("html")
+                .set("jsp")
+                .toString())
+                ;
     }
 
     /**

@@ -3,17 +3,20 @@
         <javac includeantruntime="false"/>
     </presetdef>
 
+    <property name="src.dir" value="${basedir}/src"/>
+    <property name="test.src.dir" value="${basedir}/test"/>
     <property name="out.dir" value="../out/production"/>
     <property name="test.out.dir" value="../out/test"/>
     <property name="classes.dir" value="${out.dir}/${ant.project.name}"/>
     <property name="test.classes.dir" value="${test.out.dir}/${ant.project.name}"/>
 
     <property name="artifacts.dir" value="../out/artifacts"/>
+    <property name="project.jar" value="${artifacts.dir}/${ant.project.name}/${ant.project.name}.jar"/>
 
     <target name="clean" description="Delete all output created by build targets for this project">
         <delete dir="${classes.dir}"/>
         <delete dir="${test.classes.dir}"/>
-        <delete file="${artifacts.dir}/${ant.project.name}.jar"/>
+        <delete dir="${artifacts.dir}/${ant.project.name}"/>
     </target>
 
     <target name="hex_repo" unless="hex_repo.compiled">
@@ -25,6 +28,14 @@
         <property name="hex_repo.compiled" value="true"/>
     </target>
 
+    <target name="hex_repo.jar" unless="hex_repo.packaged" depends="hex_repo">
+        <ant dir="../hex_repo" target="common.build" inheritall="false"/>
+        <path id="hex_repo.jar">
+            <pathelement path="${artifacts.dir}/hex_repo/hex_repo.jar"/>
+        </path>
+        <property name="hex_repo.packaged" value="true"/>
+    </target>
+
     <target name="hex_action" unless="hex_action.compiled">
         <ant dir="../hex_action" target="common.compile" inheritall="false"/>
         <ivy:cachepath pathid="hex_action.cachepath" conf="runtime" file="../hex_action/ivy.xml" resolveid="hex_action.runtime"/>
@@ -32,6 +43,14 @@
             <pathelement path="${out.dir}/hex_action"/>
         </path>
         <property name="hex_action.compiled" value="true"/>
+    </target>
+
+    <target name="hex_action.jar" unless="hex_action.packaged" depends="hex_action">
+        <ant dir="../hex_action" target="common.build" inheritall="false"/>
+        <path id="hex_action.jar">
+            <pathelement path="${artifacts.dir}/hex_action/hex_action.jar"/>
+        </path>
+        <property name="hex_action.packaged" value="true"/>
     </target>
 
     <target name="hex_routing" unless="hex_routing.compiled">
@@ -43,6 +62,14 @@
         <property name="hex_routing.compiled" value="true"/>
     </target>
 
+    <target name="hex_routing.jar" unless="hex_routing.packaged" depends="hex_routing">
+        <ant dir="../hex_routing" target="common.build" inheritall="false"/>
+        <path id="hex_routing.jar">
+            <pathelement path="${artifacts.dir}/hex_routing/hex_routing.jar"/>
+        </path>
+        <property name="hex_routing.packaged" value="true"/>
+    </target>
+
     <target name="hex_utils" unless="hex_utils.compiled">
         <ant dir="../hex_utils" target="common.compile" inheritall="false"/>
         <ivy:cachepath pathid="hex_utils.cachepath" conf="runtime" file="../hex_utils/ivy.xml" resolveid="hex_utils.runtime"/>
@@ -50,6 +77,14 @@
             <pathelement path="${out.dir}/hex_utils"/>
         </path>
         <property name="hex_utils.compiled" value="true"/>
+    </target>
+
+    <target name="hex_utils.jar" unless="hex_utils.packaged" depends="hex_utils">
+        <ant dir="../hex_utils" target="common.build" inheritall="false"/>
+        <path id="hex_utils.jar">
+            <pathelement path="${artifacts.dir}/hex_utils/hex_utils.jar"/>
+        </path>
+        <property name="hex_utils.packaged" value="true"/>
     </target>
 
     <target name="hexql" unless="hexql.compiled">
@@ -61,6 +96,14 @@
         <property name="hexql.compiled" value="true"/>
     </target>
 
+    <target name="hexql.jar" unless="hexql.packaged" depends="hexql">
+        <ant dir="../hexql" target="common.build" inheritall="false"/>
+        <path id="hexql.jar">
+            <pathelement path="${artifacts.dir}/hexql/hexql.jar"/>
+        </path>
+        <property name="hexql.packaged" value="true"/>
+    </target>
+
     <target name="hex_dev" unless="hex_dev.compiled">
         <ant dir="../hex_dev" target="common.compile" inheritall="false"/>
         <ivy:cachepath pathid="hex_dev.cachepath" conf="runtime" file="../hex_dev/ivy.xml" resolveid="hex_dev.runtime"/>
@@ -70,21 +113,35 @@
         <property name="hex_dev.compiled" value="true"/>
     </target>
 
+    <target name="hex_dev.jar" unless="hex_dev.packaged" depends="hex_dev">
+        <ant dir="../hex_dev" target="common.build" inheritall="false"/>
+        <path id="hex_dev.jar">
+            <pathelement path="${artifacts.dir}/hex_dev/hex_dev.jar"/>
+        </path>
+        <property name="hex_dev.packaged" value="true"/>
+    </target>
+
     <target name="classpath">
         <path id="classpath"/>
+    </target>
+
+    <target name="build" depends="compile">
+        <mkdir dir="${artifacts.dir}/${ant.project.name}"/>
+        <jar file="${project.jar}" basedir="${classes.dir}"/>
     </target>
 
     <target name="compile" depends="classpath">
         <mkdir dir="${classes.dir}"/>
         <ivy:cachepath conf="development" pathid="ivy.cachepath" resolveid="${ant.project.name}.development"/>
-        <javac destdir="${classes.dir}" srcdir="${basedir}/src">
+        <javac destdir="${classes.dir}" srcdir="${src.dir}">
             <classpath refid="classpath"/>
             <classpath refid="ivy.cachepath"/>
         </javac>
         <copy todir="${classes.dir}">
-            <fileset dir="${basedir}/src">
+            <fileset dir="${src.dir}">
                 <exclude name="**/*.java"/>
             </fileset>
+            <fileset dir="${basedir}/resources" erroronmissingdir="false"/>
         </copy>
     </target>
 
@@ -96,7 +153,7 @@
             <path refid="classpath"/>
             <pathelement location="${classes.dir}"/>
         </path>
-        <javac destdir="${test.classes.dir}" srcdir="${basedir}/test">
+        <javac destdir="${test.classes.dir}" srcdir="${test.src.dir}">
             <classpath refid="test.classpath"/>
         </javac>
         <copy todir="${test.classes.dir}">
@@ -104,10 +161,6 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
-    </target>
-
-    <target name="build" depends="classpath,compile">
-        <jar destfile="${artifacts.dir}/${ant.project.name}.jar" basedir="${classes.dir}"/>
     </target>
 
     <target name="run-tests">

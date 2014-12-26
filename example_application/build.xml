@@ -3,9 +3,9 @@
 
     <property name="tools.jar" value="${java.home}/../lib/tools.jar"/>
 
-    <target name="ensure-config-files" depends="ensure-hex-repo-config"/>
+    <target name="ensure-config-files" depends="ensure-hex-repo-config" description="Creates the config files for your local environment"/>
 
-    <target name="common.classpath" depends="common.hex_utils,common.hexql,common.hex_routing,common.hex_action,common.hex_repo,common.hex_dev">
+    <target name="common.classpath" depends="common.hex_utils,common.hexql,common.hex_routing,common.hex_action.jar,common.hex_repo,common.hex_dev">
         <ivy:cachepath pathid="application.cachepath" resolveid="application" conf="runtime"/>
         <path id="classpath">
             <file file="${tools.jar}"/>
@@ -15,7 +15,7 @@
             <path refid="hexql.cachepath"/>
             <path refid="hex_routing.classpath"/>
             <path refid="hex_routing.cachepath"/>
-            <path refid="hex_action.classpath"/>
+            <path refid="hex_action.jar"/>
             <path refid="hex_action.cachepath"/>
             <path refid="hex_repo.classpath"/>
             <path refid="hex_repo.cachepath"/>

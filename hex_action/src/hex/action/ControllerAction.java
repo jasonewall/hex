@@ -9,6 +9,7 @@ import hex.routing.RouteHandler;
 import hex.routing.RouteParams;
 import hex.utils.coercion.CoercionException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -41,6 +42,8 @@ public class ControllerAction implements RouteHandler {
 
     private Optional<Method> action;
 
+    private static final String LAYOUTS = "layouts";
+
     public void setHexActionConfig(Properties hexActionConfig) {
         this.hexActionConfig = hexActionConfig;
     }
@@ -59,9 +62,11 @@ public class ControllerAction implements RouteHandler {
             if(getAction().isPresent()) {
                 servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
                 invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
-                if(!servletResponse.isCommitted()) {
+                if(!controller.responseCommitted) {
                     controller.renderAction(actionName);
                 }
+                RequestDispatcher dispatcher = controller.request.getRequestDispatcher(getLayoutPath(controller));
+                dispatcher.forward(servletRequest, servletResponse);
             } else {
                 renderActionNotFound(servletResponse, String.format("Action method (%s) not found in controller (%s)", actionName, controller.getClass().getSimpleName()));
             }
@@ -118,6 +123,15 @@ public class ControllerAction implements RouteHandler {
 
     private void renderActionNotFound(ServletResponse servletResponse, String message) throws IOException {
         ((HttpServletResponse) servletResponse).sendError(404, message);
+    }
+
+    private String getLayoutPath(Controller controller) {
+        return new ViewPath(controller.viewBase)
+                .set(LAYOUTS)
+                .set("application")
+                .set("html")
+                .set("jsp")
+                .toString();
     }
 
     private Optional<Method> getAction() {

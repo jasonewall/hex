@@ -21,9 +21,8 @@ public class PeopleController extends Controller {
     }
 
     public void show(@RouteParam("id") int id) {
-        Person person = new Person();
-        person.setId(id);
-        view.put("person", person);
+        Repository<Person> repo = new RepositoryBase<>(Person.class);
+        repo.find(id).ifPresent(p -> view.put("person", p));
     }
 
     public void newForm() {
@@ -32,7 +31,7 @@ public class PeopleController extends Controller {
 
     public void create(@Param("person") Person person) {
         view.put("message", String.format("Created %s", person.getFullName()));
-        renderPage("layout.jsp");
+        renderPage("main.jsp");
     }
 
     public void readme() {
@@ -43,8 +42,9 @@ public class PeopleController extends Controller {
     public void home() {
         Optional<String> message = Optional.ofNullable(request.getParameter("message"));
         view.put("message", message.orElse("Hello World!"));
+        view.put("java_home", System.getProperty("java.home"));
         String[] wat = request.getParameterMap().get("message");
         view.put("wat", wat);
-        renderPage("layout.jsp");
+        renderPage("main.jsp");
     }
 }

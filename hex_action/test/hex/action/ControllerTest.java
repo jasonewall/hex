@@ -7,7 +7,9 @@ import servlet_mock.HttpMock;
 import servlet_mock.MockHttpServletRequest;
 import servlet_mock.MockHttpServletResponse;
 
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by jason on 14-11-16.
@@ -45,6 +47,13 @@ public class ControllerTest {
         assertRenderedPage("/posts/home_boy.html.jsp");
     }
 
+    @Test
+    public void renderPathShouldGoWhereItIsTold() {
+        controller.renderPath("comments/index");
+        assertContentType("text/html");
+        assertRenderedPage("/comments/index.html.jsp");
+    }
+
     private void assertContentType(String contentType) {
         assertEquals(contentType, controller.response.getContentType());
     }
@@ -54,6 +63,6 @@ public class ControllerTest {
     }
 
     private void assertRenderedPage(String page) {
-        assertEquals(page, ((MockHttpServletRequest)controller.request).getRenderedPage());
+        assertThat(((MockHttpServletRequest)controller.request).getIncludedPages(), contains(page));
     }
 }
