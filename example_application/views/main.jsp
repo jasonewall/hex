@@ -1,9 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    for(java.util.Map.Entry<String,Object> e : ((java.util.Map<String,Object>)request.getAttribute("hex.action.ControllerAction.VIEW_CONTEXT")).entrySet()) {
-        pageContext.setAttribute(e.getKey(), e.getValue());
-    }
-%>
+<%@ taglib prefix="hex" uri="http://hex.org/tags" %>
+
+<hex:view-content/>
 
 <p>${message}</p>
 <p>${java_home}</p>

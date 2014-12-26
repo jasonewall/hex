@@ -42,6 +42,7 @@ public class PeopleController extends Controller {
     public void home() {
         Optional<String> message = Optional.ofNullable(request.getParameter("message"));
         view.put("message", message.orElse("Hello World!"));
+        view.put("java_home", System.getProperty("java.home"));
         String[] wat = request.getParameterMap().get("message");
         view.put("wat", wat);
         renderPage("main.jsp");
