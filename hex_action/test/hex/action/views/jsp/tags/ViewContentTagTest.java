@@ -35,6 +35,14 @@ public class ViewContentTagTest {
     }
 
     @Test
+    public void itShouldRenderTheViewContent() {
+        view.setContent("This is action view template content");
+        GET("/some_page", this::setUpRequest)
+                .andThen((q,r) ->
+                        assertThat(jspContext.getOut().toString(), equalTo("This is action view template content")));
+    }
+
+    @Test
     public void itShouldNotRenderTemplateContentIfSectionNameProvided() {
         view.setContent("This is action view template content");
         tag.setName("styles");
