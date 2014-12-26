@@ -25,7 +25,7 @@
     </tag>
     <tag>
         <name>view-init</name>
-        <tag-class>hex.action.views.jsp.tags.ViewTag</tag-class>
+        <tag-class>hex.action.views.jsp.tags.ViewInitTag</tag-class>
         <body-content>empty</body-content>
     </tag>
 </taglib>

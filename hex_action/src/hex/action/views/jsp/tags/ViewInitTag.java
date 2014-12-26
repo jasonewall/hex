@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * Created by jason on 14-12-26.
  */
-public class ViewTag extends SimpleTagSupport {
+public class ViewInitTag extends SimpleTagSupport {
     /**
      * Default processing of the tag does nothing.
      *
