@@ -36,6 +36,10 @@ public class Compiler {
         this.sourcePaths = sourcePaths;
     }
 
+    public File getDestDir() {
+        return destDir;
+    }
+
     public void setDestDir(File destDir) {
         this.destDir = destDir;
     }
@@ -47,6 +51,7 @@ public class Compiler {
 
     public void compile() {
         compile("**/*.java");
+        copyResources();
     }
 
     public void compile(String pattern) {
@@ -60,11 +65,13 @@ public class Compiler {
         Path srcs = new Path(project);
         sourcePaths.get().map(s -> new Path(project, s)).forEach(srcs::add);
         javac.setSrcdir(srcs);
-        javac.setSourcepath(new Path(project, ""));
         javac.setIncludes(pattern);
         javac.setClasspath(getClasspath(project));
         javac.setDestdir(destDir);
         javac.execute();
+    }
+
+    public void copyResources() {
         sourcePaths.get().forEach(s -> {
             Copy copy = new Copy();
             copy.setTodir(destDir);

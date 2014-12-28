@@ -30,12 +30,6 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     private File outPath;
 
-    private URL[] getClassPathURLs() throws MalformedURLException {
-        return new URL[] {
-                outPath.toURI().toURL()
-        };
-    }
-
     private String applicationRootPath;
 
     private Properties applicationProperties;
@@ -50,7 +44,6 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         try(InputStream propStream = new FileInputStream(applicationConfigFile)) {
             applicationProperties.load(propStream);
             initCompiler(applicationRootPath);
-            applicationCompiler.compile(); // do this for initializers at first
             runApplicationInitializers(filterConfig);
             filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
             filter.init(filterConfig);
@@ -75,10 +68,11 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         applicationCompiler.setDestDir(outPath);
         if(applicationProperties.containsKey("build.compiler"))
             applicationCompiler.setCompiler(applicationProperties.getProperty("build.compiler"));
+        applicationCompiler.copyResources();
     }
 
     private void runApplicationInitializers(FilterConfig filterConfig) throws IOException {
-        URLClassLoader classLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader());
+        URLClassLoader classLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader());
         InitializerRunner runner = new InitializerRunner(classLoader);
         try {
             runner.run();
@@ -91,8 +85,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        applicationCompiler.compile();
-        try (URLClassLoader requestClassLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader())) {
+        try (URLClassLoader requestClassLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader())) {
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {
