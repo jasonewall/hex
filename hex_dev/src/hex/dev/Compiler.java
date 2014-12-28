@@ -16,9 +16,13 @@ import java.util.stream.Stream;
  * Created by jason on 14-11-21.
  */
 public class Compiler {
-    private final String applicationRoot;
+    private final Project project;
 
     private String compiler;
+
+    private Supplier<Stream<String>> sourcePaths;
+
+    private File destDir;
 
     public String getCompiler() {
         return compiler;
@@ -28,13 +32,24 @@ public class Compiler {
         this.compiler = compiler;
     }
 
-    public Compiler(String applicationRoot) {
-        this.applicationRoot = applicationRoot;
+    public void setSourcePaths(Supplier<Stream<String>> sourcePaths) {
+        this.sourcePaths = sourcePaths;
     }
 
-    public void compile(Supplier<Stream<String>> sourcePaths, File destDir) {
-        Project project = new Project();
+    public void setDestDir(File destDir) {
+        this.destDir = destDir;
+    }
+
+    public Compiler(String applicationRoot) {
+        this.project = new Project();
         project.setBasedir(applicationRoot);
+    }
+
+    public void compile() {
+        compile("**/*.java");
+    }
+
+    public void compile(String pattern) {
         Mkdir mkdir = new Mkdir();
         mkdir.setDir(destDir);
         mkdir.setProject(project);
@@ -45,6 +60,8 @@ public class Compiler {
         Path srcs = new Path(project);
         sourcePaths.get().map(s -> new Path(project, s)).forEach(srcs::add);
         javac.setSrcdir(srcs);
+        javac.setSourcepath(new Path(project, ""));
+        javac.setIncludes(pattern);
         javac.setClasspath(getClasspath(project));
         javac.setDestdir(destDir);
         javac.execute();
