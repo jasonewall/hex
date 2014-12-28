@@ -21,7 +21,8 @@ public class ViewPath implements PathFragment {
     }
 
     public PathFragment set(String templateDirectory) {
-        viewPath.append(PS).append(templateDirectory);
+        if(templateDirectory != null)
+            viewPath.append(PS).append(templateDirectory);
         return new Action();
     }
 

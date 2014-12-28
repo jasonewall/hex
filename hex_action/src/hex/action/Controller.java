@@ -60,6 +60,7 @@ public class Controller {
             PrintWriter writer = response.getWriter();
             writer.println(text);
             writer.flush();
+            responseCommitted = true;
         } catch (IOException e) {
             throw new ActionAbortedException(e);
         }
@@ -99,8 +100,8 @@ public class Controller {
         Objects.requireNonNull(path);
         String[] parts = path.split("/");
         renderPage(new ViewPath(viewBase)
-                .set(parts[0])
-                .set(parts[1])
+                .set(parts.length == 2 ? parts[0] : null)
+                .set(parts.length == 2 ? parts[1] : parts[0])
                 .set("html")
                 .set("jsp")
                 .toString())

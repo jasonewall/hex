@@ -54,6 +54,13 @@ public class ControllerTest {
         assertRenderedPage("/comments/index.html.jsp");
     }
 
+    @Test
+    public void renderPathShouldWorkForRootPages() {
+        controller.renderPath("main");
+        assertContentType("text/html");
+        assertRenderedPage("/main.html.jsp");
+    }
+
     private void assertContentType(String contentType) {
         assertEquals(contentType, controller.response.getContentType());
     }

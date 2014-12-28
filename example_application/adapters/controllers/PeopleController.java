@@ -31,7 +31,7 @@ public class PeopleController extends Controller {
 
     public void create(@Param("person") Person person) {
         view.put("message", String.format("Created %s", person.getFullName()));
-        renderPath("/main");
+        renderPath("main");
     }
 
     public void readme() {
@@ -45,6 +45,6 @@ public class PeopleController extends Controller {
         view.put("java_home", System.getProperty("java.home"));
         String[] wat = request.getParameterMap().get("message");
         view.put("wat", wat);
-        renderPath("/main");
+        renderPath("main");
     }
 }
