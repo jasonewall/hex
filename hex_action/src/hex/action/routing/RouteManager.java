@@ -1,5 +1,7 @@
-package hex.action;
+package hex.action.routing;
 
+import hex.action.Controller;
+import hex.action.ControllerAction;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
 

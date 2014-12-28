@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.examples.PostsController;
+import hex.action.routing.RouteManager;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
 import org.junit.Before;
