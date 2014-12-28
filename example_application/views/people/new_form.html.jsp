@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<c:url var="createPersonPath" value="/people"/>
+<c:url var="createPersonPath" value="/people/"/>
 <form action="${createPersonPath}" method="POST">
     <p>
         <label for="person_firstName">First Name:</label>
