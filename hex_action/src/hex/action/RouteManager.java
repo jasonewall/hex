@@ -36,23 +36,27 @@ public class RouteManager {
     }
 
     public void get(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.GET, path, getHandler(controllerSupplier, action)));
+        addRoute(new Route(HttpMethod.GET, path, getHandler(controllerSupplier, action)));
     }
 
     public void post(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.POST, path, getHandler(controllerSupplier, action)));
+        addRoute(new Route(HttpMethod.POST, path, getHandler(controllerSupplier, action)));
     }
 
     public void put(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.PUT, path, getHandler(controllerSupplier, action)));
+        addRoute(new Route(HttpMethod.PUT, path, getHandler(controllerSupplier, action)));
     }
 
     public void delete(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.DELETE, path, getHandler(controllerSupplier, action)));
+        addRoute(new Route(HttpMethod.DELETE, path, getHandler(controllerSupplier, action)));
     }
 
     public void matches(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+        addRoute(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+    }
+
+    private void addRoute(Route route) {
+        definedRoutes.add(route);
     }
 
     private ControllerAction getHandler(Supplier<Controller> controllerSupplier, String action) {
