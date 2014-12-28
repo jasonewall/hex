@@ -142,7 +142,18 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     private StringWriter content = new StringWriter();
 
-    private PrintWriter writer = new PrintWriter(content);
+    private PrintWriter writer = new PrintWriter(content) {
+        /**
+         * Flushes the stream.
+         *
+         * @see #checkError()
+         */
+        @Override
+        public void flush() {
+            super.flush();
+            committed = true;
+        }
+    };
 
     @Override
     public PrintWriter getWriter() throws IOException {
@@ -181,7 +192,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public void flushBuffer() throws IOException {
-
+        writer.flush();
     }
 
     @Override
@@ -189,9 +200,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     }
 
+    private boolean committed;
+
     @Override
     public boolean isCommitted() {
-        return false;
+        return committed;
     }
 
     @Override

@@ -62,11 +62,13 @@ public class ControllerAction implements RouteHandler {
             if(getAction().isPresent()) {
                 servletRequest.setAttribute(VIEW_CONTEXT, controller.view);
                 invokeAction(action.get(), controller, (RouteParams) servletRequest.getAttribute(Route.ROUTE_PARAMS));
-                if(!controller.responseCommitted) {
-                    controller.renderAction(actionName);
+                if(!servletResponse.isCommitted()) {
+                    if (!controller.responseCommitted) {
+                        controller.renderAction(actionName);
+                    }
+                    RequestDispatcher dispatcher = controller.request.getRequestDispatcher(getLayoutPath(controller));
+                    dispatcher.forward(servletRequest, servletResponse);
                 }
-                RequestDispatcher dispatcher = controller.request.getRequestDispatcher(getLayoutPath(controller));
-                dispatcher.forward(servletRequest, servletResponse);
             } else {
                 renderActionNotFound(servletResponse, String.format("Action method (%s) not found in controller (%s)", actionName, controller.getClass().getSimpleName()));
             }

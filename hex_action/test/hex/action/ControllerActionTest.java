@@ -21,6 +21,7 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;
 import static servlet_mock.HttpMock.POST;
@@ -73,6 +74,10 @@ public class ControllerActionTest {
 
         public void manuallyRenderedPage() {
             renderAction("someOtherAction");
+        }
+
+        public void alternativeRendering() {
+            renderText("Hello World!");
         }
     }
 
@@ -184,6 +189,15 @@ public class ControllerActionTest {
         initAction("manuallyRenderedPage");
         GET("/controller_tests/manually", this::handleRequest);
         assertIncluded("/controller_action_tests/some_other_action.html.jsp");
+    }
+
+    @Test
+    public void renderingDirectContentShouldPreventLayoutAndTemplateRendering() {
+        initAction("alternativeRendering");
+        GET("/raw_text/stuff", this::handleRequest);
+        MockHttpServletRequest request = (MockHttpServletRequest) servletRequest;
+        assertThat(request.getIncludedPages().size(), equalTo(0));
+        assertThat(request.getRenderedPage(), nullValue());
     }
 
     @Test
