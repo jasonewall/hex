@@ -49,8 +49,8 @@ refreshes your applications classes on every request so there is no need to:
     </filter-mapping>
 
 Note the lack of the `ServletContextListener` configured in development mode. The `DevRoutingFilter` manages the lifecycle
-of a **hex** application differently so it takes care of what the `hex.action.Application` context listener takes care of
-on it's own.
+of a **hex** application differently so it takes care of what the `hex.action.Application` context listener normally
+initializes.
 
 # Routes & Controllers
 
