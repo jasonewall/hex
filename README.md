@@ -87,7 +87,7 @@ public class HomeController extends Controller {
 
 # Layouts And Views
 
-Define an application layout.
+Define an application layout:
 
 ```jsp
 <!-- views/layouts/application.html.jsp -->
@@ -96,16 +96,46 @@ Define an application layout.
 <html>
     <head>
         <title>My Hex Application</title>
-        <hex:view-content name="styles"/>
+        <hex:view-content name="styles"/> <!-- optional named content block -->
     </head>
     <body>
         <h1>My Hex Application</h1>
 
-        <hex:view-content/>
+        <hex:view-content/> <!-- no name means write out the view contents -->
     </body>
 </html>
 ```
 
-# DISCLAIMER (and Contributing)
+Create an action view:
+
+```jsp
+<!-- views/home/home.html.jsp -->
+<%@ taglib uri="http://hex.org/tags" prefix="hex" %>
+
+<hex:content-for name="styles">
+    <style type="text/css">
+        h2 {
+            color: green;
+        }
+    </style>
+</hex:content>
+
+<h2>Welcome Home!</h2>
+```
+
+# What Else You Got?
+
+This is just the main project overview. **hex** is composed of several modules that are responsible for various sections
+of an application. For more information on the controller and view layer, checkout the [hex_action README](./hex_action).
+
+For information on **hex**'s repository pattern, checkout the [hex_repo](./hex_repo) module.
+
+If you want to dig through the anatomy of standard **hex** application, checkout the [example application](./example_application).
+
+# DISCLAIMER
 
 **hex** is very much in alpha stages. Don't use it yet. Seriously. There isn't a whole let here. In fact, I could use [some help](https://github.com/thejayvm/hex/wiki/Contribution-Guide) getting it going!
+
+# Contributing
+
+If you're excited about creating **hex** applications and want to help jump start the development, checkout the [Contribution Guide](https://github.com/thejayvm/hex/wiki/Contribution-Guide).
