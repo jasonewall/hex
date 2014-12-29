@@ -28,6 +28,4 @@ package hex.routing;
  */
 public class Routing {
     public static final String CONFIG = "hex.routing.Routing.CONFIG";
-
-
 }
