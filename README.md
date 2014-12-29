@@ -9,6 +9,7 @@ stuff but still being 100% J2EE compatible.
 Put **hex** in your existing Java app to start living the dream.
 
 ```xml
+<!------------------------ web.xml ------------------------>
 <listener>
     <listener-class>hex.action.Application</listener-class>
 </listener>
@@ -35,6 +36,7 @@ refreshes your applications classes on every request so there is no need to:
 2. Restart the Java server every time you make class changes.
 
 ```xml
+<!------------------------ web.xml ------------------------>
 <filter>
     <filter-name>HexFilter</filter-name>
     <filter-class>hex.dev.DevRoutingFilter</filter-class>
@@ -59,6 +61,7 @@ initializes.
 Define routes in your `ApplicationRoutes` class.
 
 ```java
+// adapters/config/ApplicationRoutes.java
 package config;
 
 public class ApplicationRoutes extends RouteManager {
@@ -71,6 +74,7 @@ public class ApplicationRoutes extends RouteManager {
 Create your controller!
 
 ```java
+// adapters/controllers/HomeController.java
 package controllers;
 
 public class HomeController extends Controller {
