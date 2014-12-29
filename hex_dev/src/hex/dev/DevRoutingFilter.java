@@ -21,7 +21,12 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * Created by jason on 14-11-21.
+ * {@link javax.servlet.Filter} implementation for loading a hex application in "development mode." If developing hex
+ * outside of the provided embedded {@link hex.dev.HexServer} then use this filter (and only this filter) in
+ * your {@code web.xml}. This filter wraps all other initialization classes required for production deployment of a hex
+ * application inside of a Servlet Container.
+ *
+ * TODO: section on the application root
  */
 public class DevRoutingFilter implements Filter, RoutingConfig {
     private static final String OUT_DIR_PROPERTY = "out";
