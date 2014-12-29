@@ -32,6 +32,7 @@ of your application deal with it.
 
 There is a second set of configuration classes you can use in development mode for creating **hex** applications. This mode
 refreshes your applications classes on every request so there is no need to:
+
 1. Compile your application yourself.
 2. Restart the Java server every time you make class changes.
 
