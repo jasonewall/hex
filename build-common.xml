@@ -133,7 +133,7 @@
     <target name="compile" depends="classpath">
         <mkdir dir="${classes.dir}"/>
         <ivy:cachepath conf="development" pathid="ivy.cachepath" resolveid="${ant.project.name}.development"/>
-        <javac destdir="${classes.dir}" srcdir="${src.dir}">
+        <javac destdir="${classes.dir}" srcdir="${src.dir}" >
             <classpath refid="classpath"/>
             <classpath refid="ivy.cachepath"/>
         </javac>

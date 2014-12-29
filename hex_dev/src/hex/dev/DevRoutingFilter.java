@@ -6,18 +6,31 @@ import hex.action.initialization.InitializerRunner;
 import hex.routing.*;
 
 import javax.servlet.*;
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLClassLoader;
-import java.nio.file.*;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Properties;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 /**
- * Created by jason on 14-11-21.
+ * {@link javax.servlet.Filter} implementation for loading a hex application in "development mode." If developing hex
+ * outside of the provided embedded {@link hex.dev.HexServer} then use this filter (and only this filter) in
+ * your {@code web.xml}. This filter wraps all other initialization classes required for production deployment of a hex
+ * application inside of a Servlet Container.
+ *
+ * <p>
+ *     {@code init-param}: {@code hex.action.Application.ROOT} ({@link hex.action.Application#ROOT}) <br/>
+ *     {@code description}: Fully qualified path to the hex application directory. hint: The directory that has the
+ *     {@code hex.properties} file in it.
+ * </p>
  */
 public class DevRoutingFilter implements Filter, RoutingConfig {
     private static final String OUT_DIR_PROPERTY = "out";
@@ -29,12 +42,6 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     private Supplier<Stream<String>> sourcePaths;
 
     private File outPath;
-
-    private URL[] getClassPathURLs() throws MalformedURLException {
-        return new URL[] {
-                outPath.toURI().toURL()
-        };
-    }
 
     private String applicationRootPath;
 
@@ -50,8 +57,6 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
         try(InputStream propStream = new FileInputStream(applicationConfigFile)) {
             applicationProperties.load(propStream);
             initCompiler(applicationRootPath);
-            initPaths();
-            applicationCompiler.compile(sourcePaths, outPath); // do this for initializers at first
             runApplicationInitializers(filterConfig);
             filterConfig.getServletContext().setAttribute(Routing.CONFIG, this);
             filter.init(filterConfig);
@@ -70,13 +75,17 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     }
 
     private void initCompiler(String applicationRootPath) {
+        initPaths();
         applicationCompiler = new Compiler(applicationRootPath);
+        applicationCompiler.setSourcePaths(sourcePaths);
+        applicationCompiler.setDestDir(outPath);
         if(applicationProperties.containsKey("build.compiler"))
             applicationCompiler.setCompiler(applicationProperties.getProperty("build.compiler"));
+        applicationCompiler.copyResources();
     }
 
     private void runApplicationInitializers(FilterConfig filterConfig) throws IOException {
-        URLClassLoader classLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader());
+        URLClassLoader classLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader());
         InitializerRunner runner = new InitializerRunner(classLoader);
         try {
             runner.run();
@@ -89,8 +98,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        applicationCompiler.compile(sourcePaths, outPath);
-        try (URLClassLoader requestClassLoader = new URLClassLoader(getClassPathURLs(), this.getClass().getClassLoader())) {
+        try (URLClassLoader requestClassLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader())) {
             config = Application.initializeRoutes(requestClassLoader);
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {

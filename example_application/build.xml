@@ -26,7 +26,11 @@
     </target>
 
     <target name="run" depends="common.classpath">
-        <java fork="true" classpathref="classpath" classname="hex.dev.HexServer" failonerror="true"/>
+        <property environment="env"/>
+        <property name="env.JAVA_OPTS" value=""/>
+        <java fork="true" classpathref="classpath" classname="hex.dev.HexServer" failonerror="true">
+            <jvmarg line="${env.JAVA_OPTS}"/>
+        </java>
     </target>
 
     <target name="needs-hex-repo?">
