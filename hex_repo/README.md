@@ -1,4 +1,4 @@
-Hex Repo
+hex_repo
 ======================
 
 ORM using the API declared in [hex/hexql](https://github.com/thejayvm/hex/tree/master/hexql)
@@ -50,7 +50,7 @@ I would love some contributers but keep in mind the following:
 
 ### No byte code manipulation of "business classes"
 
-It's a pretty common practice for a lot of JVM based ORMs out there. I'd like to see something that doesn't do it. At 
+It's a pretty common practice for a lot of JVM based ORMs out there. I'd like to see something that doesn't do it. At
 first I tried to do zero byte manipulation, but that seemed excessively idealistic. I'm breaking down and allowing the creating
 of subclasses off of model objects.
 
