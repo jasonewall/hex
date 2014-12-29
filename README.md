@@ -34,8 +34,6 @@ refreshes your applications classes on every request so there is no need to:
 1. Compile your application yourself.
 2. Restart the Java server every time you make class changes.
 
-    web.xml
-    =============================
     <filter>
         <filter-name>HexFilter</filter-name>
         <filter-class>hex.dev.DevRoutingFilter</filter-class>
@@ -53,6 +51,28 @@ refreshes your applications classes on every request so there is no need to:
 Note the lack of the `ServletContextListener` configured in development mode. The `DevRoutingFilter` manages the lifecycle
 of a **hex** application differently so it takes care of what the `hex.action.Application` context listener takes care of
 on it's own.
+
+# Routes & Controllers
+
+Define routes in your `ApplicationRoutes` class.
+
+    package config;
+
+    public class ApplicationRoutes extends RouteManager {
+        public void defineRoutes() {
+            matches("/", HomeController::new, "home");
+        }
+    }
+
+Create your controller!
+
+    package controllers;
+
+    public class HomeController extends Controller {
+        public void home() {
+            // we don't do anything here if we're just forwarding to a view
+        }
+    }
 
 # DISCLAIMER (and Contributing)
 
