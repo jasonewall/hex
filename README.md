@@ -85,6 +85,27 @@ public class HomeController extends Controller {
 }
 ```
 
+# Layouts And Views
+
+Define an application layout.
+
+```jsp
+<!-- views/layouts/application.html.jsp -->
+<%@ taglib uri="http://hex.org/tags" prefix="hex" %>
+
+<html>
+    <head>
+        <title>My Hex Application</title>
+        <hex:view-content name="styles"/>
+    </head>
+    <body>
+        <h1>My Hex Application</h1>
+
+        <hex:view-content/>
+    </body>
+</html>
+```
+
 # DISCLAIMER (and Contributing)
 
 **hex** is very much in alpha stages. Don't use it yet. Seriously. There isn't a whole let here. In fact, I could use [some help](https://github.com/thejayvm/hex/wiki/Contribution-Guide) getting it going!
