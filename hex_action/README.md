@@ -70,9 +70,9 @@ The `create(Post)` action also has a parameter, but it's parameter is a complex 
 `@Param("post")`. The `@Param` annotation tells the `ControllerAction` to look in all parameter types: query string, form data, and route params for
 a parameter named `"post"`. Then it tries to coerce that value into the proper class type.
 
-    NOTE: Of course you can't send complex data types from HTML forms. **hex**'s complex type coercion looks for a
+    NOTE: Of course you can't send complex data types from HTML forms. hex's complex type coercion looks for a
     series of request parameters that are formatted a specific way and uses those parameters to infer which properties
-    on the target object should be populated. As long as you're using the jsp helpers tags packaged with **hex** you
+    on the target object should be populated. As long as you're using the jsp helpers tags packaged with hex you
     don't need to worry about this.
 
 ### Implicit Members
