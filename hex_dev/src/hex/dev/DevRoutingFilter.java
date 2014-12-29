@@ -26,7 +26,11 @@ import java.util.stream.Stream;
  * your {@code web.xml}. This filter wraps all other initialization classes required for production deployment of a hex
  * application inside of a Servlet Container.
  *
- * TODO: section on the application root
+ * <p>
+ *     {@code init-param}: {@code hex.action.Application.ROOT} ({@link hex.action.Application#ROOT}) <br/>
+ *     {@code description}: Fully qualified path to the hex application directory. hint: The directory that has the
+ *     {@code hex.properties} file in it.
+ * </p>
  */
 public class DevRoutingFilter implements Filter, RoutingConfig {
     private static final String OUT_DIR_PROPERTY = "out";
