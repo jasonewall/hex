@@ -57,6 +57,10 @@ public class RouteManager {
         addRoute(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
     }
 
+    Route getRouteNamed(String routeName) {
+        return null;
+    }
+
     private void addRoute(Route route) {
         definedRoutes.add(route);
     }

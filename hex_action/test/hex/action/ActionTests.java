@@ -1,6 +1,7 @@
 package hex.action;
 
 import hex.action.params.ParamsSuite;
+import hex.action.routing.RouteManagerTest;
 import hex.action.views.jsp.TagTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

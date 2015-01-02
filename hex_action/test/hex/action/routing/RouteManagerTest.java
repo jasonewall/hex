@@ -1,15 +1,18 @@
-package hex.action;
+package hex.action.routing;
 
 import hex.action.examples.PostsController;
 import hex.action.routing.RouteManager;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -67,5 +70,12 @@ public class RouteManagerTest {
         Stream.of(HttpMethod.values()).forEach(
                 m -> assertTrue(m.toString(), route.matches(m, path))
         );
+    }
+
+    @Test
+    public void addingRoutesShouldCreatePathNames() {
+        routeManager.get("/aliens", PostsController::new, "report_to_the_mother_ship");
+        Route route = routeManager.getRouteNamed("report_to_the_mother_ship_aliens");
+        assertThat(route, notNullValue());
     }
 }
