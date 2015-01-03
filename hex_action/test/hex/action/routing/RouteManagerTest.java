@@ -74,7 +74,8 @@ public class RouteManagerTest {
 
     @Test
     public void addingRoutesShouldCreatePathNames() {
-        routeManager.get("/aliens", PostsController::new, "report_to_the_mother_ship");
+        String path = "/aliens";
+        routeManager.get(path, PostsController::new, "report_to_the_mother_ship");
         Route route = routeManager.getRouteNamed("report_to_the_mother_ship_aliens");
         assertThat(route, notNullValue());
     }

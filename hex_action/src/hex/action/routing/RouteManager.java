@@ -5,16 +5,16 @@ import hex.action.ControllerAction;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
  * Created by jason on 14-11-14.
  */
 public class RouteManager {
-    private List<Route> definedRoutes = new ArrayList<>();
+    private final Map<String,Route> routeMap = new HashMap<>();
+
+    private final List<Route> definedRoutes = new ArrayList<>();
 
     private Properties hexActionProperties;
 
@@ -38,31 +38,34 @@ public class RouteManager {
     }
 
     public void get(String path, Supplier<Controller> controllerSupplier, String action) {
-        addRoute(new Route(HttpMethod.GET, path, getHandler(controllerSupplier, action)));
+        addRoute(HttpMethod.GET, path, getHandler(controllerSupplier, action));
     }
 
     public void post(String path, Supplier<Controller> controllerSupplier, String action) {
-        addRoute(new Route(HttpMethod.POST, path, getHandler(controllerSupplier, action)));
+        addRoute(HttpMethod.POST, path, getHandler(controllerSupplier, action));
     }
 
     public void put(String path, Supplier<Controller> controllerSupplier, String action) {
-        addRoute(new Route(HttpMethod.PUT, path, getHandler(controllerSupplier, action)));
+        addRoute(HttpMethod.PUT, path, getHandler(controllerSupplier, action));
     }
 
     public void delete(String path, Supplier<Controller> controllerSupplier, String action) {
-        addRoute(new Route(HttpMethod.DELETE, path, getHandler(controllerSupplier, action)));
+        addRoute(HttpMethod.DELETE, path, getHandler(controllerSupplier, action));
     }
 
     public void matches(String path, Supplier<Controller> controllerSupplier, String action) {
-        addRoute(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+        definedRoutes.add(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+    }
+
+    private void addRoute(HttpMethod method, String path, ControllerAction handler) {
+        Route route = new Route(method, path, handler);
+        String pathName = path.replaceFirst("/", "");
+        definedRoutes.add(route);
+        routeMap.put(String.format("%s_%s", handler.getName(), pathName), route);
     }
 
     Route getRouteNamed(String routeName) {
-        return null;
-    }
-
-    private void addRoute(Route route) {
-        definedRoutes.add(route);
+        return routeMap.get(routeName);
     }
 
     private ControllerAction getHandler(Supplier<Controller> controllerSupplier, String action) {

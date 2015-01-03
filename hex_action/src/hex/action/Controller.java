@@ -37,6 +37,10 @@ public class Controller {
      * @return Name of the directory in which to find the view template.
      */
     protected String templateDirectory() {
+        return getName();
+    }
+
+    String getName() {
         Matcher m = CONTROLLER_NAMES.matcher(getClass().getSimpleName());
         if(!m.matches()) throw new IllegalArgumentException(String.format(Errors.UNABLE_TO_IMPLY_VIEW_DIRECTORY, getClass().getSimpleName()));
         return underscore(m.replaceAll(m.group(1)));
