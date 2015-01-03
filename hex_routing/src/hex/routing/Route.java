@@ -75,7 +75,7 @@ public class Route {
         this.pathPattern = pathPattern;
     }
 
-    public void setPath(String path) {
+    void setPath(String path) {
         Matcher m = PATH_PARAM_PATTERN.matcher(path);
         while(m.find()) {
             addParam(m.group(1));
