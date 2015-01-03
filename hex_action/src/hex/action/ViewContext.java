@@ -1,6 +1,6 @@
 package hex.action;
 
-import hex.utils.maps.CoercionMap;
+import hex.utils.maps.PropertyMap;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by jason on 14-11-15.
  */
-public class ViewContext extends HashMap<String,Object> implements CoercionMap<String> {
+public class ViewContext extends HashMap<String,Object> implements PropertyMap {
     private static final String BLANK = "";
 
     private String content;

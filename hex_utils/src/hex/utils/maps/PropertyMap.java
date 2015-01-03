@@ -2,6 +2,7 @@ package hex.utils.maps;
 
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
+import hex.utils.coercion.CoercionMap;
 import hex.utils.generics.TypeVariables;
 
 import java.lang.reflect.Field;

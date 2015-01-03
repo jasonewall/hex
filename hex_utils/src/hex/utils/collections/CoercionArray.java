@@ -1,6 +1,6 @@
 package hex.utils.collections;
 
-import hex.utils.maps.CoercionMap;
+import hex.utils.coercion.CoercionMap;
 
 import java.lang.reflect.Array;
 
