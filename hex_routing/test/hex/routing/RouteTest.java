@@ -23,10 +23,12 @@
  */
 package hex.routing;
 
+import hex.routing.test.Post;
 import org.junit.Test;
 
 import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 import static servlet_mock.HttpMock.GET;
 
@@ -79,5 +81,21 @@ public class RouteTest {
             Stream.of("/", "").forEach(
                     p -> assertTrue(String.format("%s -> %s", r, p), route.matches(HttpMethod.GET, p)));
         });
+    }
+
+    @Test
+    public void createPathShouldReturnTheDefinedPath() {
+        Route route = new Route("/aliens", RoutingConfigTest.CALLED);
+        String path = route.createPath();
+        assertThat(path, is("/aliens"));
+    }
+
+    @Test
+    public void createPathShouldSubstituteParamsWithPassedInProperties() {
+        Route route = new Route("/posts/:id", RoutingConfigTest.CALLED);
+        Post post = new Post();
+        post.setId(99);
+        String path = route.createPath(post);
+        assertThat(path, is("/posts/99"));
     }
 }

@@ -23,8 +23,11 @@
  */
 package hex.routing;
 
+import hex.utils.coercion.CoercionObject;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
@@ -38,6 +41,11 @@ public class Route {
 
     public static final Pattern PATH_PARAM_PATTERN = Pattern.compile("/:(\\w+)");
 
+    /**
+     * The original path used to create this {@link Route}
+     */
+    private String path;
+
     private Pattern pathPattern;
 
     private RouteHandler handler;
@@ -50,6 +58,10 @@ public class Route {
 
     public Route(RouteHandler handler) {
         this(HttpMethod.ANY, handler);
+    }
+
+    public Route(String path, RouteHandler handler) {
+        this(HttpMethod.ANY, path, handler);
     }
 
     public Route(HttpMethod method, RouteHandler handler) {
@@ -76,6 +88,7 @@ public class Route {
     }
 
     void setPath(String path) {
+        this.path = path;
         Matcher m = PATH_PARAM_PATTERN.matcher(path);
         while(m.find()) {
             addParam(m.group(1));
@@ -85,6 +98,24 @@ public class Route {
             routePattern = routePattern.substring(0, routePattern.length() - 1);
         }
         setPattern(Pattern.compile(routePattern + "[/]?"));
+    }
+
+    public String createPath() {
+        return path;
+    }
+
+    public String createPath(Object params) {
+        CoercionObject paramValues = new CoercionObject(params);
+        Matcher m = PATH_PARAM_PATTERN.matcher(path);
+        StringBuffer path = new StringBuffer();
+
+        while(m.find()) {
+            String paramName = m.group(1);
+            m.appendReplacement(path, "/" + paramValues.getString(paramName));
+        }
+        m.appendTail(path);
+
+        return path.toString();
     }
 
     public RouteHandler getHandler() {
