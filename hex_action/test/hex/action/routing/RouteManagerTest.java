@@ -1,19 +1,15 @@
 package hex.action.routing;
 
 import hex.action.examples.PostsController;
-import hex.action.routing.RouteManager;
 import hex.routing.HttpMethod;
 import hex.routing.Route;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by jason on 14-11-15.
