@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
 public class Route {
     public static final String ROUTE_PARAMS = "hex.hex_routing.Route.ROUTE_PARAMS";
 
-    private static final Pattern PATH_PARAM_DETECTOR = Pattern.compile("/:(\\w+)");
+    public static final Pattern PATH_PARAM_PATTERN = Pattern.compile("/:(\\w+)");
 
     private Pattern pathPattern;
 
@@ -76,7 +76,7 @@ public class Route {
     }
 
     public void setPath(String path) {
-        Matcher m = PATH_PARAM_DETECTOR.matcher(path);
+        Matcher m = PATH_PARAM_PATTERN.matcher(path);
         while(m.find()) {
             addParam(m.group(1));
         }

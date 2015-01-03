@@ -59,7 +59,9 @@ public class RouteManager {
 
     private void addRoute(HttpMethod method, String path, ControllerAction handler) {
         Route route = new Route(method, path, handler);
-        String pathName = path.replaceFirst("/", "");
+        String pathName = Route.PATH_PARAM_PATTERN.matcher(path).replaceAll("")
+                .replaceFirst("/", "")
+                .replaceAll("/", "_");
         definedRoutes.add(route);
         routeMap.put(String.format("%s_%s", handler.getName(), pathName), route);
     }

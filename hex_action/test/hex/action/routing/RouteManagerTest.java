@@ -78,5 +78,20 @@ public class RouteManagerTest {
         routeManager.get(path, PostsController::new, "report_to_the_mother_ship");
         Route route = routeManager.getRouteNamed("report_to_the_mother_ship_aliens");
         assertThat(route, notNullValue());
+        assertTrue(route.matches(HttpMethod.GET, path));
+    }
+
+    @Test
+    public void addingRoutesWithParamsShouldSkipParamsInPathNames() {
+        routeManager.get("/aliens/:id", PostsController::new, "profile");
+        Route route = routeManager.getRouteNamed("profile_aliens");
+        assertThat(route, notNullValue());
+    }
+
+    @Test
+    public void addingNestedRoutesShouldNestPathNames() {
+        routeManager.get("/posts/:postId/comments/:id", PostsController::new, "show");
+        Route route = routeManager.getRouteNamed("show_posts_comments");
+        assertThat(route, notNullValue());
     }
 }
