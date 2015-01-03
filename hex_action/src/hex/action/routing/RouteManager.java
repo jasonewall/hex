@@ -37,23 +37,23 @@ public class RouteManager {
 
     }
 
-    public void get(String path, Supplier<Controller> controllerSupplier, String action) {
+    protected void get(String path, Supplier<Controller> controllerSupplier, String action) {
         addRoute(HttpMethod.GET, path, getHandler(controllerSupplier, action));
     }
 
-    public void post(String path, Supplier<Controller> controllerSupplier, String action) {
+    protected void post(String path, Supplier<Controller> controllerSupplier, String action) {
         addRoute(HttpMethod.POST, path, getHandler(controllerSupplier, action));
     }
 
-    public void put(String path, Supplier<Controller> controllerSupplier, String action) {
+    protected void put(String path, Supplier<Controller> controllerSupplier, String action) {
         addRoute(HttpMethod.PUT, path, getHandler(controllerSupplier, action));
     }
 
-    public void delete(String path, Supplier<Controller> controllerSupplier, String action) {
+    protected void delete(String path, Supplier<Controller> controllerSupplier, String action) {
         addRoute(HttpMethod.DELETE, path, getHandler(controllerSupplier, action));
     }
 
-    public void matches(String path, Supplier<Controller> controllerSupplier, String action) {
+    protected void matches(String path, Supplier<Controller> controllerSupplier, String action) {
         definedRoutes.add(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
     }
 
