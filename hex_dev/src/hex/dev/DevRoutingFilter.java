@@ -85,14 +85,11 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     }
 
     private void runApplicationInitializers(FilterConfig filterConfig) throws IOException {
-        URLClassLoader classLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader());
-        InitializerRunner runner = new InitializerRunner(classLoader);
-        try {
+        try(URLClassLoader classLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader())) {
+            InitializerRunner runner = new InitializerRunner(classLoader);
             runner.run();
         } catch (InitializationException e) {
             filterConfig.getServletContext().setAttribute(InitializationException.class.getName(), e);
-        } finally {
-            classLoader.close();
         }
     }
 
