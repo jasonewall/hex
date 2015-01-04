@@ -1,7 +1,7 @@
 package hex.action;
 
 import hex.action.params.ParamsSuite;
-import hex.action.routing.RouteManagerTest;
+import hex.action.routing.RoutingSuite;
 import hex.action.views.jsp.TagTests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -12,7 +12,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
         ControllerActionTest.class,
-        RouteManagerTest.class,
+        RoutingSuite.class,
         ControllerTest.class,
         ParamsSuite.class,
         TagTests.class
