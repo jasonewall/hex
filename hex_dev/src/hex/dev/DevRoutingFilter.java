@@ -96,7 +96,7 @@ public class DevRoutingFilter implements Filter, RoutingConfig {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         try (URLClassLoader requestClassLoader = new HexClassLoader(applicationCompiler, this.getClass().getClassLoader())) {
-            config = Application.initializeRoutes(requestClassLoader);
+            config = Application.initializeRoutes(requestClassLoader, servletRequest.getServletContext());
             filter.doFilter(servletRequest, servletResponse, filterChain);
         }  finally {
             config = null;
