@@ -5,8 +5,7 @@ import java.net.URLEncoder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.StringJoiner;
-import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
 * Created by jason on 15-01-04.
@@ -41,11 +40,7 @@ class Uri {
         path.ifPresent(builder::append);
         if(queryParams.size() > 0) {
             builder.append('?');
-            Consumer<Map.Entry<String, String>> entryAppender = e ->
-                    builder.append(e.getKey()).append('=').append(e.getValue());
-
-            queryParams.entrySet().stream().findFirst().ifPresent(entryAppender);
-            queryParams.entrySet().stream().skip(1).peek(e -> builder.append('&')).forEach(entryAppender);
+            builder.append(queryParams.entrySet().stream().map(Object::toString).collect(Collectors.joining("&")));
         }
         return builder.toString();
     }
