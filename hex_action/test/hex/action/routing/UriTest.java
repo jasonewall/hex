@@ -25,4 +25,22 @@ public class UriTest {
         uri.addQueryParam("title", "Atlantis");
         assertThat(uri.toString(), is("/posts?tag=interesting&title=Atlantis"));
     }
+
+    @Test
+    public void queryStringAndAnchor() {
+        Uri uri = new Uri();
+        uri.setPath("/aliens");
+        uri.addQueryParam("encounterYear", "1947");
+        uri.setAnchor("list");
+        assertThat(uri.toString(), is("/aliens?encounterYear=1947#list"));
+    }
+
+    @Test
+    public void onceMoreWithFeeling() {
+        Uri uri = Uri.create("https", "example.com", 3000);
+        uri.setPath("/roswell");
+        uri.addQueryParam("recordYear", "1947");
+        uri.setAnchor("conspiracies");
+        assertThat(uri.toString(), is("https://example.com:3000/roswell?recordYear=1947#conspiracies"));
+    }
 }

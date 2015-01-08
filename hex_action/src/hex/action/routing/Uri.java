@@ -21,6 +21,8 @@ class Uri {
 
     private Optional<String> path = Optional.empty();
 
+    private Optional<String> anchor = Optional.empty();
+
     private Map<String,String> queryParams = new LinkedHashMap<>();
 
     public static Uri create(String scheme, String host, int port) {
@@ -42,6 +44,7 @@ class Uri {
             builder.append('?');
             builder.append(queryParams.entrySet().stream().map(Object::toString).collect(Collectors.joining("&")));
         }
+        anchor.ifPresent(s -> builder.append('#').append(s));
         return builder.toString();
     }
 
@@ -60,5 +63,9 @@ class Uri {
 
     public void setPath(String path) {
         this.path = Optional.ofNullable(path);
+    }
+
+    public void setAnchor(String anchorValue) {
+        this.anchor = Optional.ofNullable(anchorValue);
     }
 }
