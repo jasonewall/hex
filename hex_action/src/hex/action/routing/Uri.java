@@ -50,6 +50,7 @@ class Uri {
             queryParams.put(name, URLEncoder.encode(value, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             // hardcoded UTF-8
+            // TODO: Log a warning here, just in case.
         }
     }
 
