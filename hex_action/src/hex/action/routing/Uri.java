@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 /**
 * Created by jason on 15-01-04.
 */
-class Uri {
+public class Uri {
     private Optional<String> scheme = Optional.empty();
 
     private Optional <String> host = Optional.empty();

@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 /**
  * Created by jason on 15-01-03.
  */
-public class UrlUtils {
+public class UriFactory {
     private static final Pattern PATH_NAME_PATTERN = Pattern.compile("(.*)_(url|path)$");
 
     private static final String URL = "url";
