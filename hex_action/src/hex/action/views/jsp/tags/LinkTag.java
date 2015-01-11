@@ -16,12 +16,18 @@ public class LinkTag extends BodyTagSupport {
 
     private String anchor;
 
+    private Object values;
+
     public void setAction(String actionName) {
         this.actionName = actionName;
     }
 
     public void setAnchor(String anchor) {
         this.anchor = anchor;
+    }
+
+    public void setTo(Object values) {
+        this.values = values;
     }
 
     private Uri uri;
@@ -38,7 +44,7 @@ public class LinkTag extends BodyTagSupport {
      */
     @Override
     public int doStartTag() throws JspException {
-        uri = UriFactory.getUrlFor(actionName, pageContext.getRequest());
+        uri = UriFactory.getUrlFor(actionName, pageContext.getRequest(), values);
         uri.setAnchor(anchor);
         return EVAL_BODY_BUFFERED;
     }

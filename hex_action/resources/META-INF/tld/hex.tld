@@ -40,6 +40,11 @@
             <name>anchor</name>
             <required>false</required>
         </attribute>
+        <attribute>
+            <name>to</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <name>query-param</name>

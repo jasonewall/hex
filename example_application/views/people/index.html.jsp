@@ -22,8 +22,7 @@
             <tr>
                 <td>${p.firstName}</td>
                 <td>${p.lastName}</td>
-                <c:url value="/people/${p.id}" var="showPersonPath"/>
-                <td><a href="${showPersonPath}">View</a></td>
+                <td><hex:link to="${p}" action="show_people_path">View</hex:link></td>
             </tr>
         </c:forEach>
     </tbody>

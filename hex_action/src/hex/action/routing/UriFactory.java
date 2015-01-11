@@ -17,6 +17,10 @@ public class UriFactory {
     private static final String URL = "url";
 
     public static Uri getUrlFor(String pathRef, ServletRequest request) {
+        return getUrlFor(pathRef, request, null);
+    }
+
+    public static Uri getUrlFor(String pathRef, ServletRequest request, Object values) {
         Matcher m = PATH_NAME_PATTERN.matcher(pathRef);
         if(!m.matches()) throw new IllegalArgumentException("Path reference did not match format (path_name)_(url|path)");
         String pathName = m.group(1);
@@ -25,7 +29,7 @@ public class UriFactory {
         Uri uri = getUri(uriType, request);
         uri.setContext(request.getServletContext().getContextPath());
         // TODO: add check for Tomcat mode with it's stupid trailing slash in "directory paths"
-        uri.setPath(route.createPath());
+        uri.setPath(route.createPath(values));
         return uri;
     }
 
