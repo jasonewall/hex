@@ -2,7 +2,7 @@ package hex.action;
 
 import hex.action.params.ParamsSuite;
 import hex.action.routing.RoutingSuite;
-import hex.action.views.jsp.TagTests;
+import hex.action.views.ViewsSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
         RoutingSuite.class,
         ControllerTest.class,
         ParamsSuite.class,
-        TagTests.class
+        ViewsSuite.class
 })
 public class ActionTests {
 }

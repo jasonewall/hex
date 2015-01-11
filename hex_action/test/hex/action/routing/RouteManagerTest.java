@@ -90,4 +90,11 @@ public class RouteManagerTest {
         Route route = routeManager.getRouteNamed("show_posts_comments");
         assertThat(route, notNullValue());
     }
+
+    @Test
+    public void routesToRootShouldBeJustTheActionName() {
+        routeManager.matches("/", PostsController::new, "home");
+        Route route = routeManager.getRouteNamed("home");
+        assertThat(route, notNullValue());
+    }
 }

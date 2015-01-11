@@ -29,5 +29,4 @@
     </tbody>
 </table>
 
-<c:url var="newPersonPath" value="/people/new"/>
-<a href="${newPersonPath}">Create New Person</a>
+<hex:link action="newForm_people_new_path">Create New Person</hex:link>

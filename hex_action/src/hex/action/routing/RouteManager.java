@@ -6,6 +6,7 @@ import hex.routing.HttpMethod;
 import hex.routing.Route;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -54,16 +55,28 @@ public class RouteManager {
     }
 
     protected void matches(String path, Supplier<Controller> controllerSupplier, String action) {
-        definedRoutes.add(new Route(HttpMethod.ANY, path, getHandler(controllerSupplier, action)));
+        addRoute(HttpMethod.ANY, path, getHandler(controllerSupplier, action));
+    }
+
+    private void addRoute(Predicate<HttpMethod> any, String path, ControllerAction handler) {
+        Route route = new Route(any, path, handler);
+        definedRoutes.add(route);
+        registerRouteName(handler.getName(), path, route);
     }
 
     private void addRoute(HttpMethod method, String path, ControllerAction handler) {
         Route route = new Route(method, path, handler);
+        definedRoutes.add(route);
+        registerRouteName(handler.getName(), path, route);
+    }
+
+    private void registerRouteName(String actionName, String path, Route route) {
         String pathName = Route.PATH_PARAM_PATTERN.matcher(path).replaceAll("")
                 .replaceFirst("/", "")
                 .replaceAll("/", "_");
-        definedRoutes.add(route);
-        routeMap.put(String.format("%s_%s", handler.getName(), pathName), route);
+        String routeName = actionName;
+        if(pathName.length() > 0) routeName += "_" + pathName;
+        routeMap.put(routeName, route);
     }
 
     Route getRouteNamed(String routeName) {

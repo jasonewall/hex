@@ -28,4 +28,30 @@
         <tag-class>hex.action.views.jsp.tags.ViewInitTag</tag-class>
         <body-content>empty</body-content>
     </tag>
+    <tag>
+        <name>link</name>
+        <tag-class>hex.action.views.jsp.tags.LinkTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>action</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>anchor</name>
+            <required>false</required>
+        </attribute>
+    </tag>
+    <tag>
+        <name>query-param</name>
+        <tag-class>hex.action.views.jsp.tags.QueryParamTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>true</required>
+        </attribute>
+    </tag>
 </taglib>
