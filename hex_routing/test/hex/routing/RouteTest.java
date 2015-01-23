@@ -26,6 +26,8 @@ package hex.routing;
 import hex.routing.test.Post;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.hamcrest.Matchers.is;
@@ -97,5 +99,14 @@ public class RouteTest {
         post.setId(99);
         String path = route.createPath(post);
         assertThat(path, is("/posts/99"));
+    }
+
+    @Test
+    public void createPathShouldWorkWithMapsAsWell() {
+        Route route = new Route("/home/:profile", RoutingConfigTest.CALLED);
+        Map<String,String> params = new HashMap<>();
+        params.put("profile", "a.einstein");
+        String path = route.createPath(params);
+        assertThat(path, is("/home/a.einstein"));
     }
 }

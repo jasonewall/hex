@@ -4,6 +4,7 @@ import hex.utils.Inflection;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 /**
  * Created by jason on 15-01-03.
@@ -18,6 +19,7 @@ public class CoercionObject implements CoercionMap<String> {
 
     @Override
     public Object get(Object index) {
+        if(source instanceof Map) return ((Map)source).get(index);
         String propertyName = (String)index;
         try {
             Method getter = source.getClass().getMethod(Inflection.toGetter(propertyName));

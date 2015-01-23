@@ -6,9 +6,20 @@ import java.io.IOException;
 import java.util.Objects;
 
 /**
- * Created by jason on 15-01-07.
+ * Created by jason on 15-01-13.
  */
-public class QueryParamTag extends ParamTag {
+public class ParamTag extends SimpleTagSupport {
+    protected String name;
+
+    protected String value;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
 
     /**
      * Default processing of the tag does nothing.
@@ -23,12 +34,11 @@ public class QueryParamTag extends ParamTag {
      *                                             Tag Handler threw SkipPageException or if an invoked Jsp Fragment
      *                                             threw a SkipPageException.
      * @throws java.io.IOException                 Subclasses can throw IOException if there was
-     *                                             an error writing to the output stream
      */
     @Override
     public void doTag() throws JspException, IOException {
-        UriTag tag = (UriTag)findAncestorWithClass(this, UriTag.class);
+        UriTag tag = (UriTag) findAncestorWithClass(this, UriTag.class);
         Objects.requireNonNull(tag);
-        tag.setQueryParam(name, value);
+        tag.setParam(name, value);
     }
 }

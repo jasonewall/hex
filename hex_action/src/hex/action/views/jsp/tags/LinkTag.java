@@ -7,16 +7,22 @@ import hex.action.views.html.HtmlElement;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by jason on 15-01-03.
  */
-public class LinkTag extends BodyTagSupport {
+public class LinkTag extends BodyTagSupport implements UriTag {
     private String actionName;
 
     private String anchor;
 
     private Object values;
+
+    private Map<String,String> params;
+
+    private Map<String,String> queryParams;
 
     public void setAction(String actionName) {
         this.actionName = actionName;
@@ -30,10 +36,13 @@ public class LinkTag extends BodyTagSupport {
         this.values = values;
     }
 
-    private Uri uri;
+    @Override
+    public void setQueryParam(String name, String value) {
+        queryParams.put(name, value);
+    }
 
-    public Uri getUri() {
-        return uri;
+    public void setParam(String name, String value) {
+        params.put(name, value);
     }
 
     /**
@@ -44,8 +53,8 @@ public class LinkTag extends BodyTagSupport {
      */
     @Override
     public int doStartTag() throws JspException {
-        uri = UriFactory.getUrlFor(actionName, pageContext.getRequest(), values);
-        uri.setAnchor(anchor);
+        params = new HashMap<>();
+        queryParams = new HashMap<>();
         return EVAL_BODY_BUFFERED;
     }
 
@@ -57,6 +66,8 @@ public class LinkTag extends BodyTagSupport {
      */
     @Override
     public int doEndTag() throws JspException {
+        Uri uri = UriFactory.getUrlFor(actionName, pageContext.getRequest(),
+                params.size() > 0 ? params : values);
         HtmlElement element = new HtmlElement("a");
         element.setAttribute("href", uri.toString());
         element.setBody(getBodyContent().getString());
