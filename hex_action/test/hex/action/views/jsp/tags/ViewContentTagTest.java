@@ -27,8 +27,12 @@ public class ViewContentTagTest {
     protected MockJspContext jspContext;
 
     @Before
-    public void setUp() {
+    public void setUpViewContext() {
         view = new ViewContext();
+    }
+
+    @Before
+    public void setUp() {
         tag = new ViewContentTag();
         view.setContent("This is action view template content");
     }
