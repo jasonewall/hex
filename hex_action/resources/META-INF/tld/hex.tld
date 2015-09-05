@@ -7,7 +7,7 @@
     <uri>http://hex.org/tags</uri>
     <tag>
         <name>view-content</name>
-        <tag-class>hex.action.views.jsp.tags.ViewContentTag</tag-class>
+        <tag-class>hex.jsp.tags.ViewContentTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>name</name>
@@ -16,7 +16,7 @@
     </tag>
     <tag>
         <name>content-for</name>
-        <tag-class>hex.action.views.jsp.tags.ContentForTag</tag-class>
+        <tag-class>hex.jsp.tags.ContentForTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>name</name>
@@ -25,12 +25,12 @@
     </tag>
     <tag>
         <name>view-init</name>
-        <tag-class>hex.action.views.jsp.tags.ViewInitTag</tag-class>
+        <tag-class>hex.jsp.tags.ViewInitTag</tag-class>
         <body-content>empty</body-content>
     </tag>
     <tag>
         <name>link</name>
-        <tag-class>hex.action.views.jsp.tags.LinkTag</tag-class>
+        <tag-class>hex.jsp.tags.LinkTag</tag-class>
         <body-content>JSP</body-content>
         <attribute>
             <name>action</name>
@@ -48,7 +48,7 @@
     </tag>
     <tag>
         <name>query-param</name>
-        <tag-class>hex.action.views.jsp.tags.QueryParamTag</tag-class>
+        <tag-class>hex.jsp.tags.QueryParamTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>name</name>
@@ -62,7 +62,7 @@
     </tag>
     <tag>
         <name>param</name>
-        <tag-class>hex.action.views.jsp.tags.ParamTag</tag-class>
+        <tag-class>hex.jsp.tags.ParamTag</tag-class>
         <body-content>empty</body-content>
         <attribute>
             <name>name</name>

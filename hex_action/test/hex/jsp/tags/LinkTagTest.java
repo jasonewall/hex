@@ -1,4 +1,4 @@
-package hex.action.views.jsp.tags;
+package hex.jsp.tags;
 
 import hex.action.Application;
 import hex.action.routing.RouteManager;

@@ -1,14 +1,11 @@
-package hex.action.views.jsp.tags;
+package hex.jsp.tags;
 
 import hex.action.routing.Uri;
 import hex.action.routing.UriFactory;
 import hex.action.views.html.HtmlElement;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by jason on 15-01-03.

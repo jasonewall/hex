@@ -1,6 +1,6 @@
 package hex.action.views.jsp;
 
-import hex.action.views.jsp.tags.ViewContentTagTest;
+import hex.jsp.tags.ViewContentTagTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

@@ -1,8 +1,4 @@
-package hex.action.views.jsp.tags;
-
-import hex.action.routing.Uri;
-
-import java.util.Map;
+package hex.jsp.tags;
 
 /**
  * Created by jason on 15-01-16.

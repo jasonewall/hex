@@ -1,4 +1,4 @@
-package hex.action.views.jsp.tags;
+package hex.jsp.tags;
 
 import hex.action.ControllerAction;
 import hex.action.ViewContext;

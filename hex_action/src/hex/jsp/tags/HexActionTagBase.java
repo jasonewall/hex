@@ -1,4 +1,4 @@
-package hex.action.views.jsp.tags;
+package hex.jsp.tags;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
