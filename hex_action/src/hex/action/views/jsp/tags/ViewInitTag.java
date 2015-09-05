@@ -1,6 +1,6 @@
 package hex.action.views.jsp.tags;
 
-import hex.action.views.ViewSupport;
+import hex.jsp.ViewSupport;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
