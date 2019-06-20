@@ -9,7 +9,7 @@ import java.util.function.Function;
  * Created by jason on 14-12-09.
  */
 public interface Params extends PropertyMap {
-    public static <T> Memo<T> memoOf(T t) {
+    static <T> Memo<T> memoOf(T t) {
         return Memo.of(t);
     }
 
