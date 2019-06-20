@@ -3,6 +3,8 @@ before_script:
   - psql -c 'create database hex_repo_test;' -U postgres
   - ant prepare
 before_install: ant ensure-ivy
+script:
+  - ant test
 branches:
   only:
     - master
