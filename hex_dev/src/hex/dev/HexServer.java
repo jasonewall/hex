@@ -40,16 +40,6 @@ public class HexServer {
             e.printStackTrace();
         }
 
-        new Thread(() -> {
-            boolean running = true;
-            Scanner scanner = new Scanner(System.in);
-            while(running) {
-                System.out.print("> ");
-                running = !"exit".equals(scanner.next());
-            }
-            System.exit(0);
-        }).start();
-
         try {
             server.join();
         } catch (InterruptedException e) {
