@@ -1,6 +1,6 @@
 language: java
 before_script:
-  - psql -c 'create database hex_repo_test;' -U postgres
+  - psql -c 'create database hex_repo_test;' -U postgres --port=5433
   - ant prepare
 before_install: ant ensure-ivy
 script:
