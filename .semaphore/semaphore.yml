@@ -11,7 +11,7 @@ blocks:
         - name: 'Unit Tests'
           matrix:
             - env_var: JAVA_VERSION
-              values: ["8", "10", "11", "14"]
+              values: ["11", "17"]
           commands:
             - checkout
             - sem-version java $JAVA_VERSION
