@@ -30,7 +30,7 @@ public class CoercionMapTest {
     private static class CoercionMapImpl extends HashMap<String,Object> implements CoercionMap<String> {
         @Override
         public Object useTypeHandlers(Class<?> type, String index) {
-            if(type == Exception.class) return "useTypeHandlers";
+            if(type == Exception.class) return new Exception("useTypeHandlers");
             return null;
         }
     }
@@ -247,7 +247,9 @@ public class CoercionMapTest {
 
     @Test
     public void getWithCoercionShouldCheckTypeHandlers() throws CoercionException {
-        assertThat(map.get(Exception.class, "blah"), equalTo("useTypeHandlers"));
+        Exception result = map.get(Exception.class, "blah");
+
+        assertThat(result.getMessage(), equalTo("useTypeHandlers"));
     }
 
     @Test
