@@ -12,7 +12,7 @@ blocks:
           commands:
             - checkout
             - ant ensure-ivy
-            - sem-service start postgres 9.3
+            - sem-service start postgres 9.4
             - psql -c 'create database hex_repo_test;' -U postgres --port=5432
             - ant prepare
             - ant test
