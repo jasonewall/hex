@@ -1,4 +1,4 @@
-package hex.action;
+package hex.action.routing;
 
 import hex.action.examples.PostsController;
 import hex.routing.HttpMethod;
@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
 
 /**
  * Created by jason on 14-11-15.
@@ -66,5 +66,35 @@ public class RouteManagerTest {
         Stream.of(HttpMethod.values()).forEach(
                 m -> assertTrue(m.toString(), route.matches(m, path))
         );
+    }
+
+    @Test
+    public void addingRoutesShouldCreatePathNames() {
+        String path = "/aliens";
+        routeManager.get(path, PostsController::new, "report_to_the_mother_ship");
+        Route route = routeManager.getRouteNamed("report_to_the_mother_ship_aliens");
+        assertThat(route, notNullValue());
+        assertTrue(route.matches(HttpMethod.GET, path));
+    }
+
+    @Test
+    public void addingRoutesWithParamsShouldSkipParamsInPathNames() {
+        routeManager.get("/aliens/:id", PostsController::new, "profile");
+        Route route = routeManager.getRouteNamed("profile_aliens");
+        assertThat(route, notNullValue());
+    }
+
+    @Test
+    public void addingNestedRoutesShouldNestPathNames() {
+        routeManager.get("/posts/:postId/comments/:id", PostsController::new, "show");
+        Route route = routeManager.getRouteNamed("show_posts_comments");
+        assertThat(route, notNullValue());
+    }
+
+    @Test
+    public void routesToRootShouldBeJustTheActionName() {
+        routeManager.matches("/", PostsController::new, "home");
+        Route route = routeManager.getRouteNamed("home");
+        assertThat(route, notNullValue());
     }
 }

@@ -1,4 +1,4 @@
-package hex.utils.maps;
+package hex.utils.coercion;
 
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;

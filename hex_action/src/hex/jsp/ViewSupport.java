@@ -1,4 +1,4 @@
-package hex.action.views;
+package hex.jsp;
 
 import hex.action.ControllerAction;
 import hex.action.ViewContext;

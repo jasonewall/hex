@@ -1,4 +1,4 @@
-package hex.action.views.jsp.tags;
+package hex.jsp.tags;
 
 import hex.action.ControllerAction;
 import hex.action.ViewContext;
@@ -27,8 +27,12 @@ public class ViewContentTagTest {
     protected MockJspContext jspContext;
 
     @Before
-    public void setUp() {
+    public void setUpViewContext() {
         view = new ViewContext();
+    }
+
+    @Before
+    public void setUp() {
         tag = new ViewContentTag();
         view.setContent("This is action view template content");
     }

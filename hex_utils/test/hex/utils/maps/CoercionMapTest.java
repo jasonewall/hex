@@ -3,6 +3,7 @@ package hex.utils.maps;
 import hex.utils.Memo;
 import hex.utils.coercion.Coercible;
 import hex.utils.coercion.CoercionException;
+import hex.utils.coercion.CoercionMap;
 import hex.utils.test.Book;
 import hex.utils.test.matchers.IntArrayMatcher;
 import org.junit.Rule;

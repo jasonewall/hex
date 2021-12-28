@@ -1,5 +1,6 @@
 package hex.action;
 
+import hex.action.routing.RouteManager;
 import hex.action.initialization.InitializationException;
 import hex.action.initialization.InitializerRunner;
 import hex.routing.Routing;
@@ -25,6 +26,7 @@ public class Application implements ServletContextListener {
     public static final String ACTION_CONFIG = "hex_action.properties";
     public static final String ROUTES = "routes";
     public static final String ROOT = "hex.action.Application.ROOT";
+    public static final String ROUTING_CONFIG_CLASSES = "hex.action.Application.ROUTING_CONFIG_CLASSES";
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
@@ -38,7 +40,7 @@ public class Application implements ServletContextListener {
     private void initializeApplication(ServletContext application) throws InitializationException {
         ClassLoader cl = getClass().getClassLoader();
         try {
-            RoutingConfig routingConfig = initializeRoutes(cl);
+            RoutingConfig routingConfig = initializeRoutes(cl, application);
             application.setAttribute(Routing.CONFIG, routingConfig);
 
             InitializerRunner initializer = new InitializerRunner();
@@ -64,7 +66,7 @@ public class Application implements ServletContextListener {
 
     }
 
-    public static RoutingConfig initializeRoutes(ClassLoader classLoader) throws ServletException {
+    public static RoutingConfig initializeRoutes(ClassLoader classLoader, ServletContext application) throws ServletException {
         try {
             Properties adapterProperties = new Properties();
             adapterProperties.load(classLoader.getResourceAsStream(ACTION_CONFIG));
@@ -72,11 +74,15 @@ public class Application implements ServletContextListener {
             String[] routingConfigClasses = Stream.of(adapterProperties.getProperty(ROUTES).split(","))
                     .map(String::trim).toArray(String[]::new);
 
+            application.setAttribute(ROUTING_CONFIG_CLASSES, routingConfigClasses);
+
             RoutingConfigBase routingConfig = new RoutingConfigBase();
             for (String className : routingConfigClasses) {
                 RouteManager routeManager = (RouteManager) Class.forName(className, false, classLoader).newInstance();
                 routeManager.setHexActionProperties(adapterProperties);
                 routeManager.defineRoutes();
+                application.setAttribute(className, routeManager);
+                //TODO: This is smelly. Need to decide if supporting multiple RouteManagers in the same routing config is a good idea or not.
                 routeManager.getDefinedRoutes().forEach(routingConfig::addRoute);
             }
             return routingConfig;

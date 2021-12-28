@@ -94,6 +94,10 @@ public class ControllerAction implements RouteHandler {
         }
     }
 
+    public String getName() {
+        return actionName;
+    }
+
     private void checkException(ServletRequest request) throws ServletException {
         InitializationException e = (InitializationException)
                 request.getServletContext().getAttribute(InitializationException.class.getName());

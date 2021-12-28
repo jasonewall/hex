@@ -6,7 +6,7 @@ import hex.action.examples.Person;
 import hex.routing.RouteParams;
 import hex.utils.Memo;
 import hex.utils.coercion.CoercionException;
-import hex.utils.maps.CoercionMap;
+import hex.utils.coercion.CoercionMap;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.Test;

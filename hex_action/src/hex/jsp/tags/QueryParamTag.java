@@ -1,15 +1,14 @@
-package hex.action.views.jsp.tags;
-
-import hex.action.views.ViewSupport;
+package hex.jsp.tags;
 
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
- * Created by jason on 14-12-26.
+ * Created by jason on 15-01-07.
  */
-public class ViewInitTag extends SimpleTagSupport {
+public class QueryParamTag extends ParamTag {
+
     /**
      * Default processing of the tag does nothing.
      *
@@ -27,6 +26,8 @@ public class ViewInitTag extends SimpleTagSupport {
      */
     @Override
     public void doTag() throws JspException, IOException {
-        ViewSupport.ensureViewContext(getJspContext());
+        UriTag tag = (UriTag)findAncestorWithClass(this, UriTag.class);
+        Objects.requireNonNull(tag);
+        tag.setQueryParam(name, value);
     }
 }

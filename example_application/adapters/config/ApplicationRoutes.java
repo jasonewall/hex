@@ -1,7 +1,7 @@
 package config;
 
 import controllers.PeopleController;
-import hex.action.RouteManager;
+import hex.action.routing.RouteManager;
 
 /**
  * Created by jason on 14-11-16.

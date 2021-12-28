@@ -9,10 +9,12 @@
         <h1>Hex Example Application</h1>
         <h2>Menu</h2>
         <ul>
-            <c:url var="rootPath" value="/"/>
-            <li><a href="${rootPath}">Home</a></li>
-            <c:url var="peoplePath" value="/people"/>
-            <li><a href="${peoplePath}">List of People</a></li>
+            <li><hex:link action="home_path">Home</hex:link></li>
+            <li>
+                <hex:link action="index_people_path">
+                    List of People
+                </hex:link>
+            </li>
         </ul>
         <hex:view-content/>
         <hex:view-content name="postBody"/>
