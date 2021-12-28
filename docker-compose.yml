@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: postgres:9.3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: hex_repo_test
+    ports:
+    - 5432:5432
