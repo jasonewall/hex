@@ -1,4 +1,4 @@
-hex [![Build Status](https://travis-ci.org/jasonewall/hex.svg?branch=master)](https://travis-ci.org/jasonewall/hex)
+hex [![Build Status](https://jasonewall.semaphoreci.com/badges/hex.svg)](https://jasonewall.semaphoreci.com/projects/hex)
 ===
 
 Hex is not an MVC framework, it just looks like one.
