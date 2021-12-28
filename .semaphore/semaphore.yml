@@ -8,9 +8,13 @@ blocks:
   - name: 'Block #1'
     task:
       jobs:
-        - name: 'Job #1'
+        - name: 'Unit Tests'
+          matrix:
+            - env_var: JAVA_VERSION
+              values: ["8", "10", "11", "14"]
           commands:
             - checkout
+            - sem-version java $JAVA_VERSION
             - ant ensure-ivy
             - sem-service start postgres 9.4
             - psql -c 'create database hex_repo_test;' -U postgres --port=5432
